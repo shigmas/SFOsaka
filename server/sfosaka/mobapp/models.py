@@ -38,6 +38,7 @@ class Partner(models.Model):
     shortDescription = models.CharField(max_length=1024)
     shortDescription_jp = models.CharField(max_length=1024)
     modificationDate = models.DateTimeField()
+    imageUrl = models.CharField(max_length=512, blank=True)
 
     class Meta:
         get_latest_by = 'modificationDate'

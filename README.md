@@ -9,7 +9,7 @@ Server:
 1. Clone the repo
 2. Get a copy of machine_conf.py from someone
 3. <BASE>/server% virtualenv . -p python3
-4. <BASE>/server% pip install -r requirements.txt
+4. <BASE>/server% bin/pip install -r requirements.txt
 
 
 Setup the 'database'. (The database will depend on your machine_conf.py, but the instructions should be the same)

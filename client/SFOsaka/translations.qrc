@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>translations/sfocity_ja_JP.qm</file>
+    </qresource>
+</RCC>

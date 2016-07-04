@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>MainPage.qml</file>
+        <file>PartnerDetail.qml</file>
+        <file>sfocity.qml</file>
+        <file>MapPage.qml</file>
+        <file>TranslatorPage.qml</file>
+        <file>TranslatorAdd.qml</file>
+        <file>SisterPage.qml</file>
+        <file>marker.png</file>
+        <file>TranslatorHeader.qml</file>
+    </qresource>
+</RCC>

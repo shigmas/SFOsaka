@@ -57,7 +57,6 @@ FJClient::GetBaseUrl() const
 void
 FJClient::AddOperation(FJOperationSharedPtr operation)
 {
-    qDebug() << "Adding opp" << operation->GetName();
     operation->SetClient(this);
     _operationQueue.append(operation);
 }
@@ -85,12 +84,12 @@ void
 FJClient::_StartTimer()
 {
     if (_timer) {
-        qDebug() << "disconnecting old timer";
+        //qDebug() << "disconnecting old timer";
         QTimer *oldTimer = _timer.get();
         QObject::disconnect(oldTimer, &QTimer::timeout,
                             this, &FJClient::_HandleTimer);
-    } else {
-        qDebug() << "No old timer. connecting";
+        //    } else {
+        //        qDebug() << "No old timer. connecting";
     }
     QTimer *newTimer = new QTimer();
     QObject::connect(newTimer, &QTimer::timeout,
@@ -103,15 +102,15 @@ FJClient::_StartTimer()
 void
 FJClient::_HandleTimer()
 {
-    qDebug() << "timer shot";
+    //    qDebug() << "timer shot";
 
     FJOperationSharedPtr op;
     foreach(op, _operationQueue) {
         if (op) {
             if (!op->IsCompleted()) {
-                qDebug() << "Running op";
+                //                qDebug() << "Running op";
                 op->Execute(_accessManager, _url);
-                qDebug() << QThread::currentThreadId() << "Op executed";
+                //                qDebug() << QThread::currentThreadId() << "Op executed";
             }
         }
     }

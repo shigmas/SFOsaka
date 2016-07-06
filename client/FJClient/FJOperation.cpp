@@ -119,7 +119,10 @@ FJOperation::_OnReplyFinished(QNetworkAccessManagerSharedPtr accessManager,
                 }
             }
         }
-        int desiredSize = _buffer.size() -1;
+        if (_buffer.size() <= 0) {
+            return;
+        }
+        unsigned int desiredSize = _buffer.size() -1;
         //qDebug() << "Raw: <<" << _buffer.data() << ">>";
         while ((_buffer.at(desiredSize) != '}') &&
                (_buffer.at(desiredSize) != ']')) {
@@ -148,11 +151,11 @@ FJOperation::_OnReplyFinished(QNetworkAccessManagerSharedPtr accessManager,
 void
 FJOperation::_OnBytesReceived(qint64 bytesReceived, qint64 )
 {
-    char buffer[bytesReceived+1];
     if (bytesReceived <= 0) {
         std::cerr << "Nothing to read" << std::endl;
         return;
     }
+    char buffer[bytesReceived+1];
     qint64 bytesRead = _reply->read(buffer, bytesReceived);
     if (bytesRead != bytesReceived) {
         qDebug() << "Read " << bytesRead << ", expected " << bytesReceived;

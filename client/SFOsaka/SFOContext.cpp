@@ -25,10 +25,10 @@ const QString SFOContext::LastDictDateKey    = "last_dict_date";
 SFOContext::SFOContext(QObject *parent) : 
     FJCaller(parent), _partnersDirty(false), _dictDirty(false)
 {
-//    _client = FJClientSharedPtr(new FJClient("malttest:8143","/mobapp/",
-//                                             "https"));
-    _client = FJClientSharedPtr(new FJClient("localhost:8000","/mobapp/",
-                                             "http"));
+    _client = FJClientSharedPtr(new FJClient("malttest.futomen.net:8143","/mobapp/",
+                                             "https"));
+//    _client = FJClientSharedPtr(new FJClient("localhost:8000","/mobapp/",
+//                                             "http"));
     _client->SetPingInterval(2);
 
     LoadFromDisk();
@@ -53,10 +53,12 @@ SFOContext::GetInstance()
 void
 SFOContext::Refresh()
 {
+    /*
     qDebug() << "Refreshing...";
     qDebug() << "Current partners: " << _partners.size();
     qDebug() << "jp dict: " << _jpToEnDict.size();
     qDebug() << "en dict: " << _enToJpDict.size();
+    */
 
     // Kick off start request
     FJOperationSharedPtr operation(new FJOperation("start","","/start/",

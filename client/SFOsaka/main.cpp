@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 
     QTranslator qtTranslator;
     QString localeName = QLocale::system().name();
-    if (!qtTranslator.load("oscity_" + localeName,
+    if (!qtTranslator.load("sfosaka_" + localeName,
                          ":/translations/")) {
         qDebug() << "Unable to load translation for " << localeName
                  << " in dir [" << QGuiApplication::applicationDirPath()
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty(QStringLiteral("initialUrl"),
                                 QUrl::fromUserInput(initialUrl));
 
-    engine.load(QUrl(QStringLiteral("qrc:/scocity.qml")));
+    engine.load(QUrl(QStringLiteral("qrc:/sfosaka.qml")));
 
     return app.exec();
 }

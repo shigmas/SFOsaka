@@ -4,6 +4,7 @@
 #include <FJOperation.h>
 
 #include <QDebug>
+#include <QDir>
 #include <QFile>
 #include <QJsonDocument>
 #include <QStandardPaths>
@@ -24,10 +25,10 @@ const QString SFOContext::LastDictDateKey    = "last_dict_date";
 SFOContext::SFOContext(QObject *parent) : 
     FJCaller(parent), _partnersDirty(false), _dictDirty(false)
 {
-    _client = FJClientSharedPtr(new FJClient("malttest:8143","/mobapp/",
-                                             "https"));
-//    _client = FJClientSharedPtr(new FJClient("localhost:8000","/mobapp/",
-//                                             "http"));
+//    _client = FJClientSharedPtr(new FJClient("malttest:8143","/mobapp/",
+//                                             "https"));
+    _client = FJClientSharedPtr(new FJClient("localhost:8000","/mobapp/",
+                                             "http"));
     _client->SetPingInterval(2);
 
     LoadFromDisk();
@@ -52,15 +53,15 @@ SFOContext::GetInstance()
 void
 SFOContext::Refresh()
 {
-    /*
     qDebug() << "Refreshing...";
     qDebug() << "Current partners: " << _partners.size();
     qDebug() << "jp dict: " << _jpToEnDict.size();
     qDebug() << "en dict: " << _enToJpDict.size();
-    */
+
     // Kick off start request
     FJOperationSharedPtr operation(new FJOperation("start","","/start/",
                                                    this));
+    qDebug() << "start";
     //_client->ClearCookies();
     _client->AddOperation(operation);
 }
@@ -150,7 +151,7 @@ SFOContext::LoadFromDisk()
             }
         }
     } else {
-        qDebug() << "empty partner cache file";
+        qDebug() << "empty dict cache file";
     }
 }
 
@@ -200,7 +201,7 @@ SFOContext::_WriteCacheFile(const QJsonDocument& doc, const QString& filename)
 {
     QByteArray data = doc.toJson();
 
-    QFile file(_GetFilePath(filename));
+    QFile file(_GetFilePath(filename, true));
     if (!file.open(QIODevice::WriteOnly)) {
         qDebug() << "Unable to open " << file.fileName();
     }
@@ -250,10 +251,14 @@ SFOContext::_GetMapFromJson(const QJsonDocument& doc) const
 }
 
 QString
-SFOContext::_GetFilePath(const QString& filename) const
+SFOContext::_GetFilePath(const QString& filename, bool createDir) const
 {
     QString path =
         QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
+    QDir pathDir(path);
+    if (!pathDir.exists() and createDir) {
+        pathDir.mkpath(path);
+    }
     return path + "/" + filename;
 }
 

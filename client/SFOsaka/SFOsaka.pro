@@ -29,7 +29,7 @@ SOURCES = MainPage.qml \
     SisterPage.qml     \
     TranslatorPage.qml \
     TranslatorAdd.qml  \
-    sfocity.qml        \
+    sfosaka.qml        \
 }
 
 RESOURCES += qml.qrc \
@@ -62,26 +62,29 @@ DISTFILES += \
 TRANSLATIONS = translations/oscity_ja_JP.ts
 
 iphonesimulator {
-LIBS += -L~/src/qt/build-FJClient-iphonesimulator_clang_Qt_5_6_0_for_iOS-Debug/ -lFJClient
+LIBS += -L$$PWD/../build-FJClient-iphonesimulator_clang_Qt_5_6_0_for_iOS-Debug/ -lFJClient
 }
 iphoneos{
-LIBS += -L~/src/qt/build-FJClient-iphoneos_clang_Qt_5_6_0_for_iOS-Debug/ -lFJClient
+LIBS += -L$$PWD/../build-FJClient-iphoneos_clang_Qt_5_6_0_for_iOS-Debug/ -lFJClient
 }
 android{
 LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_6_0-Debug/ -lFJClient
 }
+osx{
+LIBS += -L$$PWD/../build-FJClient-Desktop_Qt_5_6_0_clang_64bit-Debug/ -lFJClient
+}
+
 
 INCLUDEPATH += $$PWD/../FJClient
 DEPENDPATH += $$PWD/../FJClient
 
 iphonesimulator {
-PRE_TARGETDEPS += ~/src/qt/../build-FJClient-iphonesimulator_clang_Qt_5_6_0_for_iOS-Debug/libFJClient.a
+PRE_TARGETDEPS += $$PWD/../build-FJClient-iphonesimulator_clang_Qt_5_6_0_for_iOS-Debug/libFJClient.a
 }
 iphoneos{
-PRE_TARGETDEPS += ~/src/qt/../build-FJClient-iphoneos_clang_Qt_5_6_0_for_iOS-Debug/libFJClient.a
+PRE_TARGETDEPS += $$PWD/../build-FJClient-iphoneos_clang_Qt_5_6_0_for_iOS-Debug/libFJClient.a
 }
 android{
-message("android")
-PRE_TARGETDEPS += $$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_6_0-Debug/libFJClient.a
+PRE_TARGETDEPS += $$PWD/../build-FJClient-Desktop_Qt_5_6_0_clang_64bit-Debug/libFJClient.a
 }
 

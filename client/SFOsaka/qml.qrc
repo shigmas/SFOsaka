@@ -2,7 +2,7 @@
     <qresource prefix="/">
         <file>MainPage.qml</file>
         <file>PartnerDetail.qml</file>
-        <file>sfocity.qml</file>
+        <file>sfosaka.qml</file>
         <file>MapPage.qml</file>
         <file>TranslatorPage.qml</file>
         <file>TranslatorAdd.qml</file>

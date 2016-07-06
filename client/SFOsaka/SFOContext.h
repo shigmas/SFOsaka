@@ -57,7 +57,7 @@ protected:
     QVariantMap _DictToVariantMap(const QStringMap& dict) const;
     QVariantMap _GetMapFromJson(const QJsonDocument& doc) const;
 
-    QString _GetFilePath(const QString& filename) const;
+    QString _GetFilePath(const QString& filename, bool createDir=false) const;
 
     bool _IsJapanese(const QString& word) const;
 

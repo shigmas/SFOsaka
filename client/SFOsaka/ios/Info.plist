@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>${PRODUCT_NAME}</string>
+	<string>SFOsaka</string>
 	<key>CFBundleExecutable</key>
 	<string>SFOsaka</string>
 	<key>CFBundleGetInfoString</key>
@@ -28,7 +28,7 @@
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>net.futomen.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>net.futomen.${PRODUCT_NAME}</string>
 	<key>CFBundleName</key>
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundlePackageType</key>

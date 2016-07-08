@@ -24,6 +24,12 @@ class FJOperation : public QObject
         FJFetchOperationType,
     };
 
+    enum FJOperationStatus {
+        FJQueuedStatus,
+        FJInProcessStatus,
+        FJCompletedStatus,
+    };
+
 public:
     // checkFetch and fetchData are the tail end URL's. Execute gets the base
     // URL
@@ -33,6 +39,8 @@ public:
     virtual ~FJOperation();
 
     void SetClient(FJClient *client);
+    
+    void SetIsPost(bool isPost);
 
     QString GetName() const;
     void SetName(const QString& name);
@@ -40,6 +48,8 @@ public:
     void SetCheckFetchContent(const QJsonDocument& checkFetchContent);
     void SetFetchDataContent(const QJsonDocument& fetchDataContent);
 
+    bool IsQueued() const;
+    bool IsInProcess() const;
     bool IsCompleted() const;
 
     // Run the operation. If a fetch is needed, HandleResponse in the 
@@ -54,8 +64,16 @@ protected slots:
                                   const QUrl& baseUrl,
                                   FJOperationType opType);
     virtual void _OnBytesReceived(qint64 bytesReceived, qint64 bytesTotal);
+    virtual void _OnReadyRead();
+    virtual void _OnFinished(QNetworkAccessManagerSharedPtr accessManager,
+                             const QUrl& baseUrl);
 
 protected:
+    void _StoreCSRF(const QNetworkAccessManagerSharedPtr& accessManager,
+                    const QUrl& baseUrl);
+
+    QJsonDocument _GetJsonFromContent(const QByteArray& content);
+
     void _RunRequest(QNetworkAccessManagerPtr accessManager,
                      const QUrl& baseUrl,
                      FJOperationType opType);
@@ -69,10 +87,11 @@ private:
     QString _name;
     QString _checkFetchUrl;
     QString _fetchDataUrl;
+    bool _isPost;
     QJsonDocument _checkFetchContent;
     QJsonDocument _fetchDataContent;
 
-    bool _isCompleted;
+    FJOperationStatus _status;
 
     FJCaller *_caller;
     FJClient *_client;

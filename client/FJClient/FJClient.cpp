@@ -10,12 +10,8 @@ const int FJClient::DefaultPingInterval = 3600;
 
 FJClient::FJClient(const QString& host, const QString& baseUrl,
                    const QString& scheme, QObject *parent) :
-    QObject(parent),
-    _url(scheme + "://" + host + "/" + baseUrl),
-    _pingInterval(DefaultPingInterval),
-    _accessManager(new QNetworkAccessManager())
+    FJClient(scheme + "://" + host + baseUrl, parent)
 {
-    _StartTimer();
 }
 
 FJClient::FJClient(const QUrl& baseUrl, QObject *parent) :
@@ -84,12 +80,9 @@ void
 FJClient::_StartTimer()
 {
     if (_timer) {
-        //qDebug() << "disconnecting old timer";
         QTimer *oldTimer = _timer.get();
         QObject::disconnect(oldTimer, &QTimer::timeout,
                             this, &FJClient::_HandleTimer);
-        //    } else {
-        //        qDebug() << "No old timer. connecting";
     }
     QTimer *newTimer = new QTimer();
     QObject::connect(newTimer, &QTimer::timeout,
@@ -102,17 +95,19 @@ FJClient::_StartTimer()
 void
 FJClient::_HandleTimer()
 {
-    //    qDebug() << "timer shot";
-
     FJOperationSharedPtr op;
     foreach(op, _operationQueue) {
         if (op) {
-            if (!op->IsCompleted()) {
-                //                qDebug() << "Running op";
+            if (op->IsQueued()) {
+                //qDebug() << QThread::currentThreadId() << ": Running op";
                 op->Execute(_accessManager, _url);
-                //                qDebug() << QThread::currentThreadId() << "Op executed";
+                //qDebug() << QThread::currentThreadId() << ": Op executed";
+            } else if (op->IsCompleted()) {
+                // Op is completed, remove it from the queue.
+                qDebug() << "Op finished. Removing";
+                _operationQueue.removeOne(op);
+            } else {
             }
         }
     }
-    //_operationQueue.clear();
 }

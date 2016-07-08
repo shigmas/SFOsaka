@@ -25,12 +25,16 @@ const QString SFOContext::LastDictDateKey    = "last_dict_date";
 SFOContext::SFOContext(QObject *parent) : 
     FJCaller(parent), _partnersDirty(false), _dictDirty(false)
 {
-    _client = FJClientSharedPtr(new FJClient("malttest.futomen.net:8143","/mobapp/",
-                                             "https"));
-//    _client = FJClientSharedPtr(new FJClient("localhost:8000","/mobapp/",
-//                                             "http"));
-    _client->SetPingInterval(2);
+    _client = FJClientSharedPtr(new FJClient("malttest.futomen.net:8143",
+                                             "/mobapp/", "https"));
+    //_client = FJClientSharedPtr(new FJClient("localhost:8000","/mobapp/",
+    //"http"));
+    _client->SetPingInterval(5);
 
+    qDebug() << "Data location: "
+             << QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
+    qDebug() << "Maybe better?: "
+             << QStandardPaths::standardLocations(QStandardPaths::AppLocalDataLocation)[0];
     LoadFromDisk();
     Refresh();
 }
@@ -63,8 +67,8 @@ SFOContext::Refresh()
     // Kick off start request
     FJOperationSharedPtr operation(new FJOperation("start","","/start/",
                                                    this));
-    qDebug() << "start";
-    //_client->ClearCookies();
+    operation->SetIsPost(false);
+    _client->ClearCookies();
     _client->AddOperation(operation);
 }
 

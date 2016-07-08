@@ -29,3 +29,6 @@ Prerequites: Qt 5.x
  1. Build FJClient. This is the Futomen JSON client. Just some basic HTTP/JSON marshalling
  2. Build SFOSaka
 This should be repeated for every client.
+
+Android notes:
+OpenSSL needs to be built. See the Qt specific [note](http://doc.qt.io/qt-5/opensslsupport.html), but I found that the OpenSSL [setup](https://wiki.openssl.org/index.php/Android) more useful to configure.

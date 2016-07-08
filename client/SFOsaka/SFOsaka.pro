@@ -35,7 +35,7 @@ SOURCES = MainPage.qml \
 RESOURCES += qml.qrc \
     translations.qrc \
 
-# Additional import path used to resolve QML modules in Qt Creator's code model
+# Additional import path used to resolve QML modules in Qt Creators code model
 QML_IMPORT_PATH =
 
 # Default rules for deployment.
@@ -85,6 +85,14 @@ iphoneos{
 PRE_TARGETDEPS += $$PWD/../build-FJClient-iphoneos_clang_Qt_5_6_0_for_iOS-Debug/libFJClient.a
 }
 android{
+PRE_TARGETDEPS += $$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_6_0-Debug/libFJClient.a
+}
+osx {
 PRE_TARGETDEPS += $$PWD/../build-FJClient-Desktop_Qt_5_6_0_clang_64bit-Debug/libFJClient.a
+}
+contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
+    ANDROID_EXTRA_LIBS = \
+        /Users/wyan/src/github/SFOsaka/client/SFOsaka/libcrypto.so \
+        /Users/wyan/src/github/SFOsaka/client/SFOsaka/libssl.so
 }
 

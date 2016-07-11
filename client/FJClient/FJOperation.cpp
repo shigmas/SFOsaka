@@ -115,6 +115,18 @@ FJOperation::_OnAuthenticationRequired(QNetworkReply *,
 }
 
 void
+_NetworkErrorPrintError(const QNetworkReply::NetworkError& error)
+{
+    switch(error) {
+    case QNetworkReply::NoError:
+        qDebug() << "No Error";
+        break;
+    default:
+        qDebug() << "Unknown Error: " << error;
+    }
+}
+
+void
 FJOperation::_OnReplyFinished(QNetworkAccessManagerSharedPtr accessManager,
                               const QUrl& baseUrl,
                               FJOperationType opType)
@@ -132,6 +144,7 @@ FJOperation::_OnReplyFinished(QNetworkAccessManagerSharedPtr accessManager,
         _StoreCSRF(accessManager, baseUrl);
         QJsonDocument jsonDoc = _GetJsonFromContent(_buffer);
         if (jsonDoc.isNull() || jsonDoc.isEmpty()) {
+            _NetworkErrorPrintError(_reply->error());
             qDebug() << "Invalid JSON for " << baseUrl << ": " << _buffer;
         } else if (opType == FJCheckOperationType) {
             if (_ProcessCheck(jsonDoc)) {
@@ -192,10 +205,21 @@ FJOperation::_OnFinished(QNetworkAccessManagerSharedPtr accessManager,
             _caller->HandleResponse(jsonDoc, FJNoError, this);
         }
     } else {
+        _NetworkErrorPrintError(_reply->error());
         qDebug() << "Invalid or empty JSON in response";
     }
     qDebug() << "_OnFinished completed";
     _status = FJCompletedStatus;
+}
+
+void
+FJOperation::_OnSslErrors(const QList<QSslError>& errors)
+{
+    qDebug() << "Got SSL Errors: " << errors;
+    // XXX - Hacky hack hack. Android fails on handshake error. This let's us
+    // get by that. Should really do a better review on this. (We are using
+    // a signed cert, but apparently, not trusted enough for android.)
+    _reply->ignoreSslErrors(errors);
 }
 
 void
@@ -246,6 +270,7 @@ FJOperation::_RunRequest(QNetworkAccessManagerPtr accessManagerPtr,
         qDebug() << "No access manager. Skipping";
         return;
     }
+    qDebug() << "_RunRequest() - access: " << accessManager->networkAccessible();
     QObject::connect(accessManager.get(),
                      &QNetworkAccessManager::authenticationRequired,
                      this,
@@ -295,6 +320,8 @@ FJOperation::_RunRequest(QNetworkAccessManagerPtr accessManagerPtr,
         QObject::connect(_reply, &QNetworkReply::finished,
                          std::bind(&FJOperation::_OnFinished, this,
                                    accessManager, baseUrl));
+        QObject::connect(_reply, &QNetworkReply::sslErrors,
+                         this, &FJOperation::_OnSslErrors);
     }
     _buffer.clear();
 }

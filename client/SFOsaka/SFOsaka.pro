@@ -58,6 +58,14 @@ DISTFILES += \
     ios/Icons/AppIcon57x57@1x.png \
     ios/Icons/AppIcon72x72@1x.png \
     ios/Icons/AppIcon83.5x83.5@2x.png \
+    ios/Icons/AppIcon120x120@1x.png \
+    android/AndroidManifest.xml \
+    android/gradle/wrapper/gradle-wrapper.jar \
+    android/gradlew \
+    android/res/values/libs.xml \
+    android/build.gradle \
+    android/gradle/wrapper/gradle-wrapper.properties \
+    android/gradlew.bat
 
 TRANSLATIONS = translations/oscity_ja_JP.ts
 
@@ -95,4 +103,6 @@ contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
         /Users/wyan/src/github/SFOsaka/client/SFOsaka/libcrypto.so \
         /Users/wyan/src/github/SFOsaka/client/SFOsaka/libssl.so
 }
+
+ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 

@@ -4,6 +4,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QObject>
+#include <QSslError>
 
 #include "FJTypes.h"
 
@@ -67,6 +68,9 @@ protected slots:
     virtual void _OnReadyRead();
     virtual void _OnFinished(QNetworkAccessManagerSharedPtr accessManager,
                              const QUrl& baseUrl);
+
+    // Handling SSL errors (Since android gives an error that iOS does not)
+    virtual void _OnSslErrors(const QList<QSslError>& errors);
 
 protected:
     void _StoreCSRF(const QNetworkAccessManagerSharedPtr& accessManager,

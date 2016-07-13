@@ -4,6 +4,9 @@ import QtPositioning 5.5
 import QtLocation 5.6
 //! [Imports]
 
+// QTBUG-34418: singletons need to be imported
+import "."
+
 Item {
 
     id: root
@@ -13,9 +16,19 @@ Item {
     //! [Initialize Plugin]
     Plugin {
         id: myPlugin
-        name: "osm"
+        //name: "osm"
+        name: "mapbox"
         //specify plugin parameters if necessary
-        //PluginParameter {...}
+        PluginParameter {
+            // Tried importing the variable as javascript, and as a QML singleton
+            // with no success. (The variable exists, but it's not a useful
+            // string. So, you just have to enter this value by hand
+            name: "mapbox.access_token"; value: MapboxVars.Token
+
+        }
+        PluginParameter {
+            name: "mapbox.map_id"; value: "mapbox.streets"
+        }
         //PluginParameter {...}
         //...
     }

@@ -6,7 +6,10 @@
 #include <QThread>
 #include <QTimer>
 
-const int FJClient::DefaultPingInterval = 3600;
+// Ping once an hour
+const int FJClient::DefaultPingInterval = 360000;
+// But, check every half second when we're flushing the queue. 
+const int FJClient::DefaultFlushInterval = 500;
 
 FJClient::FJClient(const QString& host, const QString& baseUrl,
                    const QString& scheme, QObject *parent) :
@@ -18,15 +21,14 @@ FJClient::FJClient(const QUrl& baseUrl, QObject *parent) :
     QObject(parent),
     _url(baseUrl),
     _pingInterval(DefaultPingInterval),
+    _inQueueFlush(false),
     _accessManager(new QNetworkAccessManager())
 {
-    qDebug() << "FJClient::FJClient()";
-    _StartTimer();
+    _StartTimer(_pingInterval);
 }
 
 FJClient::~FJClient()
 {
-    qDebug() << "FJClient::~FJClient()";
 }
 
 int
@@ -40,7 +42,7 @@ FJClient::SetPingInterval(int seconds)
 {
     if (seconds != _pingInterval) {
         _pingInterval = seconds;
-        _StartTimer();
+        _StartTimer(_pingInterval);
     }
 }
 
@@ -77,7 +79,14 @@ FJClient::SetCSRFToken(const QByteArray& token)
 }
 
 void
-FJClient::_StartTimer()
+FJClient::FlushQueue()
+{
+    _inQueueFlush = true;
+    _StartTimer(DefaultFlushInterval);
+}
+
+void
+FJClient::_StartTimer(int timerInterval)
 {
     if (_timer) {
         QTimer *oldTimer = _timer.get();
@@ -87,7 +96,7 @@ FJClient::_StartTimer()
     QTimer *newTimer = new QTimer();
     QObject::connect(newTimer, &QTimer::timeout,
                      this, &FJClient::_HandleTimer);
-    newTimer->start(_pingInterval*1000);
+    newTimer->start(timerInterval);
 
     _timer = QTimerSharedPtr(newTimer);
 }
@@ -106,8 +115,16 @@ FJClient::_HandleTimer()
                 // Op is completed, remove it from the queue.
                 qDebug() << "Op finished. Removing";
                 _operationQueue.removeOne(op);
-            } else {
             }
         }
+    }
+
+    if (_operationQueue.empty()) {
+        if (_inQueueFlush) {
+            _inQueueFlush = false;
+            // Flushed all ops. Go back to regular ping interval
+            _StartTimer(_pingInterval);
+        }
+        emit QueueCompleted();
     }
 }

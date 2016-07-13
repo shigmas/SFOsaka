@@ -110,7 +110,7 @@ SFOItemModel::SetPosition(const QGeoCoordinate& pos)
 void
 SFOItemModel::HandleRefresh()
 {
-    SFOContext::GetInstance()->Refresh();
+    SFOContext::GetInstance()->Refresh(true);
 }
 
 void
@@ -119,7 +119,7 @@ SFOItemModel::HandleItemSelected(const QString& title)
     qDebug() << "Selected: " << title;
     SFOPartnerList partners = SFOContext::GetInstance()->GetPartners();
 
-    SFOPartner *p;
+    SFOPartner *p = NULL;
     foreach(p, partners) {
         if (title == p->GetName_locale()) {
             break;

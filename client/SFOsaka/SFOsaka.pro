@@ -93,7 +93,8 @@ iphoneos{
 PRE_TARGETDEPS += $$PWD/../build-FJClient-iphoneos_clang_Qt_5_6_0_for_iOS-Debug/libFJClient.a
 }
 android{
-PRE_TARGETDEPS += $$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_6_0-Debug/libFJClient.a
+Debug:PRE_TARGETDEPS += $$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_6_0-Debug/libFJClient.a
+Release:PRE_TARGETDEPS += $$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_6_0-Release/libFJClient.a
 }
 osx {
 PRE_TARGETDEPS += $$PWD/../build-FJClient-Desktop_Qt_5_6_0_clang_64bit-Debug/libFJClient.a

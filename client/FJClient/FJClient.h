@@ -36,10 +36,17 @@ public:
 
     void SetCSRFToken(const QByteArray& token);
 
+    // Runs the queue until it's empty or a new ping interval is set
+    void FlushQueue();
+
     static const int DefaultPingInterval;
+    static const int DefaultFlushInterval;
+
+signals:
+    void QueueCompleted();
 
 protected:
-    void _StartTimer();
+    void _StartTimer(int pingInterval);
 
 protected slots:
     void _HandleTimer();
@@ -48,6 +55,8 @@ private:
     QUrl _url;
     QList<FJOperationSharedPtr> _operationQueue;
     int _pingInterval;
+
+    bool _inQueueFlush;
 
     QNetworkAccessManagerSharedPtr _accessManager;
     QTimerSharedPtr _timer;

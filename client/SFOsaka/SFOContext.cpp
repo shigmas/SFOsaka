@@ -25,18 +25,19 @@ const QString SFOContext::LastDictDateKey    = "last_dict_date";
 SFOContext::SFOContext(QObject *parent) : 
     FJCaller(parent), _partnersDirty(false), _dictDirty(false)
 {
-    _client = FJClientSharedPtr(new FJClient("malttest.futomen.net:8143",
-                                             "/mobapp/", "https"));
-    //_client = FJClientSharedPtr(new FJClient("localhost:8000","/mobapp/",
-    //"http"));
-    _client->SetPingInterval(5);
+    //FJClient *client = new FJClient("localhost:8000","/mobapp/", "http");
+    FJClient *client = new FJClient("malttest.futomen.net:8143", "/mobapp/");
+    _client = FJClientSharedPtr(client);
+
+    // Listen on the queue completed signal and queue our refresh.
+    QObject::connect(client, &FJClient::QueueCompleted,
+                     this, &SFOContext::_OnQueueCompleted);
 
     qDebug() << "Data location: "
              << QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
-    qDebug() << "Maybe better?: "
-             << QStandardPaths::standardLocations(QStandardPaths::AppLocalDataLocation)[0];
     LoadFromDisk();
-    Refresh();
+    Refresh(true);
+    // Run the refresh right away when we're first starting up
 }
 
 SFOContext::~SFOContext()
@@ -55,7 +56,7 @@ SFOContext::GetInstance()
 }
 
 void
-SFOContext::Refresh()
+SFOContext::Refresh(bool immediately)
 {
     /*
     qDebug() << "Refreshing...";
@@ -70,6 +71,8 @@ SFOContext::Refresh()
     operation->SetIsPost(false);
     _client->ClearCookies();
     _client->AddOperation(operation);
+    if (immediately)
+        _client->FlushQueue();
 }
 
 SFOPartnerList
@@ -200,6 +203,12 @@ SFOContext::FlushToDisk()
         doc.setObject(obj);
         _WriteCacheFile(doc, DictionaryCacheFileName);
     }
+}
+
+void
+SFOContext::_OnQueueCompleted()
+{
+    Refresh();
 }
 
 void

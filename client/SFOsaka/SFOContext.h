@@ -29,7 +29,7 @@ public:
 
     SFOPartnerList GetPartners() const;
 
-    void Refresh();
+    void Refresh(bool immediately=false);
 
     QStringMap GetEnToJpDict() const;
     QStringMap GetJpToEnDict() const;
@@ -47,6 +47,9 @@ signals:
 public slots:
     virtual void HandleResponse(const QJsonDocument& document, FJError error,
                                 const FJOperation* operation);
+
+protected slots:
+    void _OnQueueCompleted();
 
 protected:
     explicit SFOContext(QObject *parent = 0);

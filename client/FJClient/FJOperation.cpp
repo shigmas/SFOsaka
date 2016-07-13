@@ -182,7 +182,6 @@ FJOperation::_OnBytesReceived(qint64 bytesReceived, qint64 )
 void
 FJOperation::_OnReadyRead()
 {
-    qDebug() << "Operation: OnReadyRead";
     // We hack a little here, since this is a GET handler, which is only used for
     // single requests (not the check, then fetch), so we assume that the caller
     // wants to get this request and there isn't a fetch coming.
@@ -208,7 +207,6 @@ FJOperation::_OnFinished(QNetworkAccessManagerSharedPtr accessManager,
         _NetworkErrorPrintError(_reply->error());
         qDebug() << "Invalid or empty JSON in response";
     }
-    qDebug() << "_OnFinished completed";
     _status = FJCompletedStatus;
 }
 
@@ -263,14 +261,12 @@ FJOperation::_RunRequest(QNetworkAccessManagerPtr accessManagerPtr,
                          const QUrl& baseUrl,
                          FJOperationType opType)
 {
-    qDebug() << "_RunRequest() - " << _name;
     _status = FJInProcessStatus;
     auto accessManager = accessManagerPtr.lock();
     if (!accessManager) {
         qDebug() << "No access manager. Skipping";
         return;
     }
-    qDebug() << "_RunRequest() - access: " << accessManager->networkAccessible();
     QObject::connect(accessManager.get(),
                      &QNetworkAccessManager::authenticationRequired,
                      this,

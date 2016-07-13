@@ -188,6 +188,7 @@ SFOContext::FlushToDisk()
         QJsonObject obj = QJsonObject::fromVariantMap(partnerMap);
         QJsonDocument doc;
         doc.setObject(obj);
+        qDebug() << "Saving " << _partners.size() << " partners";
         _WriteCacheFile(doc, PartnerCacheFileName);
     }
 
@@ -201,6 +202,7 @@ SFOContext::FlushToDisk()
         QJsonObject obj = QJsonObject::fromVariantMap(allDicts);
         QJsonDocument doc;
         doc.setObject(obj);
+        qDebug() << "Saving " << allDicts.size() << " words";
         _WriteCacheFile(doc, DictionaryCacheFileName);
     }
 }
@@ -455,12 +457,12 @@ SFOContext::_UpdateDictionaryIfNecessary()
 }
 
 void
-SFOContext::HandleResponse(const QJsonDocument& document, FJError /*error*/,
+SFOContext::HandleResponse(const QJsonDocument& document, FJError error,
                            const FJOperation* operation)
 {
-   // qDebug() << QThread::currentThreadId() << "HandleResponse: "
-    //         << operation->GetName() ;
-    //             << ", (" << error << ") Doc: [" << document << "]";
+    qDebug() << QThread::currentThreadId() << "HandleResponse: "
+             << operation->GetName()
+             << ", (" << error << ") Doc: [" << document << "]";
     if (operation && (operation->GetName() == "start")) {
         _HandleStartResponse(document);
     } else if (operation && (operation->GetName() == "partners")) {

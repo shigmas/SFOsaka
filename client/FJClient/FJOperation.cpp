@@ -33,7 +33,6 @@ FJOperation::FJOperation(const QString& name, const QString& checkFetch,
 
 FJOperation::~FJOperation()
 {
-    qDebug() << "[" << _name << "] FJOperation::~FJOperation()";
 }
 
 void
@@ -117,6 +116,7 @@ FJOperation::_OnAuthenticationRequired(QNetworkReply *,
 void
 _NetworkErrorPrintError(const QNetworkReply::NetworkError& error)
 {
+    return;
     switch(error) {
     case QNetworkReply::NoError:
         qDebug() << "No Error";
@@ -142,10 +142,13 @@ FJOperation::_OnReplyFinished(QNetworkAccessManagerSharedPtr accessManager,
         _RunRequest(accessManager, baseUrl, opType);
     } else {
         _StoreCSRF(accessManager, baseUrl);
+        // Read the rest of the buffer, if there's anything left
+        _buffer.append(_reply->readAll());
         QJsonDocument jsonDoc = _GetJsonFromContent(_buffer);
         if (jsonDoc.isNull() || jsonDoc.isEmpty()) {
             _NetworkErrorPrintError(_reply->error());
             qDebug() << "Invalid JSON for " << baseUrl << ": " << _buffer;
+            _status = FJCompletedStatus;
         } else if (opType == FJCheckOperationType) {
             if (_ProcessCheck(jsonDoc)) {
                 _RunRequest(accessManager, baseUrl, FJFetchOperationType);
@@ -161,7 +164,6 @@ FJOperation::_OnReplyFinished(QNetworkAccessManagerSharedPtr accessManager,
             _status = FJCompletedStatus;
         }
     }
-    qDebug() << "_OnReplyfinished completed";
 }
 
 void
@@ -173,8 +175,13 @@ FJOperation::_OnBytesReceived(qint64 bytesReceived, qint64 )
     }
     char buffer[bytesReceived+1];
     qint64 bytesRead = _reply->read(buffer, bytesReceived);
-    if (bytesRead != bytesReceived) {
+    if (bytesRead == -1) {
+        qDebug() << "-1 returned from QIODevice::read()";
+        return;
+    } else if (bytesRead != bytesReceived) {
+        // This was garbage (on android, at least), so throw it out.
         qDebug() << "Read " << bytesRead << ", expected " << bytesReceived;
+        //                 << "[" << buffer << "]";
     }
     _buffer.append(buffer);
 }
@@ -193,10 +200,10 @@ void
 FJOperation::_OnFinished(QNetworkAccessManagerSharedPtr accessManager,
                          const QUrl& baseUrl)
 {
-    qDebug() << "Operation: OnFinished";
     QObject::disconnect(_reply, 0, 0, 0);
     _StoreCSRF(accessManager, baseUrl);
-    _buffer.append(_reply->readAll());
+    QByteArray rest = _reply->readAll(); 
+    _buffer.append(rest);
     QJsonDocument jsonDoc = _GetJsonFromContent(_buffer);
     if (!jsonDoc.isNull() and !jsonDoc.isEmpty()) {
         if (_caller) {
@@ -252,7 +259,7 @@ FJOperation::_GetJsonFromContent(const QByteArray& content)
         cleanedContent.chop(1);
         desiredSize--;
     }
-    //qDebug() << "Trunc: <<" << _buffer.data() << ">>";
+    //qDebug() << "Trunc: <<" << cleanedContent << ">>";
     return QJsonDocument::fromJson(cleanedContent);
 }
 

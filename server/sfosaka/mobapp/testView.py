@@ -8,11 +8,12 @@ import json
 
 from django.test import TestCase
 
+from mobapp import models
+
 oneMonth = datetime.timedelta(days=30)
 monthFromNow = timezone.now() + oneMonth
 
 class StartViewTests(TestCase):
-    fixtures = ['mobdata.json']
 
     def testGetMetaData(self):
         url = '/mobapp/start/'
@@ -26,9 +27,7 @@ class PartnerViewTests(TestCase):
 
     FirstPartnerDate  =  '2016-06-01T01:23:47Z'
     MiddleDate        =  '2016-06-01T01:24:01Z'
-    #SecondPartnerDate = '2016-06-01T01:24:47Z'
-    SecondPartnerDate = '2016-06-01T01:26:08+00:00'
-    LateDate          = '2016-06-01T01:30:08+00:00'
+    LastDate          = '2016-07-14T16:22:57Z'
 
     def _GetMeta(self, asOfDate=None, expectUpdate=True):
         url = '/mobapp/partner_meta/'
@@ -54,13 +53,13 @@ class PartnerViewTests(TestCase):
         # request with asOfDate after the first one, before the second
         asOf = dateparse.parse_datetime(self.MiddleDate)
         serverDate = self._GetMeta(asOf)
-        refDate = dateparse.parse_datetime(self.SecondPartnerDate)
+        refDate = dateparse.parse_datetime(self.LastDate)
         self.assertEquals(serverDate, refDate)
 
         # request late date, so no update needed
-        asOf = dateparse.parse_datetime(self.LateDate)
+        asOf = dateparse.parse_datetime(self.LastDate)
         serverDate = self._GetMeta(asOf, False)
-        refDate = dateparse.parse_datetime(self.SecondPartnerDate)
+        refDate = dateparse.parse_datetime(self.LastDate)
         self.assertEquals(serverDate, refDate)
 
     def testGetData(self):
@@ -72,9 +71,15 @@ class PartnerViewTests(TestCase):
         self.assertEquals(contents['result'],True)
         partners = contents['partners_list']
 
-        self.assertEquals(len(partners), 2)
+        self.assertEquals(len(partners), 3)
         self.assertEquals(partners['1']['name'],'Kinokuniya')
         self.assertEquals(partners['2']['name'],'Yamasho')
+        self.assertEquals(partners['3']['name'],'Consulate General of Japan')
+
+        # Check the contact info for yamasho
+        contact = partners['2']['contact']
+        self.assertEquals(contact['street_number'],'1161 Post St',
+                          'Yamasho street address does not match')
 
 class TranslatorViewTests(TestCase):
     fixtures = ['mobdata.json', 'translator.json']
@@ -82,6 +87,10 @@ class TranslatorViewTests(TestCase):
     FirstWordDate  = '2016-06-07T23:13:52+00:00'
     MiddleDate     = '2016-06-07T23:15:45+00:00'
     LastDate       = '2016-06-07T23:24:51+00:00'
+
+    word = '勉強して'
+    wordPhonetic = 'benkyoushite'
+    transDict = {'discount, please':'discount, please'}
 
     def _GetMeta(self, asOfDate=None, expectUpdate=True):
         url = '/mobapp/dict_meta/'
@@ -138,16 +147,47 @@ class TranslatorViewTests(TestCase):
         self.assertEquals(len(jpWords),3)
         self.assertEquals(len(enWords),4)
 
-    def testSubmitData(self):
+    def _verifySubmitWord(self, word, phonetic = None):
+        try:
+            entry = models.DictionaryWord.objects.get(word=word)
+        except:
+            pass
+
+        self.assertEquals(entry.word, word, 'Word not found')
+        if phonetic:
+            self.assertEquals(entry.phonetic, phonetic,
+                              'Phonetic word does not match')
+        
+
+    def testSubmitDataList(self):
         url = '/mobapp/dict_submit/'
-        word = '勉強して'
-        trans = ['discount, please']
 
         contents = {}
-        contents['submit_word'] = word
-        contents['submit_trans'] = trans
+        contents['submit_word'] = self.word
+        contents['submit_trans'] = list(self.transDict.keys())
 
         response = self.client.post(url, json.dumps(contents),
                                     content_type='application/json')
         contents = json.loads(str(response.content, encoding='utf-8'))
         self.assertEquals(contents['result'], True)
+
+        self._verifySubmitWord(self.word)
+        for tran in self.transDict:
+            self._verifySubmitWord(tran)
+
+    def testSubmitDataDict(self):
+        url = '/mobapp/dict_submit/'
+
+        contents = {}
+        contents['submit_word'] = self.word
+        contents['submit_word_phonetic'] = self.wordPhonetic
+        contents['submit_trans'] = self.transDict
+
+        response = self.client.post(url, json.dumps(contents),
+                                    content_type='application/json')
+        contents = json.loads(str(response.content, encoding='utf-8'))
+        self.assertEquals(contents['result'], True)
+
+        self._verifySubmitWord(self.word, self.wordPhonetic)
+        for tran in self.transDict:
+            self._verifySubmitWord(tran, self.transDict[tran])

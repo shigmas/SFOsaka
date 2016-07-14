@@ -120,6 +120,16 @@ class PartnerView(BaseView):
 
         return results, True
 
+    def _getContactInfoDict(self, contact):
+        contactDict = {}
+        fields = contact._meta.concrete_fields
+        for field in fields:
+            attr = getattr(contact, field.name)
+            if attr is not None:
+                contactDict[field.name] = attr
+
+        return contactDict
+            
     def _getData(self, content):
 
         partners = Partner.objects.all()
@@ -141,8 +151,14 @@ class PartnerView(BaseView):
                         pDict[field.name] = dt.isoformat()
                     else:
                         pDict[field.name] = getattr(p, field.name)
+                elif field.name == 'contact':
+                    contact = getattr(p, field.name)
+                    if contact is not None:
+                        pDict[field.name] = self._getContactInfoDict(contact)
                 else:
-                    pDict[field.name] = getattr(p, field.name).name
+                    attr = getattr(p, field.name)
+                    if attr is not None:
+                        pDict[field.name] = attr.name
                     
             if itemId is not None:
                 partnersDict[itemId] = pDict
@@ -158,6 +174,7 @@ class TranslatorView(BaseView):
     kSubmitDataCommand = 'submit_words_data'
 
     kSubmitWordKey = 'submit_word'
+    kSubmitWordPhoneticKey = 'submit_word_phonetic'
     kSubmitTranslationsKey = 'submit_trans'
 
     kTranslationsListKey = 'words_list'
@@ -224,7 +241,6 @@ class TranslatorView(BaseView):
                         dt = getattr(w, field.name)
                         wDict[field.name] = dt.isoformat()
                     else:
-                        print('key: %s' %field.name)
                         wDict[field.name] = getattr(w, field.name)
                 elif field.name == "language":
                     wDict[field.name] = getattr(w, field.name).language_code
@@ -256,34 +272,47 @@ class TranslatorView(BaseView):
         return (clean, langCode)
 
     # finds or creates a dictionary entry, initializing it to inactive
-    def _FindOrCreateEntry(self, word, lang, status):
+    def _FindOrCreateEntry(self, word, lang, status, phonetic):
         try:
             entry = DictionaryWord.objects.get(word=word)
         except:
             # No entry, so create
             now = timezone.now()
             entry = DictionaryWord(word=word, language=lang, status=status,
-                                   creationDate = now, modificationDate = now)
+                                   creationDate = now, modificationDate = now,
+                                   phonetic = phonetic)
 
         return entry
         
     def _submitData(self, content):
         word = content.get(self.kSubmitWordKey, None)
         transList = content.get(self.kSubmitTranslationsKey, None)
-        
-        if word is None or transList is None or type(transList) != type([]):
+
+        if word is None or transList is None or transList is None:
             return "insufficient or incorrect parameters", False
 
         inactive = Status.objects.get(name='pending') 
-       # Check and create all the words if necessary.
+        wordPhonetic = content.get(self.kSubmitWordPhoneticKey)
+        transDict = {}
+        if type(transList) == type([]):
+            # old style - only the translation, so set the phonetic to be None
+            for translation in transList:
+                transDict[translation] = None
+        elif type(transList) == type({}):
+            transDict = transList
+
+        # Check and create all the words if necessary.
+        phonetic = content.get(self.kSubmitWordPhoneticKey, None)
         clean, lang = self._CleanAndGetLang(word)
-        mainEntry = self._FindOrCreateEntry(clean, lang, inactive)
+        mainEntry = self._FindOrCreateEntry(clean, lang, inactive, wordPhonetic)
         mainEntry.save()
 
         entryTrans = []
-        for translation in transList:
+        for translation in transDict.keys():
             cleaned, lang = self._CleanAndGetLang(translation)
-            transEntry = self._FindOrCreateEntry(cleaned, lang, inactive)
+            phonetic = transDict[translation]
+            transEntry = self._FindOrCreateEntry(cleaned, lang, 
+                                                 inactive, phonetic)
             if transEntry:
                 entryTrans.append(transEntry)
                 transEntry.save()

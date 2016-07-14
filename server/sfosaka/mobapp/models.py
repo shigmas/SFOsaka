@@ -26,6 +26,16 @@ class Language(models.Model):
         return self.name
 
 #####################################
+class ContactInfo(models.Model):
+    street_number = models.CharField(max_length=1024)
+    city = models.CharField(max_length=512)
+    state = models.CharField(max_length=2)
+    postal = models.CharField(max_length=128)
+    country = models.CharField(max_length=512)
+    phone = models.CharField(max_length=64)
+
+    def __str__(self):
+        return '%s, %s' % (self.street_number, self.city)
 
 class Partner(models.Model):
     name = models.CharField(max_length=512)
@@ -38,7 +48,9 @@ class Partner(models.Model):
     shortDescription = models.CharField(max_length=1024)
     shortDescription_jp = models.CharField(max_length=1024)
     modificationDate = models.DateTimeField()
-    imageUrl = models.CharField(max_length=512, blank=True)
+    imageUrl = models.CharField(max_length=512, null=True)
+    url = models.CharField(max_length=512, null=True)
+    contact = models.ForeignKey(ContactInfo, null=True)
 
     class Meta:
         get_latest_by = 'modificationDate'
@@ -46,9 +58,9 @@ class Partner(models.Model):
     def __str__(self):
         return '%s: %s' % (self.name, self.shortDescription)
 
-
 class DictionaryWord(models.Model):
     word = models.CharField(max_length=128)
+    phonetic = models.CharField(max_length=128, null=True)
     language = models.ForeignKey(Language)
     status = models.ForeignKey(Status)
     translations = models.ManyToManyField("self", blank=True)

@@ -7,6 +7,7 @@
 #include "SFOTranslateController.h"
 #include "SFOItemModel.h"
 #include "SFOSubmitWordModel.h"
+#include "SFOEventFilter.h"
 
 const QString initialUrl = "http://www.sf-osaka.org/";
 //const QString initialUrl = "https://www.futomen.net/";
@@ -25,9 +26,18 @@ int main(int argc, char *argv[])
                  << "]";
     }
     app.installTranslator(&qtTranslator);
+
+    SFOEventFilter filter;
+    app.installEventFilter(&filter);
+
     QQmlApplicationEngine engine;
 
     SFOTranslateController translateController(engine.rootContext());
+
+    // Hook up the controller and the event filter
+    QObject::connect(&filter,&SFOEventFilter::TextChanged,
+                     &translateController,
+                     &SFOTranslateController::OnFilterAccepted);
 
     SFOItemModel model(engine.rootContext());
     engine.rootContext()->setContextProperty(SFOItemModel::ModelIdentifier,

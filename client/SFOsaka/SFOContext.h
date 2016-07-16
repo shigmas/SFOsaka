@@ -5,6 +5,7 @@
 
 #include "SFOPartner.h"
 
+#include <FJOperation.h>
 #include <FJTypes.h>
 
 #include <QDate>
@@ -17,6 +18,7 @@ FJ_DECLARE_PTRS(FJClient)
 FJ_DECLARE_PTRS(FJOperation)
 
 typedef QMap<QString, QString> QStringMap;
+typedef QList<FJOperationSharedPtr> FJOperationList;
 
 class SFOContext : public FJCaller
 {
@@ -31,11 +33,11 @@ public:
 
     void Refresh(bool immediately=false);
 
-    QStringMap GetEnToJpDict() const;
-    QStringMap GetJpToEnDict() const;
-
     void AddWordTranslation(const QString& word,
                             const QStringList& translations);
+
+    QStringMap GetEnToJpDict() const;
+    QStringMap GetJpToEnDict() const;
 
     void LoadFromDisk();
     void FlushToDisk();
@@ -72,9 +74,6 @@ protected:
     QJsonDocument _CreateJsonContent(const QDateTime asOfDate) const;
     QJsonDocument _CreateJsonContent(const QVariantMap& dict) const;
 
-    void _UpdatePartnersIfNecessary();
-    void _UpdateDictionaryIfNecessary();
-
 protected:
     static const QString DateTimeStampFileName;
     static const QString PartnerCacheFileName;
@@ -95,6 +94,8 @@ private:
     QStringMap _enToJpDict;
     QStringMap _jpToEnDict;
     bool _dictDirty;
+
+    FJOperationList _pendingOperations;
 };
 
 #endif // SFOCONTEXT_H

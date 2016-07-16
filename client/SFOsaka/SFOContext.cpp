@@ -66,13 +66,51 @@ SFOContext::Refresh(bool immediately)
     */
 
     // Kick off start request
-    FJOperationSharedPtr operation(new FJOperation("start","","/start/",
-                                                   this));
-    operation->SetIsPost(false);
+    FJOperationSharedPtr start(new FJOperation("start","","/start/", this));
+    start->SetIsPost(false);
     _client->ClearCookies();
-    _client->AddOperation(operation);
-    if (immediately)
+    _client->AddOperation(start);
+
+    // Create the update operations to be queued after start finishes
+    FJOperationSharedPtr partner(new FJOperation("partners","/partner_meta/",
+                                                 "/partner_data/", this));
+    QJsonDocument content = _CreateJsonContent(_lastPartnerDate);
+    if (!content.isNull()) {
+        partner->SetCheckFetchContent(content);
+    }
+    _pendingOperations.append(partner);
+    FJOperationSharedPtr dict(new FJOperation("dict","/dict_meta/","/dict_data/",
+                                              this));
+    content = _CreateJsonContent(_lastDictDate);
+    if (!content.isNull()) {
+        dict->SetCheckFetchContent(content);
+    }
+    _pendingOperations.append(dict);
+
+    if (immediately) {
         _client->FlushQueue();
+    }
+}
+
+void
+SFOContext::AddWordTranslation(const QString& word,
+                               const QStringList& translations)
+{
+    FJOperationSharedPtr start(new FJOperation("start","","/start/", this));
+    start->SetIsPost(false);
+    _client->ClearCookies();
+    _client->AddOperation(start);
+
+    FJOperationSharedPtr submit(new FJOperation("submit","","/dict_submit/",
+                                                this));
+    QVariantMap fetchData;
+    fetchData["submit_word"] = word;
+    fetchData["submit_trans"] = translations;
+    submit->SetFetchDataContent(_CreateJsonContent(fetchData));
+    _pendingOperations.append(submit);
+
+    // When we submit data, we should do it right away.
+    _client->FlushQueue();
 }
 
 SFOPartnerList
@@ -91,19 +129,6 @@ QStringMap
 SFOContext::GetJpToEnDict() const
 {
     return _jpToEnDict;
-}
-
-void
-SFOContext::AddWordTranslation(const QString& word,
-                               const QStringList& translations)
-{
-    FJOperationSharedPtr operation(new FJOperation("submit","","/dict_submit/",
-                                                   this));
-    QVariantMap fetchData;
-    fetchData["submit_word"] = word;
-    fetchData["submit_trans"] = translations;
-    operation->SetFetchDataContent(_CreateJsonContent(fetchData));
-    _client->AddOperation(operation);
 }
 
 void
@@ -310,9 +335,13 @@ SFOContext::_HandleStartResponse(const QJsonDocument& data)
     if (results["result"].canConvert<bool>()) {
         bool success = results["result"].toBool();
         if (success) {
-            _UpdatePartnersIfNecessary();
-            _UpdateDictionaryIfNecessary();
+            FJOperationSharedPtr op;
+            foreach(op, _pendingOperations) {
+                _client->AddOperation(op);
+            }
+            _pendingOperations.clear();
         }
+        _client->FlushQueue();
     } else {
         qDebug() << "result is not a bool.Start request failed";
     }
@@ -430,30 +459,6 @@ SFOContext::_CreateJsonContent(const QVariantMap& dict) const
     QJsonObject obj = QJsonObject::fromVariantMap(dict);
     doc.setObject(obj);
     return doc;
-}
-
-void
-SFOContext::_UpdatePartnersIfNecessary()
-{
-    FJOperationSharedPtr operation(new FJOperation("partners","/partner_meta/",
-                                                   "/partner_data/", this));
-    QJsonDocument content = _CreateJsonContent(_lastPartnerDate);
-    if (!content.isNull()) {
-        operation->SetCheckFetchContent(content);
-    }
-    _client->AddOperation(operation);    
-}
-
-void
-SFOContext::_UpdateDictionaryIfNecessary()
-{
-    FJOperationSharedPtr operation(new FJOperation("dict","/dict_meta/",
-                                                   "/dict_data/", this));
-    QJsonDocument content = _CreateJsonContent(_lastDictDate);
-    if (!content.isNull()) {
-        operation->SetCheckFetchContent(content);
-    }
-    _client->AddOperation(operation);
 }
 
 void

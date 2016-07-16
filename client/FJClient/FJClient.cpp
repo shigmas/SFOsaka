@@ -7,7 +7,7 @@
 #include <QTimer>
 
 // Ping once an hour
-const int FJClient::DefaultPingInterval = 360000;
+const int FJClient::DefaultPingInterval = 3600000;
 // But, check every half second when we're flushing the queue. 
 const int FJClient::DefaultFlushInterval = 500;
 

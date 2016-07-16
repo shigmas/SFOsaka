@@ -12,7 +12,7 @@ Item {
 
             TextField {
                 id: textInput
-                text: qsTr("Text Edit")
+                placeholderText: qsTr("Text Edit")
                 //font.pixelSize: 12
                 Keys.onPressed: {
                     submitModel.word = text
@@ -23,9 +23,6 @@ Item {
                 }
             }
 
-            ToolButton {
-                id: toolButton1
-            }
             Button {
                 id: submitButton
                 text: qsTr("Submit")
@@ -49,13 +46,14 @@ Item {
             delegate: Row {
                 TextField {
                     id: rowText
+                    placeholderText: qsTr("translation")
                     text: translation
                     width: 120
                     height: 40
                 }
                 Button {
                     visible: addVisible
-                    text: qsTr("Add")
+                    text: qsTr("+")
                     id: toolButton1
                     onClicked: {
                         submitModel.AddTranslation(rowText.text)

@@ -34,7 +34,25 @@ SFOTranslateController::~SFOTranslateController()
 void
 SFOTranslateController::OnInputAccepted(const QString& text)
 {
-    qDebug() << "[" << text << "]";
+    _ProcessInput(text);
+}
+
+void
+SFOTranslateController::OnFilterAccepted(const QString& text)
+{
+    _ProcessInput(text);
+}
+
+void
+SFOTranslateController::_HandleDictionariesUpdate()
+{
+    qDebug() << "Dictionary updated from server";
+}
+
+void
+SFOTranslateController::_ProcessInput(const QString& text)
+{
+    qDebug() << "Input: " << text;
     // Gets the first character to see if we're in Japanese or English.
     InputLanguage lang = _GetInputLanguage(text);
     if (lang == InvalidInput)
@@ -54,12 +72,6 @@ SFOTranslateController::OnInputAccepted(const QString& text)
     _translatedText = QStringListSharedPtr(list);
     _context->setContextProperty(ModelIdentifier,
                                  QVariant::fromValue(*list));
-}
-
-void
-SFOTranslateController::_HandleDictionariesUpdate()
-{
-    qDebug() << "Dictionary updtaed from server";
 }
 
 SFOTranslateController::InputLanguage

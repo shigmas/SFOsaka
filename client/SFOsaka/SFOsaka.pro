@@ -21,15 +21,18 @@ SOURCES += main.cpp \
     SFOItemModel.cpp \
     SFOContext.cpp \
     SFOPartner.cpp \
-    SFOSubmitWordModel.cpp
+    SFOSubmitWordModel.cpp \
+    SFOEventFilter.cpp
 
 lupdate_only{
-SOURCES = MainPage.qml \
-    MapPage.qml        \
-    SisterPage.qml     \
-    TranslatorPage.qml \
-    TranslatorAdd.qml  \
-    sfosaka.qml        \
+SOURCES = MainPage.qml   \
+    MapPage.qml          \
+    PartnerDetail.qml    \
+    SisterPage.qml       \
+    TranslatorHeader.qml \
+    TranslatorPage.qml   \
+    TranslatorAdd.qml    \
+    sfosaka.qml          \
 }
 
 RESOURCES += qml.qrc \
@@ -46,7 +49,8 @@ HEADERS += \
     SFOItemModel.h \
     SFOContext.h \
     SFOPartner.h \
-    SFOSubmitWordModel.h
+    SFOSubmitWordModel.h \
+    SFOEventFilter.h
 
 DISTFILES += \
     ios/Icons/AppIcon60x60@3x.png \
@@ -67,7 +71,7 @@ DISTFILES += \
     android/gradle/wrapper/gradle-wrapper.properties \
     android/gradlew.bat
 
-TRANSLATIONS = translations/oscity_ja_JP.ts
+TRANSLATIONS = translations/sfosaka_ja_JP.ts
 
 iphonesimulator {
 LIBS += -L$$PWD/../build-FJClient-iphonesimulator_clang_Qt_5_6_0_for_iOS-Debug/ -lFJClient

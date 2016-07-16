@@ -12,8 +12,6 @@ SFOSubmitWordModel::SFOSubmitWordModel(QQmlContext *context, QObject *parent) :
 {
     _roleNames[1] = "translation";
     _roleNames[2] = "addVisible";
-    _translations.append("translation");
-
 }
 
 SFOSubmitWordModel::~SFOSubmitWordModel()

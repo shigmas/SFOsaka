@@ -7,9 +7,13 @@ Row {
 
     signal addActivated()
 
-    TextField {
+    TextEdit {
         id: textInput
+        objectName: "translatorInput"
+        inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
         focus: true
+        width: 90
+        height: 25
         Keys.onPressed: {
             translateController.OnInputAccepted(text)
         }

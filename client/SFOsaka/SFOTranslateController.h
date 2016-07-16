@@ -36,11 +36,14 @@ signals:
 
 public slots:
     void OnInputAccepted(const QString& text);
+    void OnFilterAccepted(const QString& text);
 
 protected slots:
     void _HandleDictionariesUpdate();
 
 protected:
+    void _ProcessInput(const QString& text);
+
     InputLanguage _GetInputLanguage(const QString& input) const;
 
     QStringList _GetMatch(const QString& str, const QStringMap& dict) const;

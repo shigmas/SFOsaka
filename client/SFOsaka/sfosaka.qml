@@ -7,6 +7,7 @@ ApplicationWindow {
     width: 360
     height: 620
     id: mainWindow
+    color: "steelblue"
 
     StackView {
         id: stackView

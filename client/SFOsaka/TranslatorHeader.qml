@@ -7,15 +7,19 @@ Row {
 
     signal addActivated()
 
-    TextEdit {
-        id: textInput
-        objectName: "translatorInput"
-        inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
-        focus: true
+    Rectangle {
+        border.width: 1
         width: 90
         height: 25
-        Keys.onPressed: {
-            translateController.OnInputAccepted(text)
+
+        TextEdit {
+            id: textInput
+            objectName: "translatorInput"
+            inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
+            focus: true
+            Keys.onPressed: {
+                translateController.OnInputAccepted(text)
+            }
         }
     }
     Button {

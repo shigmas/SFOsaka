@@ -1,8 +1,6 @@
 #ifndef SFOSUBMITWORDMODEL_H
 #define SFOSUBMITWORDMODEL_H
 
-#include "SFOValidatorReceiver.h"
-
 #include <QAbstractListModel>
 #include <QMap>
 #include <QObject>

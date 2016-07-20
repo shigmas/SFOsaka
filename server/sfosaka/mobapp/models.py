@@ -72,5 +72,15 @@ class DictionaryWord(models.Model):
     class Meta:
         get_latest_by = 'modificationDate'
 
+    def translation_as_word(self):
+        words = ''
+        for tran in self.translations.all():
+            if len(words) == 0:
+                words = tran.word
+            else:
+                words += words + ", " + tran.word
+        return words
+    translation_as_word.short_description = 'Translations (approve at least one)'
+
     def __str__(self):
         return '%s (%s)' % (self.word, self.language)

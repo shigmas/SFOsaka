@@ -78,7 +78,7 @@ class DictionaryWord(models.Model):
             if len(words) == 0:
                 words = tran.word
             else:
-                words += words + ", " + tran.word
+                words += ", " + tran.word
         return words
     translation_as_word.short_description = 'Translations (approve at least one)'
 

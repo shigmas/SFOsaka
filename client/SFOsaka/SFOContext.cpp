@@ -93,8 +93,8 @@ SFOContext::Refresh(bool immediately)
 }
 
 void
-SFOContext::AddWordTranslation(const QString& word,
-                               const QStringList& translations)
+SFOContext::AddWordTranslation(const QString& word, const QString& phonetic,
+                               const QVariantMap& translations)
 {
     FJOperationSharedPtr start(new FJOperation("start","","/start/", this));
     start->SetIsPost(false);
@@ -105,6 +105,7 @@ SFOContext::AddWordTranslation(const QString& word,
                                                 this));
     QVariantMap fetchData;
     fetchData["submit_word"] = word;
+    fetchData["submit_word_phonetic"] = phonetic;
     fetchData["submit_trans"] = translations;
     submit->SetFetchDataContent(_CreateJsonContent(fetchData));
     _pendingOperations.append(submit);

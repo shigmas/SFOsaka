@@ -102,7 +102,7 @@ SFOTranslateController::_GetMatch(const QString& str,
     for (QStringMap::const_iterator mit = dict.constBegin() ;
          mit != dict.constEnd() ; ++mit) {
         qDebug() << str << " to " << mit.key();
-        if (mit.key().contains(str)) {
+        if (mit.key().toLower().contains(str)) {
             matches.append(mit.key() + ": " + mit.value());
         }
     }

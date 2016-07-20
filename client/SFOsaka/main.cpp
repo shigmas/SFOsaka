@@ -1,13 +1,15 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QtQml>
 #include <QTranslator>
 #include <QDebug>
 
-#include "SFOTranslateController.h"
+#include "SFOEventFilter.h"
 #include "SFOItemModel.h"
 #include "SFOSubmitWordModel.h"
-#include "SFOEventFilter.h"
+#include "SFOTranslateController.h"
+#include "SFOValidator.h"
 
 const QString initialUrl = "http://www.sf-osaka.org/";
 //const QString initialUrl = "https://www.futomen.net/";
@@ -32,6 +34,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
+    qmlRegisterType<SFOValidator>("SFOsaka", 1, 0, "SFOValidator");
     SFOTranslateController translateController(engine.rootContext());
 
     // Hook up the controller and the event filter

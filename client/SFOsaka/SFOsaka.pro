@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     SFOContext.cpp \
     SFOPartner.cpp \
     SFOSubmitWordModel.cpp \
-    SFOEventFilter.cpp
+    SFOEventFilter.cpp \
+    SFOValidator.cpp
 
 lupdate_only{
 SOURCES = MainPage.qml   \
@@ -50,7 +51,8 @@ HEADERS += \
     SFOContext.h \
     SFOPartner.h \
     SFOSubmitWordModel.h \
-    SFOEventFilter.h
+    SFOEventFilter.h \
+    SFOValidator.h
 
 DISTFILES += \
     ios/Icons/AppIcon60x60@3x.png \

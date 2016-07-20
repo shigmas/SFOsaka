@@ -33,8 +33,8 @@ public:
 
     void Refresh(bool immediately=false);
 
-    void AddWordTranslation(const QString& word,
-                            const QStringList& translations);
+    void AddWordTranslation(const QString& word, const QString& phonetic,
+                            const QVariantMap& translations);
 
     QStringMap GetEnToJpDict() const;
     QStringMap GetJpToEnDict() const;

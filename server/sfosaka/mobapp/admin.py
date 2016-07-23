@@ -8,6 +8,7 @@ from mobapp import models
 admin.site.register(models.ContactInfo)
 admin.site.register(models.Category)
 admin.site.register(models.Partner)
+admin.site.register(models.Performer)
 admin.site.register(models.Status)
 admin.site.register(models.Language)
 

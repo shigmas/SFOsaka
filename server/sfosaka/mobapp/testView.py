@@ -81,6 +81,65 @@ class PartnerViewTests(TestCase):
         self.assertEquals(contact['street_number'],'1161 Post St',
                           'Yamasho street address does not match')
 
+class PerformerViewTests(TestCase):
+    # The logic for this is identical to Partners, so we won't duplicate
+    # everything. Just making sure it can handle the key that's really different
+    # (status)
+    fixtures = ['mobdata.json', 'performers.json']
+    PerformerDate = '2016-07-23T21:23:05.370000+00:00'
+    PerformerUrl = 'https://s3-us-west-1.amazonaws.com/sfosaka/images/IMG_4892.jpg'
+    StartTime = '2016-08-27T14:00:00Z'
+    EndTime = '2016-08-27T14:20:00Z'
+    def _GetMeta(self, asOfDate=None, expectUpdate=True):
+        url = '/mobapp/performer_meta/'
+
+        content = {}
+        if asOfDate is not None:
+            content['as_of_date'] = asOfDate.isoformat()
+
+        response = self.client.post(url, json.dumps(content),
+                                    content_type='application/json')
+        contents = json.loads(str(response.content, encoding='utf-8'))
+        self.assertEquals(contents['result'],True)
+        self.assertEquals(contents['update_needed'],expectUpdate)
+
+        return dateparse.parse_datetime(contents['update_from_date'])
+
+    def testGetMetaData(self):
+        # request without asOfDate
+        serverDate = self._GetMeta()
+        refDate = dateparse.parse_datetime(self.PerformerDate)
+        self.assertEquals(serverDate, refDate)
+
+    def testGetData(self):
+        url = '/mobapp/performer_data/'
+        # request without asOfDate
+        response = self.client.post(url, json.dumps({}),
+                                    content_type='application/json')
+        contents = json.loads(str(response.content, encoding='utf-8'))
+        self.assertEquals(contents['result'],True)
+        performers = contents['performers_list']
+
+        self.assertEquals(len(performers), 1)
+        self.assertEquals(performers['1']['name'],'Ken Takeda')
+
+        # Check the contact info for yamasho
+        contact = performers['1']['status']
+        self.assertEquals(contact,'active', 'Unexpected status')
+
+        imageUrl = performers['1']['imageUrl']
+        self.assertEquals(imageUrl,self.PerformerUrl, 'Unexpected image Url')
+
+        startTime = dateparse.parse_datetime(self.StartTime)
+        endTime = dateparse.parse_datetime(self.EndTime)
+
+        self.assertEquals(dateparse.parse_datetime(performers['1']['startTime']),
+                          startTime,
+                          'Unexpected start time');
+        self.assertEquals(dateparse.parse_datetime(performers['1']['endTime']),
+                          endTime,
+                          'Unexpected end time');
+
 class TranslatorViewTests(TestCase):
     fixtures = ['mobdata.json', 'translator.json']
 

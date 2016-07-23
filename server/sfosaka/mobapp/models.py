@@ -37,11 +37,9 @@ class ContactInfo(models.Model):
     def __str__(self):
         return '%s, %s' % (self.street_number, self.city)
 
-class Partner(models.Model):
+class Organization(models.Model):
     name = models.CharField(max_length=512)
     name_jp = models.CharField(max_length=512)
-    latitude = models.FloatField()
-    longitude = models.FloatField()
     category = models.ForeignKey(Category)
     description = models.CharField(max_length=4096)
     description_jp = models.CharField(max_length=4096)
@@ -53,10 +51,20 @@ class Partner(models.Model):
     contact = models.ForeignKey(ContactInfo, null=True)
 
     class Meta:
+        abstract = True
         get_latest_by = 'modificationDate'
 
     def __str__(self):
         return '%s: %s' % (self.name, self.shortDescription)
+
+class Partner(Organization):
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+class Performer(Organization):
+    status = models.ForeignKey(Status)
+    startTime = models.DateTimeField()
+    endTime = models.DateTimeField()
 
 class DictionaryWord(models.Model):
     word = models.CharField(max_length=128)

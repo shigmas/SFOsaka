@@ -73,18 +73,27 @@ class StartView(BaseView):
     def _handleCommand(self):
         return JsonResponse({self.kResultKey:True}, safe=True)
 
-class PartnerView(BaseView):
-        # commands
-    kGetMetaCommand = 'fetch_partner_meta'
-    kGetDataCommand = 'fetch_partner_data'
+class OrganizationView(BaseView):
 
-    kPartnersListKey = 'partners_list'
+    # Must be overridden
+    def _GetOrganizationSubclass(self):
+        return None
+    def _GetMetaDataCommand(self):
+        return None
+    def _GetDataCommand(self):
+        return None
+    def _GetUpdateFromDateKey(self):
+        return None
+    def _GetNeedsUpdateKey(self):
+        return None
+    def _GetListKey(self):
+        return None
 
     def _handleCommand(self):
         content, error = self._getContent(self.request)
 
-        commandDict = { self.kGetMetaCommand : self._getMetaData,
-                        self.kGetDataCommand : self._getData,
+        commandDict = { self._GetMetaDataCommand() : self._getMetaData,
+                        self._GetDataCommand() : self._getData,
                     }
 
         action = commandDict.get(self.command, None)
@@ -105,18 +114,19 @@ class PartnerView(BaseView):
 
     def _getMetaData(self, content):
         # It could be None.
+        subclass = self._GetOrganizationSubclass()
         asOfDate = content.get(self.kAsOfDateKey, None)
         needsUpdate = True
         if asOfDate is None:
-            partner = Partner.objects.earliest()
+            organization = subclass.objects.earliest()
         else:
-            partner = Partner.objects.latest()
+            organization = subclass.objects.latest()
             dt = dateparse.parse_datetime(asOfDate)
-            if dt >= partner.modificationDate:
+            if dt >= organization.modificationDate:
                 needsUpdate = False
         results = {}
-        results[self.kUpdateFromDateKey] = partner.modificationDate.isoformat()
-        results[self.kNeedsUpdateKey] = needsUpdate
+        results[self._GetUpdateFromDateKey()] = organization.modificationDate.isoformat()
+        results[self._GetNeedsUpdateKey()] = needsUpdate
 
         return results, True
 
@@ -132,40 +142,90 @@ class PartnerView(BaseView):
             
     def _getData(self, content):
 
-        partners = Partner.objects.all()
-        partnersDict = {}
-        for p in partners:
-            pDict = {}
-            fields = p._meta.concrete_fields
+        organizations = self._GetOrganizationSubclass().objects.all()
+        orgsDict = {}
+        for o in organizations:
+            oDict = {}
+            fields = o._meta.concrete_fields
             itemId = None
             for field in fields:
                 # Shouldn't hardcode these fields, but maybe we don't
                 # need them anywhere else? 
                 if field.name == 'id':
-                    itemId = int(getattr(p, field.name))
+                    itemId = int(getattr(o, field.name))
                 # Test if a relationship. If so, add the name, since that's
                 # the category
                 if field.rel is None:
                     if type(field) is django.db.models.fields.DateTimeField:
-                        dt = getattr(p, field.name)
-                        pDict[field.name] = dt.isoformat()
+                        dt = getattr(o, field.name)
+                        oDict[field.name] = dt.isoformat()
                     else:
-                        pDict[field.name] = getattr(p, field.name)
+                        oDict[field.name] = getattr(o, field.name)
                 elif field.name == 'contact':
-                    contact = getattr(p, field.name)
+                    contact = getattr(o, field.name)
                     if contact is not None:
-                        pDict[field.name] = self._getContactInfoDict(contact)
+                        oDict[field.name] = self._getContactInfoDict(contact)
                 else:
-                    attr = getattr(p, field.name)
+                    attr = getattr(o, field.name)
                     if attr is not None:
-                        pDict[field.name] = attr.name
+                        oDict[field.name] = attr.name
                     
             if itemId is not None:
-                partnersDict[itemId] = pDict
+                orgsDict[itemId] = oDict
 
-        content[self.kPartnersListKey] = partnersDict
+        content[self._GetListKey()] = orgsDict
 
         return content, True
+
+class PartnerView(OrganizationView):
+        # commands
+    kGetMetaCommand = 'fetch_partner_meta'
+    kGetDataCommand = 'fetch_partner_data'
+
+    kPartnersListKey = 'partners_list'
+
+    def _GetOrganizationSubclass(self):
+        return Partner
+
+    def _GetMetaDataCommand(self):
+        return self.kGetMetaCommand
+
+    def _GetDataCommand(self):
+        return self.kGetDataCommand
+
+    def _GetUpdateFromDateKey(self):
+        return self.kUpdateFromDateKey
+
+    def _GetNeedsUpdateKey(self):
+        return self.kNeedsUpdateKey
+
+    def _GetListKey(self):
+        return self.kPartnersListKey
+
+class PerformerView(OrganizationView):
+        # commands
+    kGetMetaCommand = 'fetch_performer_meta'
+    kGetDataCommand = 'fetch_performer_data'
+
+    kPerfomersListKey = 'performers_list'
+
+    def _GetOrganizationSubclass(self):
+        return Performer
+
+    def _GetMetaDataCommand(self):
+        return self.kGetMetaCommand
+
+    def _GetDataCommand(self):
+        return self.kGetDataCommand
+
+    def _GetUpdateFromDateKey(self):
+        return self.kUpdateFromDateKey
+
+    def _GetNeedsUpdateKey(self):
+        return self.kNeedsUpdateKey
+
+    def _GetListKey(self):
+        return self.kPerfomersListKey
 
 class TranslatorView(BaseView):
         # commands

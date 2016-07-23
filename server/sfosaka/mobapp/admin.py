@@ -13,7 +13,7 @@ admin.site.register(models.Language)
 
 #@admin.register(models.DictionaryWord)
 class DictionaryWordAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'word','language','status', 'translation_as_word')
+    list_display = ('__str__', 'word','phonetic','language','status', 'translation_as_word')
     list_filter_fields = ('status')
     actions = ('approve_words','reject_words')
 

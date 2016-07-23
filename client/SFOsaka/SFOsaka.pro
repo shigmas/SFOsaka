@@ -36,7 +36,6 @@ SOURCES = FeatureRect.qml  \
     MapPage.qml            \
     PartnerDetail.qml      \
     SisterPage.qml         \
-    Splash.qml             \
     TranslatorHeader.qml   \
     TranslatorPage.qml     \
     TranslatorAdd.qml      \

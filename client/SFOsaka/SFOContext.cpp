@@ -22,8 +22,8 @@ const QString SFOContext::DictionaryCacheFileName = "dictionary.json";
 const QString SFOContext::LastPartnerDateKey = "last_partner_date";
 const QString SFOContext::LastDictDateKey    = "last_dict_date";
 
-const QStringPair SFOContext::ServerInfo = qMakePair(QString("localhost:8000"),QString("http"));
-//const QStringPair SFOContext::ServerInfo = qMakePair(QString("malttest.futomen.net:8143"),QString("https"));
+//const QStringPair SFOContext::ServerInfo = qMakePair(QString("localhost:8000"),QString("http"));
+const QStringPair SFOContext::ServerInfo = qMakePair(QString("malttest.futomen.net:8143"),QString("https"));
 
 SFOContext::SFOContext(QObject *parent) : 
     FJCaller(parent), _partnersDirty(false), _dictDirty(false)

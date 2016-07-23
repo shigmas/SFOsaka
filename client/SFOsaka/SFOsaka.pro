@@ -12,6 +12,8 @@ ios {
 
     ios_icon.files = $$files($$PWD/ios/Icons/AppIcon*.png)
     QMAKE_BUNDLE_DATA += ios_icon
+    launch_images.files = $$files($PWD/ios/LaunchScreen.xib) $$files($$PWD/sister_banner.png)
+    QMAKE_BUNDLE_DATA += launch_images
 }
 
 CONFIG += c++11
@@ -23,17 +25,22 @@ SOURCES += main.cpp \
     SFOPartner.cpp \
     SFOSubmitWordModel.cpp \
     SFOEventFilter.cpp \
-    SFOValidator.cpp
+    SFOValidator.cpp \
+    SFOTranslateModel.cpp \
+    SFOTypes.cpp
 
 lupdate_only{
-SOURCES = MainPage.qml   \
-    MapPage.qml          \
-    PartnerDetail.qml    \
-    SisterPage.qml       \
-    TranslatorHeader.qml \
-    TranslatorPage.qml   \
-    TranslatorAdd.qml    \
-    sfosaka.qml          \
+SOURCES = FeatureRect.qml  \
+    FestivalPage.qml       \
+    MainPage.qml           \
+    MapPage.qml            \
+    PartnerDetail.qml      \
+    SisterPage.qml         \
+    Splash.qml             \
+    TranslatorHeader.qml   \
+    TranslatorPage.qml     \
+    TranslatorAdd.qml      \
+    sfosaka.qml            \
 }
 
 RESOURCES += qml.qrc \
@@ -52,7 +59,9 @@ HEADERS += \
     SFOPartner.h \
     SFOSubmitWordModel.h \
     SFOEventFilter.h \
-    SFOValidator.h
+    SFOValidator.h \
+    SFOTranslateModel.h \
+    SFOTypes.h
 
 DISTFILES += \
     ios/Icons/AppIcon60x60@3x.png \
@@ -65,13 +74,14 @@ DISTFILES += \
     ios/Icons/AppIcon72x72@1x.png \
     ios/Icons/AppIcon83.5x83.5@2x.png \
     ios/Icons/AppIcon120x120@1x.png \
+    ios/LaunchScreen.xib \
     android/AndroidManifest.xml \
     android/gradle/wrapper/gradle-wrapper.jar \
     android/gradlew \
     android/res/values/libs.xml \
     android/build.gradle \
     android/gradle/wrapper/gradle-wrapper.properties \
-    android/gradlew.bat
+    android/gradlew.bat \
 
 TRANSLATIONS = translations/sfosaka_ja_JP.ts
 
@@ -80,11 +90,13 @@ LIBS += -L$$PWD/../build-FJClient-iphonesimulator_clang_Qt_5_6_0_for_iOS-Debug/ 
 }
 iphoneos{
 LIBS += -L$$PWD/../build-FJClient-iphoneos_clang_Qt_5_6_0_for_iOS-Debug/ -lFJClient
-#LIBS += -L$$PWD/../build-FJClient-iphoneos_clang_Qt_5_6_0_for_iOS-Release/ -lFJClient
+LIBS += -L$$PWD/../build-FJClient-iphoneos_clang_Qt_5_6_0_for_iOS-Release/ -lFJClient
 }
 android{
-Debug:LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_6_0-Debug/ -lFJClient
-Release:LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_6_0-Release/ -lFJClient
+#LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_6_0-Debug/ -lFJClient
+LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_6_0-Release/ -lFJClient
+#Debug:LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_6_0-Debug/ -lFJClient
+#Release:LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_6_0-Release/ -lFJClient
 }
 osx{
 LIBS += -L$$PWD/../build-FJClient-Desktop_Qt_5_6_0_clang_64bit-Debug/ -lFJClient
@@ -99,7 +111,7 @@ PRE_TARGETDEPS += $$PWD/../build-FJClient-iphonesimulator_clang_Qt_5_6_0_for_iOS
 }
 iphoneos{
 Debug:PRE_TARGETDEPS += $$PWD/../build-FJClient-iphoneos_clang_Qt_5_6_0_for_iOS-Debug/libFJClient.a
-Release:PRE_TARGETDEPS += $$PWD/../build-FJClient-iphoneos_clang_Qt_5_6_0_for_iOS-Release/libFJClienta.
+Release:PRE_TARGETDEPS += $$PWD/../build-FJClient-iphoneos_clang_Qt_5_6_0_for_iOS-Release/libFJClient.a
 }
 android{
 Debug:PRE_TARGETDEPS += $$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_6_0-Debug/libFJClient.a

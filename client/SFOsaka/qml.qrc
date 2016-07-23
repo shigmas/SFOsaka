@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
+        <file>FeatureRect.qml</file>
+        <file>FestivalPage.qml</file>
         <file>MainPage.qml</file>
         <file>PartnerDetail.qml</file>
         <file>sfosaka.qml</file>
@@ -7,7 +9,12 @@
         <file>TranslatorPage.qml</file>
         <file>TranslatorAdd.qml</file>
         <file>SisterPage.qml</file>
+        <file>Splash.qml</file>
         <file>marker.png</file>
+        <file>dictionary.png</file>
+        <file>sfosaka_logo.png</file>
+        <file>sfosaka-map-flatten.png</file>
+        <file>sister_banner.png</file>
         <file>TranslatorHeader.qml</file>
     </qresource>
 </RCC>

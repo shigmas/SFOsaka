@@ -8,6 +8,21 @@ Item {
 
     property alias itemButton: button1
 
+    TextMetrics {
+        id: titleFontMetrics
+        font.family: "Arial"
+        font.bold: true
+        font.pointSize: 42
+        text: "placeholder text"
+    }
+
+    TextMetrics {
+        id: textFontMetrics
+        font.family: "Arial"
+        font.pointSize: 20
+        text: "placeholder text"
+    }
+
     Column {
         id: row1
         Row {
@@ -26,10 +41,17 @@ Item {
         Row {
             id: row2
 
-            Text {
-                id: partnerName
-                text: partnerDetail.name
-                font.pixelSize: 12
+            Rectangle {
+                width: titleFontMetrics.width*3
+                height: titleFontMetrics.height
+
+                Text {
+                    id: partnerName
+                    text: partnerDetail.name
+                    font.family: "Arial"
+                    font.bold: true
+                    font.pointSize: 42
+                }
             }
         }
 

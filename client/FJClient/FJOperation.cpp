@@ -176,7 +176,7 @@ FJOperation::_OnBytesReceived(qint64 bytesReceived, qint64 )
     char buffer[bytesReceived+1];
     qint64 bytesRead = _reply->read(buffer, bytesReceived);
     if (bytesRead == -1) {
-        qDebug() << "-1 returned from QIODevice::read()";
+        //qDebug() << "-1 returned from QIODevice::read()";
         return;
     } else if (bytesRead != bytesReceived) {
         // This was garbage (on android, at least), so throw it out.
@@ -192,7 +192,7 @@ FJOperation::_OnReadyRead()
     // We hack a little here, since this is a GET handler, which is only used for
     // single requests (not the check, then fetch), so we assume that the caller
     // wants to get this request and there isn't a fetch coming.
-    qDebug() << "ReadyRead content: " << _buffer;
+    //qDebug() << "ReadyRead content: " << _buffer;
     _buffer.append(_reply->readAll());
 }
 
@@ -207,7 +207,7 @@ FJOperation::_OnFinished(QNetworkAccessManagerSharedPtr accessManager,
     QJsonDocument jsonDoc = _GetJsonFromContent(_buffer);
     if (!jsonDoc.isNull() and !jsonDoc.isEmpty()) {
         if (_caller) {
-            qDebug() << "Response content: " << jsonDoc;
+            //qDebug() << "Response content: " << jsonDoc;
             _caller->HandleResponse(jsonDoc, FJNoError, this);
         }
     } else {

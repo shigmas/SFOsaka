@@ -4,20 +4,18 @@
 #include <FJCaller.h>
 
 #include "SFOPartner.h"
+#include "SFOTypes.h"
 
 #include <FJOperation.h>
 #include <FJTypes.h>
 
 #include <QDate>
 #include <QJsonDocument>
-#include <QList>
-#include <QMap>
 #include <QString>
 
 FJ_DECLARE_PTRS(FJClient)
 FJ_DECLARE_PTRS(FJOperation)
 
-typedef QMap<QString, QString> QStringMap;
 typedef QList<FJOperationSharedPtr> FJOperationList;
 
 class SFOContext : public FJCaller
@@ -29,6 +27,8 @@ public:
 
     virtual ~SFOContext();
 
+    QString GetHost() const;
+
     SFOPartnerList GetPartners() const;
 
     void Refresh(bool immediately=false);
@@ -36,8 +36,8 @@ public:
     void AddWordTranslation(const QString& word, const QString& phonetic,
                             const QVariantMap& translations);
 
-    QStringMap GetEnToJpDict() const;
-    QStringMap GetJpToEnDict() const;
+    QPairMap GetEnToJpDict() const;
+    QPairMap GetJpToEnDict() const;
 
     void LoadFromDisk();
     void FlushToDisk();
@@ -59,10 +59,14 @@ protected:
     void _WriteCacheFile(const QJsonDocument& doc, const QString& filename);
     QJsonDocument _LoadCacheFile(const QString& filename);
 
-    QVariantMap _DictToVariantMap(const QStringMap& dict) const;
+    QVariantMap _PairDictToVariantMap(const QPairMap& dict) const;
     QVariantMap _GetMapFromJson(const QJsonDocument& doc) const;
 
     QString _GetFilePath(const QString& filename, bool createDir=false) const;
+
+    // If the variant is just a string, creates the pair with the second
+    // empty. Otherwise, returns a genuine pair.
+    QStringPair _CreatePairFromVariant(const QVariant& variant) const;
 
     bool _IsJapanese(const QString& word) const;
 
@@ -82,6 +86,7 @@ protected:
     static const QString LastPartnerDateKey;
     static const QString LastDictDateKey;
 
+    static const QStringPair ServerInfo;
 private:
     static SFOContext* _instance;
 
@@ -91,8 +96,8 @@ private:
     SFOPartnerList _partners;
     bool _partnersDirty;
     QDateTime _lastDictDate;
-    QStringMap _enToJpDict;
-    QStringMap _jpToEnDict;
+    QPairMap _enToJpDict;
+    QPairMap _jpToEnDict;
     bool _dictDirty;
 
     FJOperationList _pendingOperations;

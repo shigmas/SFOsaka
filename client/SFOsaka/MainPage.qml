@@ -1,42 +1,73 @@
 import QtQuick 2.4
 import QtQuick.Window 2.2
 import QtQuick.Controls 1.4
+import QtQuick.Layouts 1.3
 
 Item {
     id: root
 
+    signal festivalActivated()
     signal mapActivated()
     signal translatorActivated()
     signal infoActivated()
 
 
-    Column {
-        id: column1
+    Grid {
+        id: layout
+        anchors.rightMargin: 4
+        anchors.leftMargin: 5
+        anchors.bottomMargin: 5
+        anchors.topMargin: 5
         anchors.fill: parent
-        anchors.topMargin: 10
-        spacing: 5
+        columns: 2
+        rows: 2
+        spacing: 4
 
-        Button {
-            id: mapButton
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: qsTr("Map of Partners and Events")
+        // I'd really like to make this a type, but the onClicked type is
+        // unknown to me right now.
+        FeatureRect {
+            id: festivalApp
+            imageSource: "sister_banner.png"
+            titleText: qsTr("Festival Info")
+            onClicked: root.festivalActivated()
+        }
+        FeatureRect {
+            id: partnerApp
+            imageSource: "sfosaka-map-flatten.png"
+            titleText: qsTr("Partners")
             onClicked: root.mapActivated()
         }
-
-        Button {
-            id: kansaiButton
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: qsTr("Kansai Ben Phrases")
+        FeatureRect {
+            id: phrasebookApp
+            imageSource: "dictionary.png"
+            titleText: qsTr("Kansai Ben Phrases")
             onClicked: root.translatorActivated()
         }
-
-        Button {
-            id: sisterCityButton
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: qsTr("Sister City Info")
+        FeatureRect {
+            id: sisterCityApp
+            imageSource: "sfosaka_logo.png"
+            titleText: qsTr("Sister City Info")
             onClicked: root.infoActivated()
         }
     }
 
+    RowLayout {
+        id: bottomInfo
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+
+        Text {
+            font.pointSize: 8
+            text: server
+        }
+        Rectangle {
+            width: 15
+            height: 0
+        }
+        Text {
+            font.pointSize: 8
+            text: "2016 Futomen Networks"
+        }
+    }
 
 }

@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.3
 
 Row {
     id: headerComponent
+    spacing: 6
 
     signal addActivated()
 
@@ -16,21 +17,18 @@ Row {
         elide: Text.ElideMiddle
     }
 
-    Rectangle {
-        border.width: 3
+    TextEdit {
+        id: textInput
         width: fontMetrics.width
         height: fontMetrics.height
 
-        TextEdit {
-            id: textInput
-            objectName: "translatorInput"
-            inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
-            focus: true
-            Keys.onPressed: {
-                translateController.OnInputAccepted(text)
-            }
+        objectName: "translatorInput"
+        inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
+        Keys.onPressed: {
+            translateController.OnInputAccepted(text)
         }
     }
+
     Button {
         id: button1
         text: qsTr("+")

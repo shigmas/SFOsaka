@@ -1,17 +1,17 @@
 #ifndef SFOTRANSLATECONTROLLER_H
 #define SFOTRANSLATECONTROLLER_H
 
+#include "SFOTypes.h"
+
 #include <QMap>
 #include <QObject>
 
 #include <memory>
 
 class QQmlContext;
-class QStringListModel;
+class SFOTranslateModel;
 
-typedef QMap<QString, QString> QStringMap;
-typedef std::shared_ptr<QStringListModel> QStringListModelSharedPtr;
-typedef std::shared_ptr<QStringList> QStringListSharedPtr;
+typedef std::shared_ptr<SFOTranslateModel> SFOTranslateModelSharedPtr;
 
 class SFOTranslateController : public QObject
 {
@@ -46,14 +46,13 @@ protected:
 
     InputLanguage _GetInputLanguage(const QString& input) const;
 
-    QStringList _GetMatch(const QString& str, const QStringMap& dict) const;
+    // Returns the entries of \p dict that match the string \p str
+    QPairMap _GetMatch(const QString& str, const QPairMap& dict) const;
 
 private:
     QQmlContext *_context;
 
-    QStringListSharedPtr _translatedText;
-    QStringListModelSharedPtr _translationModel;
-
+    SFOTranslateModelSharedPtr _translationModel;
 };
 
 #endif // SFOTRANSLATECONTROLLER_H

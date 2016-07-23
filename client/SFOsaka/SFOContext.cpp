@@ -22,11 +22,14 @@ const QString SFOContext::DictionaryCacheFileName = "dictionary.json";
 const QString SFOContext::LastPartnerDateKey = "last_partner_date";
 const QString SFOContext::LastDictDateKey    = "last_dict_date";
 
+const QStringPair SFOContext::ServerInfo = qMakePair(QString("localhost:8000"),QString("http"));
+//const QStringPair SFOContext::ServerInfo = qMakePair(QString("malttest.futomen.net:8143"),QString("https"));
+
 SFOContext::SFOContext(QObject *parent) : 
     FJCaller(parent), _partnersDirty(false), _dictDirty(false)
 {
-    //FJClient *client = new FJClient("localhost:8000","/mobapp/", "http");
-    FJClient *client = new FJClient("malttest.futomen.net:8143", "/mobapp/");
+    FJClient *client = new FJClient(ServerInfo.first, "/mobapp/",
+                                    ServerInfo.second);
     _client = FJClientSharedPtr(client);
 
     // Listen on the queue completed signal and queue our refresh.
@@ -43,6 +46,12 @@ SFOContext::SFOContext(QObject *parent) :
 SFOContext::~SFOContext()
 {
     FlushToDisk();
+}
+
+QString
+SFOContext::GetHost() const
+{
+    return ServerInfo.second;
 }
 
 SFOContext*
@@ -120,13 +129,13 @@ SFOContext::GetPartners() const
     return _partners;
 }
 
-QStringMap
+QPairMap
 SFOContext::GetEnToJpDict() const
 {
     return _enToJpDict;
 }
 
-QStringMap
+QPairMap
 SFOContext::GetJpToEnDict() const
 {
     return _jpToEnDict;
@@ -143,12 +152,10 @@ SFOContext::LoadFromDisk()
         QString dateString = dateMap[LastPartnerDateKey].toString();
         if (!dateString.isEmpty()) {
             _lastPartnerDate = QDateTime::fromString(dateString, Qt::ISODate);
-            qDebug() << "partner date: " << _lastPartnerDate;
         }
         dateString = dateMap[LastDictDateKey].toString();
         if (!dateString.isEmpty()) {
             _lastDictDate = QDateTime::fromString(dateString, Qt::ISODate);
-            qDebug() << "dict date: " << _lastDictDate;
         }
     }
 
@@ -180,9 +187,11 @@ SFOContext::LoadFromDisk()
             //qDebug() << "Word: " << key;
             // Look at the first character to see if it's japanese
             if (_IsJapanese(key)) {
-                _jpToEnDict[key] = allDicts[key].toString();
+                // means val is english, and we can ignore the pronunciation
+                // (if it even has one)
+                _jpToEnDict[key] = _CreatePairFromVariant(allDicts[key]);
             } else {
-                _enToJpDict[key] = allDicts[key].toString();
+                _enToJpDict[key] = _CreatePairFromVariant(allDicts[key]);
             }
         }
     } else {
@@ -196,10 +205,11 @@ SFOContext::FlushToDisk()
     // Create the JSON document for the date meta data
     if (!_lastPartnerDate.isNull() or !_lastDictDate.isNull()) {
         QJsonObject obj;
+        // Add a second to both dates, because sub-second times are not in
         obj.insert(LastPartnerDateKey,
-                   _lastPartnerDate.toString(Qt::ISODate));
+                   _lastPartnerDate.addSecs(1).toString(Qt::ISODate));
         obj.insert(LastDictDateKey,
-                   _lastDictDate.toString(Qt::ISODate));
+                   _lastDictDate.addSecs(1).toString(Qt::ISODate));
         QJsonDocument doc;
         doc.setObject(obj);
         _WriteCacheFile(doc, DateTimeStampFileName);
@@ -220,9 +230,9 @@ SFOContext::FlushToDisk()
 
     QJsonDocument doc;
     QVariantMap allDicts;
-    QVariantMap vMap = _DictToVariantMap(_enToJpDict);
+    QVariantMap vMap = _PairDictToVariantMap(_enToJpDict);
     allDicts.unite(vMap);
-    vMap = _DictToVariantMap(_jpToEnDict);
+    vMap = _PairDictToVariantMap(_jpToEnDict);
     allDicts.unite(vMap);
     if (allDicts.size() > 0) {
         QJsonObject obj = QJsonObject::fromVariantMap(allDicts);
@@ -268,12 +278,12 @@ SFOContext::_LoadCacheFile(const QString& filename)
 }
 
 QVariantMap
-SFOContext::_DictToVariantMap(const QStringMap& dict) const
+SFOContext::_PairDictToVariantMap(const QPairMap& dict) const
 {
     QString key;
     QVariantMap vMap;
     foreach (key, dict.keys()) {
-        vMap[key] = QVariant(dict[key]);
+        vMap[key] = QVariant(QStringList({dict[key].first,dict[key].second}));
     }
 
     return vMap;
@@ -305,6 +315,27 @@ SFOContext::_GetFilePath(const QString& filename, bool createDir) const
     return path + "/" + filename;
 }
 
+QStringPair
+SFOContext::_CreatePairFromVariant(const QVariant& variant) const
+{
+    // Old versions, this value is a string. Newer ones have this as
+    // a pair.
+    QStringPair dictPair;
+    QString val;
+    QString phonetic;
+
+    if (variant.canConvert<QString>()) {
+        return qMakePair(variant.toString(), QString());
+    } else if (variant.canConvert<QStringList>()) {
+        QStringList strList = variant.value<QStringList>();
+        return qMakePair(strList[0],strList[1]);
+    } else {
+        qDebug() << "Couldn't create pair from variant. type: "
+                 << variant.typeName() << "(" << variant.type() << ")";
+        return qMakePair(QString(), QString());
+    }
+}
+        
 bool
 SFOContext::_IsJapanese(const QString& word) const
 {
@@ -403,7 +434,6 @@ SFOContext::_HandleDictResponse(const QJsonDocument& data)
         QVariantMap wordMap = results["words_list"].toMap();
         QString mDate = results["as_of_date"].toString();
         _lastDictDate = QDateTime::fromString(mDate, Qt::ISODate);
-        qDebug() << "dict date: " << _lastDictDate;
         QVariant wVariant;
         QVariantMap wData;
         foreach(wVariant, wordMap.values()) {
@@ -411,17 +441,18 @@ SFOContext::_HandleDictResponse(const QJsonDocument& data)
             // Get the values that we care about
             QString word = wData["word"].toString();
             QString langCode = wData["language"].toString();
+            QString phonetic = wData["phonetic"].toString();
             QStringList translations = wData["translations"].toStringList();
             QString trans;
             foreach(trans, translations) {
                 if (langCode == "jp") {
-                    _enToJpDict[trans] = word;
+                    _enToJpDict[trans] = qMakePair(word,phonetic);
                 } else {
-                    _jpToEnDict[trans] = word;
+                    _jpToEnDict[trans] = qMakePair(word,phonetic);
                 }
             }
         }
-        if (!_lastPartnerDate.isNull()) {
+        if (!_lastDictDate.isNull()) {
             FlushToDisk();
         }
         emit DictionariesUpdated();
@@ -466,9 +497,11 @@ void
 SFOContext::HandleResponse(const QJsonDocument& document, FJError error,
                            const FJOperation* operation)
 {
-    qDebug() << QThread::currentThreadId() << "HandleResponse: "
-             << operation->GetName()
-             << ", (" << error << ") Doc: [" << document << "]";
+    if (error) {
+        qDebug() << QThread::currentThreadId() << "HandleResponse: "
+                 << operation->GetName()
+                 << ", (" << error << ") Doc: [" << document << "]";
+    }
     if (operation && (operation->GetName() == "start")) {
         _HandleStartResponse(document);
     } else if (operation && (operation->GetName() == "partners")) {

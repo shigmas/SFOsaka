@@ -113,7 +113,7 @@ FJClient::_HandleTimer()
                 //qDebug() << QThread::currentThreadId() << ": Op executed";
             } else if (op->IsCompleted()) {
                 // Op is completed, remove it from the queue.
-                qDebug() << "Op finished. Removing";
+                //qDebug() << "Op finished. Removing";
                 _operationQueue.removeOne(op);
             }
         }

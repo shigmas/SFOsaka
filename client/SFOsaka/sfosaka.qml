@@ -12,8 +12,8 @@ ApplicationWindow {
     StackView {
         id: stackView
         anchors.fill: parent
-        focus: true
 
+        signal festivalActivated()
         signal mapActivated()
         signal translatorActivated()
         signal translatorAddActivated()
@@ -24,6 +24,7 @@ ApplicationWindow {
         initialItem:
         MainPage {
             id: mainPage
+            onFestivalActivated: stackView.festivalActivated()
             onMapActivated: stackView.mapActivated()
             onTranslatorActivated: stackView.translatorActivated()
             onInfoActivated: stackView.infoActivated()
@@ -42,6 +43,11 @@ ApplicationWindow {
             onButtonActivated: stackView.backActivated()
         }
 
+        FestivalPage {
+            id: festivalPage
+            visible: false
+            onButtonActivated: stackView.backActivated()
+        }
         TranslatorPage {
             id: translatorPage
             visible: false
@@ -59,6 +65,11 @@ ApplicationWindow {
             id: infoPage
             visible: false
             onButtonActivated: stackView.backActivated()
+        }
+
+        onFestivalActivated: {
+            console.log("festival activated")
+            stackView.push(festivalPage)
         }
 
         onMapActivated: {

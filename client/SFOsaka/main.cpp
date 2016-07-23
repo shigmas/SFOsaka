@@ -5,6 +5,7 @@
 #include <QTranslator>
 #include <QDebug>
 
+#include "SFOContext.h"
 #include "SFOEventFilter.h"
 #include "SFOItemModel.h"
 #include "SFOSubmitWordModel.h"
@@ -49,6 +50,9 @@ int main(int argc, char *argv[])
     SFOSubmitWordModel submitModel(engine.rootContext());
     engine.rootContext()->setContextProperty("submitModel",
                                              &submitModel);
+    QString server = SFOContext::GetInstance()->GetHost();
+    engine.rootContext()->setContextProperty("server",
+                                             QVariant(server));
 
     engine.rootContext()->setContextProperty(QStringLiteral("initialUrl"),
                                 QUrl::fromUserInput(initialUrl));

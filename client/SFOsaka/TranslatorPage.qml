@@ -11,6 +11,13 @@ Item {
 
     property alias itemButton: button1
 
+    TextMetrics {
+        id: fontMetrics
+        font.family: "Arial"
+        font.pointSize: 20
+        text: "placeholder text"
+    }
+
     Column {
         id: row1
         Row {
@@ -38,14 +45,16 @@ Item {
 
             id: row2
             ListView {
-                width: 100
-                height: 125
                 id: translationView
                 model: translationModel
                 delegate: Rectangle {
-                    height: 25
-                    width: 100
-                    Text { text: modelData }
+                    width: fontMetrics.width*3
+                    height: fontMetrics.height
+                    Row {
+                        Text { text: word + ": " }
+                        Text { text: translation }
+                        Text { text: pronunciation }
+                    }
                 }
             }
 

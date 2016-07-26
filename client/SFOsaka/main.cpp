@@ -8,6 +8,7 @@
 #include "SFOContext.h"
 #include "SFOEventFilter.h"
 #include "SFOItemModel.h"
+#include "SFOScheduleModel.h"
 #include "SFOSubmitWordModel.h"
 #include "SFOTranslateController.h"
 #include "SFOValidator.h"
@@ -37,6 +38,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<SFOValidator>("SFOsaka", 1, 0, "SFOValidator");
     SFOTranslateController translateController(engine.rootContext());
+    SFOScheduleModel festivalScheduleModel(engine.rootContext());
 
     // Hook up the controller and the event filter
     QObject::connect(&filter,&SFOEventFilter::TextChanged,

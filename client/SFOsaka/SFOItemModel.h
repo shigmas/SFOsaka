@@ -1,6 +1,8 @@
 #ifndef SFOITEMMODEL_H
 #define SFOITEMMODEL_H
 
+#include "SFOPartner.h"
+
 #include <FJTypes.h>
 
 #include <QObject>
@@ -50,6 +52,7 @@ private:
     QQmlContext *_context;
     QGeoCoordinate _position;
     QHash<int, QByteArray> _roleNames;
+    SFOPartner _emptyPartner;
     // mutable because creating an index requires a non-const pointer.
     mutable QPlace _root;
 };

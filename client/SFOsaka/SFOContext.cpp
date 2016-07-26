@@ -18,15 +18,17 @@ SFOContext* SFOContext::_instance = NULL;
 const QString SFOContext::DateTimeStampFileName   = "datestamps.json";
 const QString SFOContext::PartnerCacheFileName    = "partners.json";
 const QString SFOContext::DictionaryCacheFileName = "dictionary.json";
+const QString SFOContext::PerformerCacheFileName  = "performers.json";
 
-const QString SFOContext::LastPartnerDateKey = "last_partner_date";
-const QString SFOContext::LastDictDateKey    = "last_dict_date";
+const QString SFOContext::LastPartnerDateKey   = "last_partner_date";
+const QString SFOContext::LastDictDateKey      = "last_dict_date";
+const QString SFOContext::LastPerformerDateKey = "last_performer_date";
 
 //const QStringPair SFOContext::ServerInfo = qMakePair(QString("localhost:8000"),QString("http"));
 const QStringPair SFOContext::ServerInfo = qMakePair(QString("malttest.futomen.net:8143"),QString("https"));
 
 SFOContext::SFOContext(QObject *parent) : 
-    FJCaller(parent), _partnersDirty(false), _dictDirty(false)
+    FJCaller(parent)
 {
     FJClient *client = new FJClient(ServerInfo.first, "/mobapp/",
                                     ServerInfo.second);
@@ -88,6 +90,16 @@ SFOContext::Refresh(bool immediately)
         partner->SetCheckFetchContent(content);
     }
     _pendingOperations.append(partner);
+
+    FJOperationSharedPtr performer(new FJOperation("performers",
+                                                   "/performer_meta/",
+                                                   "/performer_data/", this));
+    content = _CreateJsonContent(_lastPerformerDate);
+    if (!content.isNull()) {
+        performer->SetCheckFetchContent(content);
+    }
+    _pendingOperations.append(performer);
+
     FJOperationSharedPtr dict(new FJOperation("dict","/dict_meta/","/dict_data/",
                                               this));
     content = _CreateJsonContent(_lastDictDate);
@@ -129,6 +141,12 @@ SFOContext::GetPartners() const
     return _partners;
 }
 
+SFOPerformerList
+SFOContext::GetPerformers() const
+{
+    return _performers;
+}
+
 QPairMap
 SFOContext::GetEnToJpDict() const
 {
@@ -153,27 +171,29 @@ SFOContext::LoadFromDisk()
         if (!dateString.isEmpty()) {
             _lastPartnerDate = QDateTime::fromString(dateString, Qt::ISODate);
         }
+        dateString = dateMap[LastPerformerDateKey].toString();
+        if (!dateString.isEmpty()) {
+            _lastPerformerDate = QDateTime::fromString(dateString, Qt::ISODate);
+        }
         dateString = dateMap[LastDictDateKey].toString();
         if (!dateString.isEmpty()) {
             _lastDictDate = QDateTime::fromString(dateString, Qt::ISODate);
         }
     }
 
-    doc = _LoadCacheFile(PartnerCacheFileName);
-    //qDebug() << "Cached partner data: " << doc;
-    QVariantMap partnerMap = _GetMapFromJson(doc);
-    if (!partnerMap.empty()) {
-        SFOPartner *p;
-        foreach (p, _partners) {
-            delete p;
-        }
-        _partners.clear();
-        QString key;
-        foreach(key, partnerMap.keys()) {
-            _partners.append(new SFOPartner(partnerMap[key].toMap()));
-        }
-    } else {
-        qDebug() << "empty partner cache file";
+    if (!_partners.empty()) {
+        _eraseList(_partners);
+    }
+    _partners = _LoadOrganization<SFOPartner>(PartnerCacheFileName);
+    if (_partners.size() == 0) {
+        qDebug() << PartnerCacheFileName << " was empty";
+    }
+    if (_performers.size() == 0) {
+        _eraseList(_performers);
+    }
+    _performers = _LoadOrganization<SFOPerformer>(PerformerCacheFileName);
+    if (_performers.size() == 0) {
+        qDebug() << PerformerCacheFileName << " was empty";
     }
 
     qDebug() << "Dict cache: " << DictionaryCacheFileName;
@@ -208,6 +228,8 @@ SFOContext::FlushToDisk()
         // Add a second to both dates, because sub-second times are not in
         obj.insert(LastPartnerDateKey,
                    _lastPartnerDate.addSecs(1).toString(Qt::ISODate));
+        obj.insert(LastPerformerDateKey,
+                   _lastPerformerDate.addSecs(1).toString(Qt::ISODate));
         obj.insert(LastDictDateKey,
                    _lastDictDate.addSecs(1).toString(Qt::ISODate));
         QJsonDocument doc;
@@ -216,17 +238,13 @@ SFOContext::FlushToDisk()
     }
 
     if (_partners.size()) {
-        QVariantMap partnerMap;
-        SFOPartner* partner;
-        foreach (partner, _partners) {
-            partnerMap[partner->GetId()] = partner->ToJson();
-        }
-        QJsonObject obj = QJsonObject::fromVariantMap(partnerMap);
-        QJsonDocument doc;
-        doc.setObject(obj);
         qDebug() << "Saving " << _partners.size() << " partners";
-        _WriteCacheFile(doc, PartnerCacheFileName);
     }
+    _WriteOrganization<SFOPartner>(PartnerCacheFileName, _partners);
+    if (_performers.size()) {
+        qDebug() << "Saving " << _performers.size() << " performers";
+    }
+    _WriteOrganization<SFOPerformer>(PerformerCacheFileName, _performers);
 
     QJsonDocument doc;
     QVariantMap allDicts;
@@ -250,7 +268,8 @@ SFOContext::_OnQueueCompleted()
 }
 
 void
-SFOContext::_WriteCacheFile(const QJsonDocument& doc, const QString& filename)
+SFOContext::_WriteCacheFile(const QJsonDocument& doc,
+                            const QString& filename) const
 {
     QByteArray data = doc.toJson();
 
@@ -264,7 +283,7 @@ SFOContext::_WriteCacheFile(const QJsonDocument& doc, const QString& filename)
 }
 
 QJsonDocument
-SFOContext::_LoadCacheFile(const QString& filename)
+SFOContext::_LoadCacheFile(const QString& filename) const
 {
     QFile file(_GetFilePath(filename));
     if (!file.open(QIODevice::ReadOnly)) {
@@ -393,32 +412,50 @@ SFOContext::_HandlePartnersResponse(const QJsonDocument& data)
     }
     if (success) {
         //qDebug() << "Partners Data: " << results;
+        _eraseList(_partners);
         QVariantMap partnerMap = results["partners_list"].toMap();
-        QVariant pData;
-        QDateTime latest;
-        SFOPartner* p;
-        foreach (p, _partners) {
-            delete p;
-        }
-        _partners.clear();
-        foreach(pData, partnerMap.values()) {
-            p = new SFOPartner(pData.toMap());
-            //            qDebug() << "Created " << p.GetName() << ", ("
-            //                     << p.GetDescription() << " created on: "
-            //                     << p.GetModificationDate();
-            _partners.append(p);
-            if (latest.isNull()) {
-                latest = p->GetModificationDate();
-            } else if (latest < p->GetModificationDate()) {
-                latest = p->GetModificationDate();
-            }
-        }
+        QPair<QDateTime, SFOPartnerList> resp =
+            _ParseOrgResponse<SFOPartner>(partnerMap);
+        QDateTime latest = resp.first;
+        _partners = resp.second;
         if (!latest.isNull()) {
             _lastPartnerDate = latest;
             FlushToDisk();
             emit PartnersUpdated();
         } else {
             qDebug() << "No partners in partner data";
+        }
+    } else {
+        qDebug() << "Partner fetch failed";
+    }
+}
+
+void
+SFOContext::_HandlePerformersResponse(const QJsonDocument& data)
+{
+    QVariantMap results = _GetMapFromJson(data);
+    if (results.isEmpty()) {
+        qDebug() << "performer response is empty!";
+        return;
+    }
+    bool success = false;
+    if (results["result"].canConvert<bool>()) {
+        success = results["result"].toBool();
+    }
+    if (success) {
+        qDebug() << "Performers Data: " << results;
+        _eraseList(_performers);
+        QVariantMap performerMap = results["performers_list"].toMap();
+        QPair<QDateTime, SFOPerformerList> resp =
+            _ParseOrgResponse<SFOPerformer>(performerMap);
+        QDateTime latest = resp.first;
+        _performers = resp.second;
+        if (!latest.isNull()) {
+            _lastPerformerDate = latest;
+            FlushToDisk();
+            emit PerformersUpdated();
+        } else {
+            qDebug() << "No performers in performer data";
         }
     } else {
         qDebug() << "Partner fetch failed";
@@ -506,6 +543,8 @@ SFOContext::HandleResponse(const QJsonDocument& document, FJError error,
         _HandleStartResponse(document);
     } else if (operation && (operation->GetName() == "partners")) {
         _HandlePartnersResponse(document);
+    } else if (operation && (operation->GetName() == "performers")) {
+        _HandlePerformersResponse(document);
     } else if (operation && (operation->GetName() == "dict")) {
         _HandleDictResponse(document);
     } else if (operation && (operation->GetName() == "submit")) {

@@ -4,6 +4,7 @@
 #include <FJCaller.h>
 
 #include "SFOPartner.h"
+#include "SFOPerformer.h"
 #include "SFOTypes.h"
 
 #include <FJOperation.h>
@@ -11,6 +12,7 @@
 
 #include <QDate>
 #include <QJsonDocument>
+#include <QPair>
 #include <QString>
 
 FJ_DECLARE_PTRS(FJClient)
@@ -31,6 +33,8 @@ public:
 
     SFOPartnerList GetPartners() const;
 
+    SFOPerformerList GetPerformers() const;
+
     void Refresh(bool immediately=false);
 
     void AddWordTranslation(const QString& word, const QString& phonetic,
@@ -44,6 +48,7 @@ public:
 
 signals:
     void PartnersUpdated();
+    void PerformersUpdated();
     void DictionariesUpdated();
 
 public slots:
@@ -56,8 +61,65 @@ protected slots:
 protected:
     explicit SFOContext(QObject *parent = 0);
 
-    void _WriteCacheFile(const QJsonDocument& doc, const QString& filename);
-    QJsonDocument _LoadCacheFile(const QString& filename);
+    void _WriteCacheFile(const QJsonDocument& doc, const QString& filename)const;
+    QJsonDocument _LoadCacheFile(const QString& filename) const;
+
+    template <typename T>
+    void _eraseList(QList<T *>& orgList) {
+        T *org;
+        foreach (org, orgList) {
+            delete org;
+        }
+        orgList.clear();
+    }
+
+    template <typename T>
+    QList<T *> _LoadOrganization(const QString& fileName) const {
+        QJsonDocument doc = _LoadCacheFile(fileName);
+        QVariantMap orgMap = _GetMapFromJson(doc);
+        QList<T *> orgList;
+        QString key;
+        foreach(key, orgMap.keys()) {
+            orgList.append(new T(orgMap[key].toMap()));
+        }
+
+        return orgList;
+    }
+
+    template <typename T>
+    void _WriteOrganization(const QString& fileName,
+                            const QList<T *>& orgList) const {
+        if (orgList.size()) {
+            QVariantMap orgMap;
+            T* org;
+            foreach (org, orgList) {
+                orgMap[org->GetId()] = org->ToJson();
+            }
+            QJsonObject obj = QJsonObject::fromVariantMap(orgMap);
+            QJsonDocument doc;
+            doc.setObject(obj);
+            _WriteCacheFile(doc, fileName);
+        }
+    }
+
+    template <typename T>
+    QPair<QDateTime, QList< T *> > _ParseOrgResponse(const QVariantMap& data) const {
+        QVariant orgData;
+        QDateTime latest;
+        QList< T *> orgList;
+
+        foreach(orgData, data.values()) {
+            T *o = new T(orgData.toMap());
+            orgList.append(o);
+            if (latest.isNull()) {
+                latest = o->GetModificationDate();
+            } else if (latest < o->GetModificationDate()) {
+                latest = o->GetModificationDate();
+            }
+        }
+
+        return qMakePair(latest, orgList);
+    }
 
     QVariantMap _PairDictToVariantMap(const QPairMap& dict) const;
     QVariantMap _GetMapFromJson(const QJsonDocument& doc) const;
@@ -72,6 +134,7 @@ protected:
 
     void _HandleStartResponse(const QJsonDocument& data);
     void _HandlePartnersResponse(const QJsonDocument& data);
+    void _HandlePerformersResponse(const QJsonDocument& data);
     void _HandleDictResponse(const QJsonDocument& data);
     void _HandleSubmitResponse(const QJsonDocument& data);
 
@@ -82,9 +145,11 @@ protected:
     static const QString DateTimeStampFileName;
     static const QString PartnerCacheFileName;
     static const QString DictionaryCacheFileName;
+    static const QString PerformerCacheFileName;
 
     static const QString LastPartnerDateKey;
     static const QString LastDictDateKey;
+    static const QString LastPerformerDateKey;
 
     static const QStringPair ServerInfo;
 private:
@@ -94,11 +159,11 @@ private:
 
     QDateTime _lastPartnerDate;
     SFOPartnerList _partners;
-    bool _partnersDirty;
+    SFOPerformerList _performers;
+    QDateTime _lastPerformerDate;
     QDateTime _lastDictDate;
     QPairMap _enToJpDict;
     QPairMap _jpToEnDict;
-    bool _dictDirty;
 
     FJOperationList _pendingOperations;
 };

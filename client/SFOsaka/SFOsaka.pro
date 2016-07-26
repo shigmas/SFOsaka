@@ -22,16 +22,20 @@ SOURCES += main.cpp \
     SFOTranslateController.cpp \
     SFOItemModel.cpp \
     SFOContext.cpp \
-    SFOPartner.cpp \
     SFOSubmitWordModel.cpp \
     SFOEventFilter.cpp \
     SFOValidator.cpp \
     SFOTranslateModel.cpp \
-    SFOTypes.cpp
+    SFOTypes.cpp \
+    SFOOrganization.cpp \
+    SFOPartner.cpp \
+    SFOPerformer.cpp \
+    SFOScheduleModel.cpp
 
 lupdate_only{
 SOURCES = FeatureRect.qml  \
     FestivalPage.qml       \
+    ListItem.qml           \
     MainPage.qml           \
     MapPage.qml            \
     PartnerDetail.qml      \
@@ -55,12 +59,15 @@ HEADERS += \
     SFOTranslateController.h \
     SFOItemModel.h \
     SFOContext.h \
-    SFOPartner.h \
     SFOSubmitWordModel.h \
     SFOEventFilter.h \
     SFOValidator.h \
     SFOTranslateModel.h \
-    SFOTypes.h
+    SFOTypes.h \
+    SFOOrganization.h \
+    SFOPartner.h \
+    SFOPerformer.h \
+    SFOScheduleModel.h
 
 DISTFILES += \
     ios/Icons/AppIcon60x60@3x.png \

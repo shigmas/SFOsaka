@@ -8,8 +8,6 @@
 #include <QtLocation/QGeoServiceProvider>
 #include <QtLocation/QGeoCodingManager>
 
-#include <iostream>
-
 const QString SFOItemModel::ModelIdentifier = "placeModel";
 const QString SFOItemModel::PartnerModelIdentifier = "partnerDetail";
 
@@ -31,7 +29,8 @@ SFOItemModel::SFOItemModel(QQmlContext *context, QObject *parent) :
     // Listen for the partners updated signal so we can updated ourselves
     QObject::connect(ctx, &SFOContext::PartnersUpdated,
                      this, &SFOItemModel::_HandlePartnerUpdate);
-    _context->setContextProperty(SFOItemModel::PartnerModelIdentifier, NULL);
+    _context->setContextProperty(SFOItemModel::PartnerModelIdentifier,
+                                 &_emptyPartner);
 }
 
 SFOItemModel::~SFOItemModel() {}
@@ -63,7 +62,7 @@ SFOItemModel::data(const QModelIndex &index,
         case 4:
             return QVariant(location.coordinate().latitude());
         default:
-            std::cerr << "Unknown role " << role << std::endl;
+            qDebug() << "Unknown role " << role;
             return QVariant();
         }
     }

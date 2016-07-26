@@ -48,7 +48,6 @@ SFOTranslateController::OnFilterAccepted(const QString& text)
 void
 SFOTranslateController::_HandleDictionariesUpdate()
 {
-    qDebug() << "Dictionary updated from server";
 }
 
 void

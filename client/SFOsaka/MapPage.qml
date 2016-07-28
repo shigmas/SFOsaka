@@ -2,16 +2,27 @@ import QtQuick 2.4
 import QtQuick.Controls 1.4
 import QtPositioning 5.5
 import QtLocation 5.6
+import QtQuick.Layouts 1.3
+
 //! [Imports]
 
 // QTBUG-34418: singletons need to be imported
 import "."
 
-Item {
+ColumnLayout {
 
     id: root
+    Layout.fillWidth: true
+    anchors.fill: parent
+
     signal buttonActivated()
     signal itemSelected(string title)
+
+    AppBar {
+        id: toolbar
+        anchors.top: parent.top
+        onButtonActivated: root.buttonActivated()
+    }
 
     //! [Initialize Plugin]
     Plugin {
@@ -24,7 +35,6 @@ Item {
             // with no success. (The variable exists, but it's not a useful
             // string. So, you just have to enter this value by hand
             name: "mapbox.access_token"; value: MapboxVars.Token
-
         }
         PluginParameter {
             name: "mapbox.map_id"; value: "mapbox.streets"
@@ -62,7 +72,9 @@ Item {
     Map {
         id: map
 
-        anchors.fill: parent
+        anchors.top: toolbar.bottom
+        anchors.bottom: parent.bottom
+        width: parent.width
         plugin: myPlugin;
         center: locationSF
         zoomLevel: 13
@@ -101,42 +113,12 @@ Item {
                                 itemSelected(title)
                             }
                         }
-
+                        
                     }
                 }
             }
-            /*
-            delegate: MapCircle {
-                center: coord
-                radius: 55.0
-            }
-            */
         }
         //! [Places MapItemView]
     }
 
-    Row {
-
-    Button {
-        id: button1
-        text: qsTr("go back")
-        onClicked: root.buttonActivated()
-    }
-
-    Button {
-        id: button2
-        text: qsTr("Fetch")
-        onClicked: placeModel.HandleRefresh()
-    }
-
-}
-    /*
-    Connections {
-        target: placeModel
-        onPositionChanged: {
-            console.log("positionChanged");
-            map.update()
-        }
-    }
-    */
 }

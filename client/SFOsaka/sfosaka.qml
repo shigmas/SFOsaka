@@ -58,7 +58,7 @@ ApplicationWindow {
         TranslatorAdd {
             id: translatorAdd
             visible: false
-            //onButtonActivated: stackView.backActivated()
+            onButtonActivated: stackView.backActivated()
         }
 
         SisterPage {

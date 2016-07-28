@@ -25,6 +25,7 @@ SOURCES += main.cpp \
     SFOSubmitWordModel.cpp \
     SFOEventFilter.cpp \
     SFOValidator.cpp \
+    SFOValidatorReceiver.cpp \
     SFOTranslateModel.cpp \
     SFOTypes.cpp \
     SFOOrganization.cpp \
@@ -40,7 +41,7 @@ SOURCES = FeatureRect.qml  \
     MapPage.qml            \
     PartnerDetail.qml      \
     SisterPage.qml         \
-    TranslatorHeader.qml   \
+    AppBar.qml             \
     TranslatorPage.qml     \
     TranslatorAdd.qml      \
     sfosaka.qml            \
@@ -67,7 +68,8 @@ HEADERS += \
     SFOOrganization.h \
     SFOPartner.h \
     SFOPerformer.h \
-    SFOScheduleModel.h
+    SFOScheduleModel.h \
+    SFOValidatorReceiver.h
 
 DISTFILES += \
     ios/Icons/AppIcon60x60@3x.png \

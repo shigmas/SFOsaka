@@ -1,6 +1,8 @@
 import QtQuick 2.4
 import QtQuick.Controls 1.4
+import QtQuick.Layouts 1.3
 
+import SFOsaka 1.0
 
 Item {
     //anchors.fill: parent
@@ -9,8 +11,6 @@ Item {
     signal buttonActivated()
     signal addActivated()
 
-    property alias itemButton: button1
-
     TextMetrics {
         id: fontMetrics
         font.family: "Arial"
@@ -18,46 +18,59 @@ Item {
         text: "placeholder text"
     }
 
-    Column {
+    ColumnLayout {
         id: row1
-        Row {
-            id: toprow
-            height: 80
-            anchors.left: parent.left
-            anchors.right: parent.right
-            Button {
-                id: button1
-                text: qsTr("go back")
-                onClicked: root.buttonActivated()
+        Layout.fillWidth: true
+        anchors.fill: parent
+
+        AppBar {
+            id: toolbar
+            onButtonActivated: root.buttonActivated()
+        }
+
+        RowLayout {
+            id: header
+            anchors.top: toolbar.bottom
+
+            TextField {
+                id: textInput
+                //Layout.fillWidth: true
+                width: fontMetrics.width * 2
+                height: fontMetrics.height
+                placeholderText: qsTr("search phrase")
+                validator: SFOValidator {
+                    receiver: translateController
+                }
+                inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
             }
 
-            TranslatorHeader {
-                id: header
+            Item { Layout.fillWidth: true }
 
-                onAddActivated: {
+            ToolButton {
+                id: button1
+                text: qsTr("+")
+                Layout.alignment: Qt.AlignRight
+                onClicked: {
                     root.addActivated()
                 }
             }
         }
 
-        Rectangle {
-            anchors.top: toprow.bottom
-
-            id: row2
-            ListView {
-                id: translationView
-                model: translationModel
-                delegate: Rectangle {
-                    width: fontMetrics.width*3
-                    height: fontMetrics.height
-                    Row {
-                        Text { text: word + ": " }
-                        Text { text: translation }
-                        Text { text: pronunciation }
-                    }
+        ListView {
+            id: translationView
+            model: translationModel
+            anchors.top: header.bottom
+            anchors.bottom: parent.bottom
+            
+            delegate: Rectangle {
+                width: fontMetrics.width*3
+                height: fontMetrics.height
+                Row {
+                    Text { text: word + ": " }
+                    Text { text: translation }
+                    Text { text: pronunciation }
                 }
             }
-
         }
     }
 

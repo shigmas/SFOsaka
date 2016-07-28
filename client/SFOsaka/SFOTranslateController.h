@@ -2,6 +2,7 @@
 #define SFOTRANSLATECONTROLLER_H
 
 #include "SFOTypes.h"
+#include "SFOValidatorReceiver.h"
 
 #include <QMap>
 #include <QObject>
@@ -13,7 +14,8 @@ class SFOTranslateModel;
 
 typedef std::shared_ptr<SFOTranslateModel> SFOTranslateModelSharedPtr;
 
-class SFOTranslateController : public QObject
+class SFOTranslateController : public QObject,
+                               public SFOValidatorReceiver
 {
     Q_OBJECT
 
@@ -31,6 +33,12 @@ public:
                                     QObject *parent = 0);
 
     virtual ~SFOTranslateController();
+
+    // SFOValidatorReceiver implementations.
+    virtual void AddValidator(const QVariant& identifier,
+                              SFOValidator *validator);
+
+    virtual QValidator::State Validate( QString & input, int & pos );
 
 signals:
 
@@ -53,6 +61,8 @@ private:
     QQmlContext *_context;
 
     SFOTranslateModelSharedPtr _translationModel;
+
+    SFOValidator* _validator;
 };
 
 #endif // SFOTRANSLATECONTROLLER_H

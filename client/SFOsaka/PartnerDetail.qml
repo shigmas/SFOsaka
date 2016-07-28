@@ -6,13 +6,11 @@ Item {
 
     signal buttonActivated()
 
-    property alias itemButton: button1
-
     TextMetrics {
         id: titleFontMetrics
         font.family: "Arial"
         font.bold: true
-        font.pointSize: 42
+        font.pointSize: 32
         text: "placeholder text"
     }
 
@@ -25,17 +23,9 @@ Item {
 
     Column {
         id: row1
-        Row {
-            id: toprow
-            height: 80
-            anchors.left: parent.left
-            anchors.right: parent.right
-            Button {
-                id: button1
-                text: qsTr("go back")
-                onClicked: root.buttonActivated()
-            }
-
+        AppBar {
+            id: toolbar
+            onButtonActivated: root.buttonActivated()
         }
 
         Row {

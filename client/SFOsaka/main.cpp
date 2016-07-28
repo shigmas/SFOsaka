@@ -31,8 +31,8 @@ int main(int argc, char *argv[])
     }
     app.installTranslator(&qtTranslator);
 
-    SFOEventFilter filter;
-    app.installEventFilter(&filter);
+    //    SFOEventFilter filter;
+    //app.installEventFilter(&filter);
 
     QQmlApplicationEngine engine;
 
@@ -41,10 +41,11 @@ int main(int argc, char *argv[])
     SFOScheduleModel festivalScheduleModel(engine.rootContext());
 
     // Hook up the controller and the event filter
+    /*
     QObject::connect(&filter,&SFOEventFilter::TextChanged,
                      &translateController,
                      &SFOTranslateController::OnFilterAccepted);
-
+    */
     SFOItemModel model(engine.rootContext());
     engine.rootContext()->setContextProperty(SFOItemModel::ModelIdentifier,
                                              &model);

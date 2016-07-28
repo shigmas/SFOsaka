@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+        <file>AppBar.qml</file>
         <file>FeatureRect.qml</file>
         <file>FestivalPage.qml</file>
         <file>ListItem.qml</file>
@@ -8,7 +9,6 @@
         <file>PartnerDetail.qml</file>
         <file>SisterPage.qml</file>
         <file>TranslatorAdd.qml</file>
-        <file>TranslatorHeader.qml</file>
         <file>TranslatorPage.qml</file>
         <file>sfosaka.qml</file>
         <file>marker.png</file>

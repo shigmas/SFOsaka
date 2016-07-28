@@ -14,18 +14,18 @@ Item {
         text: "word"
     }
 
-    Column {
-        Button {
-            id: button1
-            //anchors.top: parent.top
-            //anchors.left: parent.left
-            text: qsTr("go back")
-            onClicked: root.buttonActivated()
+    ColumnLayout {
+        anchors.fill: parent
+        Layout.fillWidth: true
+        AppBar {
+            id: toolbar
+            onButtonActivated: root.buttonActivated()
         }
 
         ScrollView {
             //anchors.fill: parent
-            height: 900
+            Layout.fillHeight: true
+            Layout.fillWidth: true
 
             ListView {
                 id: listView1
@@ -35,7 +35,7 @@ Item {
                 layoutDirection: Qt.RightToLeft
                 //width: parent.width
                 //height: 1200
-                //layoutDirection: Qt.RightToLeft
+                //layoutDirerction: Qt.RightToLeft
 
                 delegate:  ListItem {
                     itemImageSource: imageSource

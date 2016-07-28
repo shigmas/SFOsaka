@@ -1,13 +1,25 @@
 import QtQuick 2.4
 import QtQuick.Controls 1.4
+import QtQuick.Layouts 1.3
 
 import SFOsaka 1.0
 
 Item {
     id: root
 
-    Column {
-        id: row1
+    signal buttonActivated()
+
+    ColumnLayout {
+
+        AppBar {
+            id: toolbar
+            onButtonActivated: root.buttonActivated()
+        }
+
+        Text {
+            font.pixelSize: 12
+            text: "Couldn't find what you were looking for? Please add your phrase. (Pronunciation is only necessary for Japanese)"
+        }
 
         Row {
             id: column1
@@ -99,13 +111,6 @@ Item {
             Button {
                 id: submitButton
                 text: qsTr("Submit")
-             }
-            Button {
-                id: cancelButton
-                text: qsTr("Cancel")
-                onClicked: {
-                    stackView.pop()
-                }
             }
         }
 

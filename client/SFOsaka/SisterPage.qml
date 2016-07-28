@@ -10,15 +10,14 @@ ColumnLayout {
 
     signal buttonActivated()
 
-    Button {
-        id: button1
-        text: qsTr("go back")
-        onClicked: root.buttonActivated()
+    AppBar {
+        id: toolbar
+        onButtonActivated: root.buttonActivated()
     }
 
     WebView {
         id: webView
-        anchors.top: button1.bottom
+        anchors.top: toolbar.bottom
         anchors.bottom: parent.bottom
         Layout.fillWidth: true
         Layout.fillHeight: true

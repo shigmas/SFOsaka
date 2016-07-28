@@ -1,6 +1,8 @@
 #ifndef SFOSUBMITWORDMODEL_H
 #define SFOSUBMITWORDMODEL_H
 
+#include "SFOValidatorReceiver.h"
+
 #include <QAbstractListModel>
 #include <QMap>
 #include <QObject>
@@ -14,7 +16,8 @@ typedef QMap<QString, QString> SFOStringMap;
 typedef QPair<QVariant, QVariant> SFOValidatorId;
 typedef QMap<SFOValidatorId, SFOValidator *> SFOValidatorMap;
 
-class SFOSubmitWordModel : public QAbstractListModel
+class SFOSubmitWordModel : public QAbstractListModel,
+                           public SFOValidatorReceiver
 {
     Q_OBJECT
     Q_PROPERTY(QString word READ GetWord WRITE SetWord NOTIFY WordChanged)
@@ -36,8 +39,6 @@ public:
     QString GetPhonetic() const;
     void SetPhonetic(const QString& phonetic);
 
-    void AddValidator(const QVariant& identifier, SFOValidator *validator);
-
     void UpdateElement(const QString& element, const QVariant& identifier,
                        const QVariant& secondaryId = QVariant());
 
@@ -45,6 +46,11 @@ public:
                           int role = Qt::DisplayRole) const;
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
     virtual QHash<int, QByteArray> roleNames() const;
+
+    // Overridden for SFOValidatorReceiver
+    virtual void AddValidator(const QVariant& identifier,
+                              SFOValidator *validator);
+
 
 signals:
     void WordChanged();

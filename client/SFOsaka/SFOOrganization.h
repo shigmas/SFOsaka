@@ -13,9 +13,9 @@ class SFOOrganization : public QObject
     Q_OBJECT
 
     // These fetch the locale specific properties
-    Q_PROPERTY(QString name READ GetName_locale)
-    Q_PROPERTY(QString category READ GetCategory_locale)
-    Q_PROPERTY(QString description READ GetDescription_locale)
+    Q_PROPERTY(QString name READ GetName_locale NOTIFY NameChanged)
+    Q_PROPERTY(QString category READ GetCategory_locale NOTIFY CategoryChanged)
+    Q_PROPERTY(QString description READ GetDescription_locale NOTIFY DescriptionChanged)
 
 public:
     explicit SFOOrganization(QObject *parent = 0);
@@ -44,6 +44,11 @@ public:
     QString GetURL() const;
     QString GetImageURL() const;
 
+signals:
+    void NameChanged();
+    void CategoryChanged();
+    void DescriptionChanged();
+    
 protected:
     virtual QVariantMap _ToVariantMap() const;
 

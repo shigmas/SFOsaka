@@ -34,6 +34,23 @@ SFOTranslateController::~SFOTranslateController()
 }
 
 void
+SFOTranslateController::AddValidator(const QVariant& ,
+                                     SFOValidator *validator)
+{
+    // We don't need the identifier, because we only care about one text field
+    // in this model
+    _validator = validator;
+    
+}
+
+QValidator::State
+SFOTranslateController::Validate( QString & input, int & )
+{
+    _ProcessInput(input);
+    return QValidator::Acceptable;
+}
+
+void
 SFOTranslateController::OnInputAccepted(const QString& text)
 {
     _ProcessInput(text);
@@ -56,21 +73,19 @@ SFOTranslateController::_ProcessInput(const QString& text)
     qDebug() << "Input: " << text;
     // Gets the first character to see if we're in Japanese or English.
     InputLanguage lang = _GetInputLanguage(text);
-    if (lang == InvalidInput)
-        return;
-
-    QString lowered = text.toLower();
-    QPairMap translations;
-    SFOContext *context = SFOContext::GetInstance();
-    if (lang == JapaneseInput) {
-        translations = _GetMatch(lowered, context->GetJpToEnDict());
-    } else if (lang == EnglishInput) {
-        translations = _GetMatch(lowered, context->GetEnToJpDict());
-    }
-
     SFOTranslateModel *model = new SFOTranslateModel();
-    model->SetTranslations(translations);
     _translationModel = SFOTranslateModelSharedPtr(model);
+    QPairMap translations;
+    if (lang != InvalidInput) {
+        QString lowered = text.toLower();
+        SFOContext *context = SFOContext::GetInstance();
+        if (lang == JapaneseInput) {
+            translations = _GetMatch(lowered, context->GetJpToEnDict());
+        } else if (lang == EnglishInput) {
+            translations = _GetMatch(lowered, context->GetEnToJpDict());
+        }
+    }
+    model->SetTranslations(translations);
     _context->setContextProperty(ModelIdentifier,
                                  model);
 }

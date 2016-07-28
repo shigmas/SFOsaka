@@ -3,13 +3,12 @@
 
 #include <QValidator>
 
-// Looks like the compiler needs to know about the model to use it as a property
-#include "SFOSubmitWordModel.h"
+class SFOValidatorReceiver;
 
 class SFOValidator : public QValidator
 {
     Q_OBJECT
-    Q_PROPERTY(SFOSubmitWordModel * receiver READ GetReceiver WRITE SetReceiver NOTIFY ReceiverChanged )
+    Q_PROPERTY(QVariant receiver READ GetReceiver WRITE SetReceiver NOTIFY ReceiverChanged )
     Q_PROPERTY(QVariant identifier READ GetIdentifier WRITE SetIdentifier NOTIFY IdentifierChanged )
 
 public:
@@ -20,8 +19,8 @@ public:
 
     QString GetValidated() const;
 
-    SFOSubmitWordModel * GetReceiver() const;
-    void SetReceiver(SFOSubmitWordModel *receiver);
+    QVariant GetReceiver() const;
+    void SetReceiver(const QVariant& receiver);
     QVariant GetIdentifier() const;
     void SetIdentifier(const QVariant& identifier);
 
@@ -30,10 +29,11 @@ signals:
     void IdentifierChanged();
 
 protected:
+    SFOValidatorReceiver* _GetReceiverFromVariant(const QVariant& var) const;
     void _AddToReceiver();
 
 private:
-    SFOSubmitWordModel * _receiver;
+    QVariant _receiver;
     QVariant _identifier;
     mutable QString _validated;
 

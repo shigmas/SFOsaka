@@ -10,7 +10,7 @@ Item {
         id: titleFontMetrics
         font.family: "Arial"
         font.bold: true
-        font.pointSize: 32
+        font.pointSize: 28
         text: "placeholder text"
     }
 
@@ -23,6 +23,8 @@ Item {
 
     Column {
         id: row1
+        anchors.fill: parent
+        
         AppBar {
             id: toolbar
             onButtonActivated: root.buttonActivated()
@@ -40,7 +42,7 @@ Item {
                     text: partnerDetail.name
                     font.family: "Arial"
                     font.bold: true
-                    font.pointSize: 42
+                    font.pointSize: 28
                 }
             }
         }
@@ -51,7 +53,7 @@ Item {
             Text {
                 id: partnerCategory
                 text: partnerDetail.category
-                font.pixelSize: 12
+                font.pointSize: 12
             }
         }
 
@@ -60,6 +62,7 @@ Item {
 
             TextArea {
                 id: partnerDescription
+                font.pointSize: 14
                 text: partnerDetail.description
             }
         }

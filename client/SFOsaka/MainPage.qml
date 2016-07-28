@@ -59,7 +59,6 @@ Item {
         ToolButton {
             id: refreshButton
             text: qsTr("Refresh Data")
-            font.pointSize: 12
             // placeModel is a weird place to have a refresh, but there's no
             // central object or controller that's accessible via QML.
             onClicked: placeModel.HandleRefresh()

@@ -35,7 +35,7 @@ class ContactInfo(models.Model):
     phone = models.CharField(max_length=64)
 
     def __str__(self):
-        return '%s, %s' % (self.street_number, self.city)
+        return '%s, %s' % (self.street_number, self.phone)
 
 class Organization(models.Model):
     name = models.CharField(max_length=512)

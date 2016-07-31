@@ -8,6 +8,8 @@ const QString SFOOrganization::IdKey                 = "id";
 const QString SFOOrganization::NameKey               = "name";
 const QString SFOOrganization::NameJpKey             = "name_jp";
 const QString SFOOrganization::CategoryKey           = "category";
+const QString SFOOrganization::ContactInfoKey        = "contact";
+
 const QString SFOOrganization::DescriptionKey        = "description";
 const QString SFOOrganization::DescriptionJpKey      = "description_jp";
 const QString SFOOrganization::ShortDescriptionKey   = "shortDescription";
@@ -16,6 +18,9 @@ const QString SFOOrganization::URLKey                = "url";
 const QString SFOOrganization::ImageURLKey           = "imageUrl";
 
 const QString SFOOrganization::ModificationKey       = "modificationDate";
+
+const QString SFOOrganization::ContactInfoStreetKey  = "street_number";
+const QString SFOOrganization::ContactInfoCityKey    = "city";
 
 SFOOrganization::SFOOrganization(QObject *parent) : QObject(parent)
 {
@@ -37,6 +42,7 @@ SFOOrganization::SFOOrganization(const QVariantMap& dataMap)
     _name = dataMap[NameKey].toString();
     _nameJp = dataMap[NameJpKey].toString();
     _category = dataMap[CategoryKey].toString();
+    _contactInfo = dataMap[ContactInfoKey].value<QVariantMap>();
     _description = dataMap[DescriptionKey].toString();
     _descriptionJp = dataMap[DescriptionJpKey].toString();
     _shortDescription = dataMap[ShortDescriptionKey].toString();
@@ -69,6 +75,8 @@ SFOOrganization::GetName_locale() const
 QString
 SFOOrganization::GetCategory_locale() const
 {
+    // Translate!! I think we need to manually pass this to the translator.
+    //return tr(GetCategory().data());
     return GetCategory();
 }
 
@@ -82,6 +90,19 @@ SFOOrganization::GetDescription_locale() const
         return GetDescription();
     }
 }
+
+QString
+SFOOrganization::GetContactInfoStreet() const
+{
+    return _contactInfo[ContactInfoStreetKey].toString();
+}
+
+QString
+SFOOrganization::GetContactInfoCity() const
+{
+    return _contactInfo[ContactInfoCityKey].toString();
+}
+    
 
 QString
 SFOOrganization::GetId() const
@@ -105,6 +126,12 @@ QString
 SFOOrganization::GetCategory() const
 {
     return _category;
+}
+
+QVariantMap
+SFOOrganization::GetContactInfo() const
+{
+    return _contactInfo;
 }
 
 QString
@@ -158,6 +185,7 @@ SFOOrganization::_ToVariantMap() const
     dataMap[NameKey] = _name;
     dataMap[NameJpKey] = _nameJp;
     dataMap[CategoryKey] = _category;
+    dataMap[ContactInfoKey] = _contactInfo;
     dataMap[DescriptionKey] = _description;
     dataMap[DescriptionJpKey] = _descriptionJp;
     dataMap[ShortDescriptionKey] = _shortDescription;

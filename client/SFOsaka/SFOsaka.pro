@@ -12,7 +12,7 @@ ios {
 
     ios_icon.files = $$files($$PWD/ios/Icons/AppIcon*.png)
     QMAKE_BUNDLE_DATA += ios_icon
-    launch_images.files = $$files($PWD/ios/LaunchScreen.xib) $$files($$PWD/sister_banner.png)
+    launch_images.files = $$files($PWD/ios/LaunchScreen.xib) $$files($$PWD/resources/bmatsuri_banner.png)
     QMAKE_BUNDLE_DATA += launch_images
 }
 

@@ -7,6 +7,7 @@
 #include <QString>
 #include <QGeoLocation>
 #include <QJsonObject>
+#include <QVariant>
 
 class SFOOrganization : public QObject
 {
@@ -16,6 +17,9 @@ class SFOOrganization : public QObject
     Q_PROPERTY(QString name READ GetName_locale NOTIFY NameChanged)
     Q_PROPERTY(QString category READ GetCategory_locale NOTIFY CategoryChanged)
     Q_PROPERTY(QString description READ GetDescription_locale NOTIFY DescriptionChanged)
+    Q_PROPERTY(QString imageURL READ GetImageURL NOTIFY ImageURLChanged)
+    Q_PROPERTY(QString contactStreet READ GetContactInfoStreet NOTIFY ContactInfoChanged)
+    Q_PROPERTY(QString contactCity READ GetContactInfoCity NOTIFY ContactInfoChanged)
 
 public:
     explicit SFOOrganization(QObject *parent = 0);
@@ -31,11 +35,16 @@ public:
     QString GetCategory_locale() const;
     QString GetDescription_locale() const;
 
+    // Keeping it simple - just return the street address and city.
+    QString GetContactInfoStreet() const;
+    QString GetContactInfoCity() const;
+    
     // really a string, but we know it's an id
     QString GetId() const;
     QString GetName() const;
     QString GetNameJp() const;
     QString GetCategory() const;
+    QVariantMap GetContactInfo() const;
     QString GetDescription() const;
     QString GetDescriptionJp() const;
     QString GetShortDescription() const;
@@ -48,6 +57,8 @@ signals:
     void NameChanged();
     void CategoryChanged();
     void DescriptionChanged();
+    void ImageURLChanged();
+    void ContactInfoChanged();
     
 protected:
     virtual QVariantMap _ToVariantMap() const;
@@ -58,6 +69,7 @@ protected:
     static const QString NameKey;
     static const QString NameJpKey;
     static const QString CategoryKey;
+    static const QString ContactInfoKey;
     static const QString DescriptionKey;
     static const QString DescriptionJpKey;
     static const QString ShortDescriptionKey;
@@ -68,11 +80,16 @@ protected:
     // Server only
     static const QString ModificationKey;
 
+    // For the subkey for contact info
+    static const QString ContactInfoStreetKey;
+    static const QString ContactInfoCityKey;
+    
 private:
     QString _id;
     QString _name;
     QString _nameJp;
     QString _category;
+    QVariantMap _contactInfo;
     QString _description;
     QString _descriptionJp;
     QString _shortDescription;

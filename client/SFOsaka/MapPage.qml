@@ -13,7 +13,7 @@ ColumnLayout {
 
     id: root
     Layout.fillWidth: true
-    anchors.fill: parent
+    //anchors.fill: parent
 
     signal buttonActivated()
     signal itemSelected(string title)
@@ -90,7 +90,7 @@ ColumnLayout {
                 sourceItem: Column {
                     Image {
                         id: image
-                        source: "marker.png"
+                        source: "resources/marker.png"
                         MouseArea {
                             id: imageMouseArea
                             anchors.fill: parent

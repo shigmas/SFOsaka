@@ -125,7 +125,8 @@ SFOItemModel::HandleItemSelected(const QString& title)
         }
     }
 
-    _context->setContextProperty(SFOItemModel::PartnerModelIdentifier, NULL);
+    //    _context->setContextProperty(SFOItemModel::PartnerModelIdentifier, NULL);
+    
     _context->setContextProperty(SFOItemModel::PartnerModelIdentifier, p);
 }
 

@@ -196,7 +196,7 @@ SFOContext::LoadFromDisk()
         qDebug() << PerformerCacheFileName << " was empty";
     }
 
-    qDebug() << "Dict cache: " << DictionaryCacheFileName;
+    //qDebug() << "Dict cache: " << DictionaryCacheFileName;
     doc = _LoadCacheFile(DictionaryCacheFileName);
     QVariantMap allDicts = _GetMapFromJson(doc);
     if (!allDicts.empty()) {

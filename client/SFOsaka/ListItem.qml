@@ -1,6 +1,6 @@
-import QtQuick 2.0
+import QtQuick 2.4
 import QtQuick.Controls 1.4
-import QtQuick.Layouts 1.1
+import QtQuick.Layouts 1.3
 
 Item {
     id: root
@@ -9,39 +9,75 @@ Item {
     property string itemTime
     property string itemDescription
 
-    x: 5
     width: parent.width
-    height: parent.width
+    //height: parent.width
+    implicitHeight: contentItem.height
+    
+    TextMetrics {
+        id: timeFont
+        font.family: "Arial"
+        font.pointSize: 18
+        text: "text"
+    }
 
-    Row {
+    // Use one item to contain the other items, so we can use its height in
+    // the parent
+    ColumnLayout {
+        id: contentItem
+        // I think using the parent as anchors.fill is weird, since its
+        // implicit height depends on us, so use the Layout fill
+        Layout.fillHeight: true
+        //Layout.fillWidth: true
+        width: root.width
+        spacing: 5
+
+        // This has a bar so that it divides each entry
+        Rectangle {
+            id: timeItem
+            color: "lightgray"
+            Layout.fillWidth: true
+            width: root.width
+            height: timeFont.height
+            Text {
+                text: root.itemTime
+                anchors.leftMargin: 8.0
+                font.family: "Arial"
+                font.pointSize: 18
+                font.bold: true
+            }
+        }
+
         Text {
-            text: root.itemTime
+            id: titleItem
+            width: root.width
+            anchors.leftMargin: 8.0
+            text: root.itemTitle
+            font.bold: true
             font.family: "Arial"
-            font.pointSize: 12
+            font.pointSize: 22
         }
 
-        Image {
-            width: 100
-            height: 100
-            fillMode: Image.PreserveAspectFit
-            source: root.itemImageSource
-        }
-        ColumnLayout {
-            Row {
-                Text {
-                    text: root.itemTitle
-                    font.bold: true
-                    font.family: "Arial"
-                    font.pointSize: 20
-                }
-            }
-            Row {
-                TextArea {
-                    text: root.itemDescription
-                    font.family: "Arial"
-                    font.pointSize: 12
-                }
+        Rectangle {
+            id: imageRectItem
+            width: root.width 
+            height: root.width
+            Image {
+                id: imageItem
+                fillMode: Image.PreserveAspectFit
+                anchors.fill: parent
+                source: root.itemImageSource
             }
         }
+
+        TextArea {
+            id: descriptionItem
+            Layout.fillWidth: true
+            anchors.topMargin: 6.0
+            readOnly: true
+            font.family: "Arial"
+            font.pointSize: 16
+            text: root.itemDescription
+        }
+
     }
 }

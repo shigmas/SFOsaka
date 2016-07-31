@@ -53,8 +53,8 @@ SFOScheduleModel::data(const QModelIndex &index, int role) const
         case 0:
             return item->GetName_locale();
         case 1:
-            return QString(item->GetStartTime().toString("h:ma") + " - "
-                           + item->GetEndTime().toString("h:ma"));
+            return QString(item->GetStartTime().toString("h:mma") + " - "
+                           + item->GetEndTime().toString("h:mma"));
         case 2:
             return item->GetDescription_locale();
         case 3:

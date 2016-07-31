@@ -11,10 +11,11 @@
         <file>TranslatorAdd.qml</file>
         <file>TranslatorPage.qml</file>
         <file>sfosaka.qml</file>
-        <file>marker.png</file>
-        <file>dictionary.png</file>
-        <file>sfosaka_logo.png</file>
-        <file>sfosaka-map-flatten.png</file>
-        <file>sister_banner.png</file>
+        <file>resources/marker.png</file>
+        <file>resources/dictionary_icon.png</file>
+        <file>resources/sfosaka_logo.png</file>
+        <file>resources/partner_icon.png</file>
+        <file>resources/festival_icon.png</file>
+        <file>resources/matsuri_banner.png</file>
     </qresource>
 </RCC>

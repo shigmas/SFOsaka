@@ -10,7 +10,7 @@ ToolBar {
     RowLayout {
         anchors.fill: parent
         ToolButton {
-            text: qsTr("Go Back")
+            text: qsTr("Back")
             onClicked: root.buttonActivated()
         }
         Rectangle { Layout.fillWidth: true }

@@ -1,0 +1,62 @@
+#! /bin/sh
+#
+# fangalcohol    Startup script for Django server through gunicorn
+#
+# Version:       1.0
+#
+
+# Constants
+GUNICORN_USER=ubuntu
+HOME_DIR=home
+#GUNICORN_USER=wyan
+#HOME_DIR=Users
+
+. /lib/lsb/init-functions
+
+ROOT_DIR=/$HOME_DIR/$GUNICORN_USER/src/github/SFOsaka/server
+GUNICORN=gunicorn
+APPLICATION_DIR=sfosaka
+CONF_FILE=sfosaka.gconf
+PID_FILE=sfosaka_gunicorn.pid
+APPLICATION=sfosaka.wsgi:application
+
+GUNICORN_PATH=$ROOT_DIR/bin/$GUNICORN
+APPLICATION_PATH=$ROOT_DIR/$APPLICATION_DIR
+CONFIG_PATH=$ROOT_DIR/$APPLICATION_DIR/$CONF_FILE
+PID_PATH=$ROOT_DIR/$APPLICATION_DIR/$PID_FILE
+
+start () {
+      echo "starting up..."
+      if test -f "$PID_PATH"; then
+         stop
+         # Wait to make sure it's killed so we don't step on ourselves
+         sleep 2
+      fi
+      echo "Saving pid file to $PID_PATH"
+      $GUNICORN_PATH -p $PID_PATH -c $CONFIG_PATH --pythonpath $APPLICATION_PATH $APPLICATION
+}
+
+stop () {
+      echo "shutting down"
+      PID=`cat $PID_PATH 2>/dev/null`
+      if test -n "$PID" && kill $PID 2>/dev/null; then
+         echo 'shutdown server'
+      fi
+      rm $PID_PATH
+}
+
+status () {
+      status_of_proc -p $PID_PATH $GUNICORN_PATH $GUNICORN
+}
+
+case "$1" in
+     start)
+        start
+        ;;
+     stop)
+        stop
+        ;;
+     status)
+        status
+        ;;
+esac

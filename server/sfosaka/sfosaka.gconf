@@ -4,7 +4,7 @@ import os
 from os.path import expanduser
 
 bind = "127.0.0.1:8003"
-workers = 32
+workers = 16
 daemon = True
-accesslog = os.path.join(expanduser('~'),'logs/gunicorn_sfosaka_access.log')
-errorlog = os.path.join(expanduser('~'),'logs/gunicorn_sfosaka_error.log')
+accesslog = '/home/ubuntu/logs/gunicorn_sfosaka_access.log'
+errorlog = '/home/ubuntu/logs/gunicorn_sfosaka_error.log'

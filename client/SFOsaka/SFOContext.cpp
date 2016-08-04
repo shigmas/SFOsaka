@@ -25,7 +25,7 @@ const QString SFOContext::LastDictDateKey      = "last_dict_date";
 const QString SFOContext::LastPerformerDateKey = "last_performer_date";
 
 //const QStringPair SFOContext::ServerInfo = qMakePair(QString("localhost:8000"),QString("http"));
-const QStringPair SFOContext::ServerInfo = qMakePair(QString("malttest.futomen.net:8143"),QString("https"));
+const QStringPair SFOContext::ServerInfo = qMakePair(QString("sfosaka.futomen.net:8143"),QString("https"));
 
 SFOContext::SFOContext(QObject *parent) : 
     FJCaller(parent)

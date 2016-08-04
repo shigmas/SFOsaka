@@ -13,7 +13,6 @@
 #include <QThread>
 #include <QVariant>
 
-#include <iostream>
 #include <functional>
 
 using namespace std::placeholders;
@@ -106,7 +105,7 @@ void
 FJOperation::_OnAuthenticationRequired(QNetworkReply *,
                                        QAuthenticator * authenticator)
 {
-    std::cerr << "Authentication required. authenticating..." << std::endl;
+    qDebug() << "Authentication required. authenticating...";
     authenticator->setUser("guest");
     authenticator->setPassword("guest");
     // Send the request again
@@ -170,20 +169,20 @@ void
 FJOperation::_OnBytesReceived(qint64 bytesReceived, qint64 )
 {
     if (bytesReceived <= 0) {
-        std::cerr << "Nothing to read" << std::endl;
+        qDebug() << "Nothing to read";
         return;
     }
-    char buffer[bytesReceived+1];
-    qint64 bytesRead = _reply->read(buffer, bytesReceived);
-    if (bytesRead == -1) {
+    QByteArray bytesRead = _reply->readAll();
+    if (bytesRead.size() == 0) {
         //qDebug() << "-1 returned from QIODevice::read()";
+        qDebug() << "0 bytes read from QIODevice::readAll()";
         return;
-    } else if (bytesRead != bytesReceived) {
+    } else if (bytesRead.size() != bytesReceived) {
         // This was garbage (on android, at least), so throw it out.
         qDebug() << "Read " << bytesRead << ", expected " << bytesReceived;
         //                 << "[" << buffer << "]";
     }
-    _buffer.append(buffer);
+    _buffer.append(bytesRead);
 }
 
 void
@@ -251,7 +250,7 @@ FJOperation::_GetJsonFromContent(const QByteArray& content)
 
     QByteArray cleanedContent = content;
     unsigned int desiredSize = cleanedContent.size() -1;
-    //qDebug() << "Raw: <<" << _buffer.data() << ">>";
+    qDebug() << "Raw: <<" << _buffer.data() << ">>";
     while ((cleanedContent.at(desiredSize) != '}') &&
            (cleanedContent.at(desiredSize) != ']')) {
         // Remove crap at the end. Namely, the ';' that the server sticks on.
@@ -333,7 +332,7 @@ bool
 FJOperation::_ProcessCheck(const QJsonDocument& document) 
 {
     if (! document.isObject()) {
-        std::cerr << "Expected document to be an object" << std::endl;
+        qDebug() << "Expected document to be an object";
     }
 
     QVariantMap jMap = document.object().toVariantMap();

@@ -27,7 +27,8 @@ Rectangle {
 
     Text {
         id: featureText
-        font.italic: true
+        // Japanese doesn't support italic. If we figure out how to 
+        //font.italic: true
         font.family: featureRect.fontFamily
         style: Text.Outline
         styleColor: featureRect.styleColor

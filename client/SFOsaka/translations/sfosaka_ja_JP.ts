@@ -73,37 +73,72 @@
         <translation type="vanished">編集</translation>
     </message>
     <message>
-        <location filename="../TranslatorAdd.qml" line="31"/>
+        <source>Add your phrase. Pronunciation is only necessary for Japanese. Translations will appear when they are approved.</source>
+        <translation type="vanished">フレーズの追加(日本語:ローマ字で発音方法も要必要）｡追加されたフレーズは承認が下り次第、表示されます。</translation>
+    </message>
+    <message>
+        <source>Add your phrase. Romaji is necessary for Japanese. Translations will appear when they are approved.</source>
+        <translation type="vanished">フレーズの追加(日本語:ローマ字で発音方法も要必要）｡追加されたフレーズは承認が下り次第、表示されます。</translation>
+    </message>
+    <message>
         <source>New word</source>
-        <translation>フレーズの追加</translation>
+        <translation type="vanished">フレーズの追加</translation>
     </message>
     <message>
-        <location filename="../TranslatorAdd.qml" line="42"/>
         <source>Pronunciation</source>
-        <translation>発音</translation>
+        <translation type="vanished">発音</translation>
     </message>
     <message>
-        <location filename="../TranslatorAdd.qml" line="66"/>
         <source>translation</source>
-        <translation>翻訳</translation>
+        <translation type="vanished">翻訳</translation>
     </message>
     <message>
-        <location filename="../TranslatorAdd.qml" line="78"/>
         <source>pronunciation</source>
-        <translation>発音</translation>
+        <translation type="vanished">発音</translation>
     </message>
     <message>
-        <location filename="../TranslatorAdd.qml" line="90"/>
+        <location filename="../TranslatorAdd.qml" line="34"/>
+        <source>Enter a new phrase in either English or Japanese. For Japanese phrases, include Romaji. Under translation(s), add the translation of the phrase in the destination language, including alternate translations if necessary. Translations will appear when they are approved.</source>
+        <translation>『新しいフレーズ』には英語か日本語でフレーズを入力して下さい。『翻訳』には追加するフレーズの訳を入力し、『追加』で複数の訳を登録できます。日本語を入力の際は、ローマ字にて発音の入力が必要です。承認が下り次第、新しいフレーズは表示されます。</translation>
+    </message>
+    <message>
+        <location filename="../TranslatorAdd.qml" line="47"/>
+        <source>New Phrase</source>
+        <translation>新しいフレーズ</translation>
+    </message>
+    <message>
+        <location filename="../TranslatorAdd.qml" line="59"/>
+        <source>Japanese/English</source>
+        <translation>日本語/英語</translation>
+    </message>
+    <message>
+        <location filename="../TranslatorAdd.qml" line="70"/>
+        <location filename="../TranslatorAdd.qml" line="106"/>
+        <source>romaji</source>
+        <translation>ローマ字</translation>
+    </message>
+    <message>
+        <location filename="../TranslatorAdd.qml" line="80"/>
+        <source>Translation(s):</source>
+        <translation>翻訳：</translation>
+    </message>
+    <message>
+        <location filename="../TranslatorAdd.qml" line="94"/>
+        <source>English/Japanese</source>
+        <translation>英語/日本語</translation>
+    </message>
+    <message>
+        <location filename="../TranslatorAdd.qml" line="118"/>
         <source>+</source>
         <translation>追加</translation>
     </message>
     <message>
-        <location filename="../TranslatorAdd.qml" line="100"/>
+        <location filename="../TranslatorAdd.qml" line="128"/>
         <source>-</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="../TranslatorAdd.qml" line="113"/>
+        <location filename="../TranslatorAdd.qml" line="141"/>
         <source>Submit</source>
         <translation>決定</translation>
     </message>
@@ -134,13 +169,26 @@
         <translation type="vanished">言葉</translation>
     </message>
     <message>
-        <location filename="../TranslatorPage.qml" line="40"/>
         <source>search phrase</source>
+        <translation type="vanished">フレーズ検索</translation>
+    </message>
+    <message>
+        <source>+</source>
+        <translation type="vanished">追加</translation>
+    </message>
+    <message>
+        <location filename="../TranslatorPage.qml" line="41"/>
+        <source>Search Phrase</source>
         <translation>フレーズ検索</translation>
     </message>
     <message>
-        <location filename="../TranslatorPage.qml" line="51"/>
-        <source>+</source>
+        <location filename="../TranslatorPage.qml" line="54"/>
+        <source>English/Japanese</source>
+        <translation>英語/日本語</translation>
+    </message>
+    <message>
+        <location filename="../TranslatorPage.qml" line="65"/>
+        <source>Add</source>
         <translation>追加</translation>
     </message>
 </context>

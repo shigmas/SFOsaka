@@ -443,7 +443,7 @@ SFOContext::_HandlePerformersResponse(const QJsonDocument& data)
         success = results["result"].toBool();
     }
     if (success) {
-        qDebug() << "Performers Data: " << results;
+        //qDebug() << "Performers Data: " << results;
         _eraseList(_performers);
         QVariantMap performerMap = results["performers_list"].toMap();
         QPair<QDateTime, SFOPerformerList> resp =

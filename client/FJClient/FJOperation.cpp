@@ -175,7 +175,7 @@ FJOperation::_OnBytesReceived(qint64 bytesReceived, qint64 )
     QByteArray bytesRead = _reply->readAll();
     if (bytesRead.size() == 0) {
         //qDebug() << "-1 returned from QIODevice::read()";
-        qDebug() << "0 bytes read from QIODevice::readAll()";
+        //qDebug() << "0 bytes read from QIODevice::readAll()";
         return;
     } else if (bytesRead.size() != bytesReceived) {
         // This was garbage (on android, at least), so throw it out.
@@ -250,7 +250,7 @@ FJOperation::_GetJsonFromContent(const QByteArray& content)
 
     QByteArray cleanedContent = content;
     unsigned int desiredSize = cleanedContent.size() -1;
-    qDebug() << "Raw: <<" << _buffer.data() << ">>";
+    //qDebug() << "Raw: <<" << _buffer.data() << ">>";
     while ((cleanedContent.at(desiredSize) != '}') &&
            (cleanedContent.at(desiredSize) != ']')) {
         // Remove crap at the end. Namely, the ';' that the server sticks on.

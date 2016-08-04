@@ -57,6 +57,9 @@ protected:
     // Returns the entries of \p dict that match the string \p str
     QPairMap _GetMatch(const QString& str, const QPairMap& dict) const;
 
+    // Returns the entries of \p dict that match phonetically to \p str
+    QPairMap _GetPhoneticJpMatch(const QString& str, const QPairMap& dict) const;
+
 private:
     QQmlContext *_context;
 

@@ -6,29 +6,52 @@ import SFOsaka 1.0
 
 Item {
     id: root
-
+    anchors.fill: parent
     signal buttonActivated()
 
     ColumnLayout {
+        width: parent.width
 
         AppBar {
             id: toolbar
+            width: parent.width
             onButtonActivated: root.buttonActivated()
         }
 
-        Text {
+        TextMetrics {
+            id: fontMetrics
+            font.pointSize: 12
+            text: "placeholder text"
+        }
+        TextArea {
+            id: instructionText
+            anchors.top: toolbar.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: fontMetrics.height * 3
             font.pixelSize: 12
-            text: "Couldn't find what you were looking for? Please add your phrase. (Pronunciation is only necessary for Japanese)"
+            readOnly: true
+            text: qsTr("Enter a new phrase in either English or Japanese. For Japanese phrases, include Romaji. Under translation(s), add the translation of the phrase in the destination language, including alternate translations if necessary. Translations will appear when they are approved.")
+        }
+
+        RowLayout {
+            id: newPhraseLayout
+            anchors.top: instructionText
+            Text {
+                id: searchPhraseText
+                text: qsTr("New Phrase")
+            }
         }
 
         Row {
             id: column1
+            anchors.top: newPhraseLayout.bottom
 
             TextField {
                 id: textInput
                 inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
                 text: submitModel.word
-                placeholderText: qsTr("New word")
+                placeholderText: qsTr("Japanese/English")
                 //font.pixelSize: 12
                 validator: SFOValidator {
                     identifier: "word"
@@ -39,7 +62,7 @@ Item {
                 id: textPhonetic
                 inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
                 text: submitModel.phonetic
-                placeholderText: qsTr("Pronunciation")
+                placeholderText: qsTr("romaji")
                 //font.pixelSize: 12 
                 validator: SFOValidator {
                     identifier: "phonetic"
@@ -49,7 +72,7 @@ Item {
         }
         Row {
             Text {
-                text: "Add alphabetic pronunciation if needed"
+                text: qsTr("Translation(s):")
             }
         }
 
@@ -63,7 +86,7 @@ Item {
                 TextField {
                     id: rowText
                     inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
-                    placeholderText: qsTr("translation")
+                    placeholderText: qsTr("English/Japanese")
                     text: translation
                     width: 120
                     height: 40
@@ -75,7 +98,7 @@ Item {
                 TextField {
                     id: rowPhonetic
                     inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
-                    placeholderText: qsTr("pronunciation")
+                    placeholderText: qsTr("romaji")
                     text: phonetic
                     width: 120
                     height: 40
@@ -86,7 +109,7 @@ Item {
                 }
                 ToolButton {
                     visible: addVisible
-                    width: 15
+                    width: 32
                     text: qsTr("+")
                     id: addButton
                     onClicked: {
@@ -96,7 +119,7 @@ Item {
                 }
                 ToolButton {
                     visible: removeVisible
-                    width: 15
+                    width: 32
                     text: qsTr("-")
                     id: removeButton
                     onClicked: {

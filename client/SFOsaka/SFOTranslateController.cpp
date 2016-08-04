@@ -82,7 +82,12 @@ SFOTranslateController::_ProcessInput(const QString& text)
         if (lang == JapaneseInput) {
             translations = _GetMatch(lowered, context->GetJpToEnDict());
         } else if (lang == EnglishInput) {
-            translations = _GetMatch(lowered, context->GetEnToJpDict());
+            QPairMap enToJp = context->GetEnToJpDict();
+            translations = _GetMatch(lowered, enToJp);
+            // We're going backwards - finding the japanese word that matches
+            // this phonetic japanese word, and it's the english dictionary that
+            // contains the phonetics, not the japanese to english.
+            translations.unite(_GetPhoneticJpMatch(lowered, enToJp));
         }
     }
     model->SetTranslations(translations);
@@ -119,6 +124,22 @@ SFOTranslateController::_GetMatch(const QString& str,
          mit != dict.constEnd() ; ++mit) {
         // XXX - this is better done with a filter. Do we have that?
         if (mit.key().toLower().contains(str)) {
+            matches[mit.key()] = mit.value();
+        }
+    }
+
+    return matches;
+}
+
+QPairMap
+SFOTranslateController::_GetPhoneticJpMatch(const QString& str,
+                                            const QPairMap& dict) const
+{
+    QPairMap matches;
+    for (QPairMap::const_iterator mit = dict.constBegin() ;
+         mit != dict.constEnd() ; ++mit) {
+        QStringPair val = mit.value();
+        if (val.second.toLower().contains(str)) {
             matches[mit.key()] = mit.value();
         }
     }

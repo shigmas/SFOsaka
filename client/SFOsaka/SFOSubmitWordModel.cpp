@@ -114,6 +114,7 @@ SFOSubmitWordModel::AddTranslation(const QString& translation,
     qDebug() << "Adding " << translation;
     _translations.append(translation);
     _phonetics.append(phonetic);
+    _SyncFromValidators();
     qDebug() << "Setting model property again";
     // Kludgy, but we clear it, then set it again so we pull the data again.
     _context->setContextProperty("submitModel", NULL);

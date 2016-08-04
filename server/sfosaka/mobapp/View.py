@@ -285,7 +285,11 @@ class TranslatorView(BaseView):
         words = DictionaryWord.objects.all()
         latest = DictionaryWord.objects.latest().modificationDate.isoformat()
         content[self.kAsOfDateKey] = latest;
+        activeStatus = Status.objects.get(name='active')
         for w in words:
+            # Skip word if the status is not active
+            if w.status != activeStatus:
+                continue
             wDict = {}
             fields = w._meta.concrete_fields
             itemId = None

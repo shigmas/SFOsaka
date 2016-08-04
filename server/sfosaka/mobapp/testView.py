@@ -212,7 +212,10 @@ class TranslatorViewTests(TestCase):
         except:
             pass
 
+        pendingStatus = models.Status.objects.get(name='pending')
+        
         self.assertEquals(entry.word, word, 'Word not found')
+        self.assertEquals(entry.status, pendingStatus, 'Status is not pending')
         if phonetic:
             self.assertEquals(entry.phonetic, phonetic,
                               'Phonetic word does not match')

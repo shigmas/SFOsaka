@@ -29,15 +29,29 @@ Item {
         }
 
         RowLayout {
-            id: header
+            id: searchPhraseLayout
             anchors.top: toolbar.bottom
+            Rectangle {
+                width: 1
+                height: 0
+            }
+
+            Text {
+                id: searchPhraseText
+                text: qsTr("Search Phrase")
+            }
+        }
+
+        RowLayout {
+            id: header
+            anchors.top: searchPhraseLayout.bottom
 
             TextField {
                 id: textInput
                 //Layout.fillWidth: true
                 width: fontMetrics.width * 2
                 height: fontMetrics.height
-                placeholderText: qsTr("search phrase")
+                placeholderText: qsTr("English/Japanese")
                 validator: SFOValidator {
                     receiver: translateController
                 }
@@ -48,7 +62,7 @@ Item {
 
             ToolButton {
                 id: button1
-                text: qsTr("+")
+                text: qsTr("Add")
                 Layout.alignment: Qt.AlignRight
                 onClicked: {
                     root.addActivated()

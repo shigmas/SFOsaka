@@ -43,7 +43,7 @@ Item {
         }
 
         RowLayout {
-            id: header
+            id: searchBoxLayout
             anchors.top: searchPhraseLayout.bottom
 
             TextField {
@@ -70,10 +70,25 @@ Item {
             }
         }
 
+        RowLayout {
+            id: resultsExplanationLayout
+            anchors.top: searchBoxLayout.bottom
+            Rectangle {
+                width: 1
+                height: 0
+            }
+
+            Text {
+                id: resultsExplanationText
+                font.pointSize: 12
+                text: translateController.resultsText
+            }
+        }
+
         ListView {
             id: translationView
             model: translationModel
-            anchors.top: header.bottom
+            anchors.top: resultsExplanationLayout.bottom
             anchors.bottom: parent.bottom
             
             delegate: Rectangle {

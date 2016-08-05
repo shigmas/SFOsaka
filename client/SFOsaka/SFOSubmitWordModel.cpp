@@ -155,6 +155,7 @@ SFOSubmitWordModel::CommitModel()
         SFOContext::GetInstance()->AddWordTranslation(_word, _phonetic,
                                                       transPhonetic);
     }
+    _ClearModel();
 }
 
 QVariant
@@ -208,4 +209,15 @@ SFOSubmitWordModel::_SyncFromValidators()
         SFOValidator *validator = _validators[*it];
         UpdateElement(validator->GetValidated(), it->first, it->second);
     }
+}
+
+void
+SFOSubmitWordModel::_ClearModel()
+{
+    _word = "";
+    _phonetic = "";
+    _translations.clear();
+    _phonetics.clear();
+    _context->setContextProperty("submitModel", NULL);
+    _context->setContextProperty("submitModel", this);
 }

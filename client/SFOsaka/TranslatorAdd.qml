@@ -1,6 +1,7 @@
 import QtQuick 2.4
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.3
+import QtQuick.Dialogs 1.2
 
 import SFOsaka 1.0
 
@@ -36,7 +37,6 @@ Item {
 
         RowLayout {
             id: newPhraseLayout
-            anchors.top: instructionText
             Text {
                 id: searchPhraseText
                 text: qsTr("New Phrase")
@@ -137,11 +137,20 @@ Item {
             }
         }
 
+        MessageDialog {
+            id: postSubmitDialog
+            title: qsTr("Thank you for your submission")
+            text: qsTr("Your phrase and translation has been submitted. It will appear in the phrasebook after it has been approved.")
+            onAccepted: {
+                stackView.pop()
+            }
+        }
+
         Connections {
             target: submitButton
             onClicked: {
                 listView1.model.CommitModel()
-                stackView.pop()
+                postSubmitDialog.open()
             }
         }
     }

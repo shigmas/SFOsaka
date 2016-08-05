@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += qml quick network positioning location
+QT += qml quick widgets network positioning location
 
 !osx:qtHaveModule(webengine) {
         QT += webengine
@@ -35,6 +35,7 @@ SOURCES += main.cpp \
 
 lupdate_only{
 SOURCES = FeatureRect.qml  \
+    SFOTranslateController.cpp \
     FestivalPage.qml       \
     ListItem.qml           \
     MainPage.qml           \

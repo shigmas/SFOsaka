@@ -16,7 +16,8 @@ const QString SFOTranslateController::ModelIdentifier = "translationModel";
 SFOTranslateController::SFOTranslateController(QQmlContext *context,
                                                QObject *parent) :
     QObject(parent),
-    _context(context)
+    _context(context),
+    _noMatchesFound(false)
 {
     _context->setContextProperty(ControllerIdentifier, this);
     _context->setContextProperty(ModelIdentifier, QVariant());
@@ -48,6 +49,12 @@ SFOTranslateController::Validate( QString & input, int & )
 {
     _ProcessInput(input);
     return QValidator::Acceptable;
+}
+
+QString
+SFOTranslateController::GetResultsText() const
+{
+    return _resultsText;
 }
 
 void
@@ -87,9 +94,21 @@ SFOTranslateController::_ProcessInput(const QString& text)
             // We're going backwards - finding the japanese word that matches
             // this phonetic japanese word, and it's the english dictionary that
             // contains the phonetics, not the japanese to english.
-            translations.unite(_GetPhoneticJpMatch(lowered, enToJp));
+            _AppendPhoneticJpMatch(translations, lowered, enToJp);
         }
     }
+    bool noMatchFound = !text.isEmpty() and translations.empty();
+    if (noMatchFound != _noMatchesFound) {
+        _noMatchesFound = noMatchFound;
+        // Changed since last time. Update the text
+        if (noMatchFound) {
+            _resultsText = (tr("No Matches Found. Use 'Add' to enter a new phrase."));
+        } else {
+            _resultsText = "";
+        }
+        emit ResultsTextChanged();
+    }
+
     model->SetTranslations(translations);
     _context->setContextProperty(ModelIdentifier,
                                  model);
@@ -131,18 +150,16 @@ SFOTranslateController::_GetMatch(const QString& str,
     return matches;
 }
 
-QPairMap
-SFOTranslateController::_GetPhoneticJpMatch(const QString& str,
-                                            const QPairMap& dict) const
+void
+SFOTranslateController::_AppendPhoneticJpMatch(QPairMap& current,
+                                               const QString& str,
+                                               const QPairMap& dict) const
 {
-    QPairMap matches;
     for (QPairMap::const_iterator mit = dict.constBegin() ;
          mit != dict.constEnd() ; ++mit) {
         QStringPair val = mit.value();
         if (val.second.toLower().contains(str)) {
-            matches[mit.key()] = mit.value();
+            current[mit.key()] = mit.value();
         }
     }
-
-    return matches;
 }

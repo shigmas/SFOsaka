@@ -77,7 +77,7 @@ ColumnLayout {
         width: parent.width
         plugin: myPlugin;
         center: locationSF
-        zoomLevel: 13
+        zoomLevel: 15
 
         MapItemView {
             model: placeModel

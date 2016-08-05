@@ -65,6 +65,7 @@ public slots:
 protected:
     void _SyncFromValidators();
 
+    void _ClearModel();
 
 private:
     QQmlContext *_context;

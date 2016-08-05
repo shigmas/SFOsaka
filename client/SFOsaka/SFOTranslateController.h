@@ -19,6 +19,8 @@ class SFOTranslateController : public QObject,
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString resultsText READ GetResultsText NOTIFY ResultsTextChanged)
+    
     enum InputLanguage {
         JapaneseInput,
         EnglishInput,
@@ -40,7 +42,10 @@ public:
 
     virtual QValidator::State Validate( QString & input, int & pos );
 
+    QString GetResultsText() const;
+    
 signals:
+    void ResultsTextChanged();
 
 public slots:
     void OnInputAccepted(const QString& text);
@@ -58,7 +63,8 @@ protected:
     QPairMap _GetMatch(const QString& str, const QPairMap& dict) const;
 
     // Returns the entries of \p dict that match phonetically to \p str
-    QPairMap _GetPhoneticJpMatch(const QString& str, const QPairMap& dict) const;
+    void _AppendPhoneticJpMatch(QPairMap& current, const QString& str,
+                                const QPairMap& dict) const;
 
 private:
     QQmlContext *_context;
@@ -66,6 +72,9 @@ private:
     SFOTranslateModelSharedPtr _translationModel;
 
     SFOValidator* _validator;
+
+    bool _noMatchesFound;
+    QString _resultsText;
 };
 
 #endif // SFOTRANSLATECONTROLLER_H

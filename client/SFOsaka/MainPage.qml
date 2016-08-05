@@ -37,7 +37,7 @@ Item {
         readOnly: true
         font.pointSize: 14
         font.family: "Avenir"
-        text: qsTr("Celebrating the 59th year of San Francisco and Osaka's sister city relationship by highlighting the food, culture, and the ties our community has with Osaka.")
+        text: qsTr("August 27, 2016 celebration of the 59th year of San Francisco and Osaka's sister city relationship by highlighting the food, culture, and the ties our community has with Osaka.")
     }
 
     ScrollView {

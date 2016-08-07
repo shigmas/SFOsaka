@@ -45,7 +45,7 @@ SFOTranslateController::AddValidator(const QVariant& ,
 }
 
 QValidator::State
-SFOTranslateController::Validate( QString & input, int & )
+SFOTranslateController::Validate( const QVariant& , QString & input, int & )
 {
     _ProcessInput(input);
     return QValidator::Acceptable;
@@ -79,16 +79,16 @@ SFOTranslateController::_ProcessInput(const QString& text)
 {
     qDebug() << "Input: " << text;
     // Gets the first character to see if we're in Japanese or English.
-    InputLanguage lang = _GetInputLanguage(text);
+    SFOInputLanguage lang = SFOGetInputLanguage(text);
     SFOTranslateModel *model = new SFOTranslateModel();
     _translationModel = SFOTranslateModelSharedPtr(model);
     QPairMap translations;
-    if (lang != InvalidInput) {
+    if (lang != SFOInvalidInput) {
         QString lowered = text.toLower();
         SFOContext *context = SFOContext::GetInstance();
-        if (lang == JapaneseInput) {
+        if (lang == SFOJapaneseInput) {
             translations = _GetMatch(lowered, context->GetJpToEnDict());
-        } else if (lang == EnglishInput) {
+        } else if (lang == SFOEnglishInput) {
             QPairMap enToJp = context->GetEnToJpDict();
             translations = _GetMatch(lowered, enToJp);
             // We're going backwards - finding the japanese word that matches
@@ -112,26 +112,6 @@ SFOTranslateController::_ProcessInput(const QString& text)
     model->SetTranslations(translations);
     _context->setContextProperty(ModelIdentifier,
                                  model);
-}
-
-SFOTranslateController::InputLanguage
-SFOTranslateController::_GetInputLanguage(const QString& input) const
-{
-    if (input.length() == 0)
-        return InvalidInput;
-
-    QChar inputChar = input.at(0);
-    switch (inputChar.script()) {
-    case QChar::Script_Latin:
-        return EnglishInput;
-    case QChar::Script_Hiragana:
-    case QChar::Script_Katakana:
-    case QChar::Script_Han:
-        return JapaneseInput;
-    default:
-        return InvalidInput;
-    }
-
 }
 
 QPairMap

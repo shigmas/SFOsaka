@@ -64,6 +64,19 @@
     </message>
 </context>
 <context>
+    <name>SFOSubmitWordModel</name>
+    <message>
+        <location filename="../SFOSubmitWordModel.cpp" line="82"/>
+        <source>Submit disabled until network is accessible</source>
+        <translation>ネットワークに接続していないので、決定ボタンが使用できません</translation>
+    </message>
+    <message>
+        <location filename="../SFOSubmitWordModel.cpp" line="85"/>
+        <source>One or more fields are invalid</source>
+        <translation>1つ以上のフィールドが間違えています</translation>
+    </message>
+</context>
+<context>
     <name>SFOTranslateController</name>
     <message>
         <location filename="../SFOTranslateController.cpp" line="105"/>
@@ -109,38 +122,44 @@
         <translation type="vanished">発音</translation>
     </message>
     <message>
-        <location filename="../TranslatorAdd.qml" line="35"/>
         <source>Enter a new phrase in either English or Japanese. For Japanese phrases, include Romaji. Under translation(s), add the translation of the phrase in the destination language, including alternate translations if necessary. Translations will appear when they are approved.</source>
-        <translation>『新しいフレーズ』には英語か日本語でフレーズを入力して下さい。『翻訳』には追加するフレーズの訳を入力し、『追加』で複数の訳を登録できます。日本語を入力の際は、ローマ字にて発音の入力が必要です。承認が下り次第、新しいフレーズは表示されます。</translation>
+        <translation type="vanished">『新しいフレーズ』には英語か日本語でフレーズを入力して下さい。『翻訳』には追加するフレーズの訳を入力し、『追加』で複数の訳を登録できます。日本語を入力の際は、ローマ字にて発音の入力が必要です。承認が下り次第、新しいフレーズは表示されます。</translation>
     </message>
     <message>
-        <location filename="../TranslatorAdd.qml" line="43"/>
+        <location filename="../TranslatorAdd.qml" line="54"/>
         <source>New Phrase</source>
         <translation>新しいフレーズ</translation>
     </message>
     <message>
-        <location filename="../TranslatorAdd.qml" line="55"/>
         <source>Japanese/English</source>
-        <translation>日本語/英語</translation>
+        <translation type="vanished">日本語/英語</translation>
     </message>
     <message>
-        <location filename="../TranslatorAdd.qml" line="66"/>
-        <location filename="../TranslatorAdd.qml" line="102"/>
+        <location filename="../TranslatorAdd.qml" line="76"/>
         <source>romaji</source>
         <translation>ローマ字</translation>
     </message>
     <message>
-        <location filename="../TranslatorAdd.qml" line="76"/>
+        <location filename="../TranslatorAdd.qml" line="86"/>
         <source>Translation(s):</source>
         <translation>翻訳：</translation>
     </message>
     <message>
-        <location filename="../TranslatorAdd.qml" line="90"/>
         <source>English/Japanese</source>
-        <translation>英語/日本語</translation>
+        <translation type="vanished">英語/日本語</translation>
     </message>
     <message>
-        <location filename="../TranslatorAdd.qml" line="114"/>
+        <location filename="../TranslatorAdd.qml" line="36"/>
+        <source>Enter a new phrase in Hiragana and Romanji. Under translation(s), add the translation of the phrase into English, including alternate translations if necessary. Translations will appear when they are approved.</source>
+        <translation>新しいフレーズを平仮名とローマ字で入力してください。その下に英語の翻訳を入力してください。必要ならば複数入力することが可能です。翻訳は承認された後、表示されるようになります。</translation>
+    </message>
+    <message>
+        <location filename="../TranslatorAdd.qml" line="100"/>
+        <source>English</source>
+        <translation>英語</translation>
+    </message>
+    <message>
+        <location filename="../TranslatorAdd.qml" line="115"/>
         <source>+</source>
         <translation>追加</translation>
     </message>
@@ -150,17 +169,17 @@
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="../TranslatorAdd.qml" line="137"/>
+        <location filename="../TranslatorAdd.qml" line="145"/>
         <source>Submit</source>
         <translation>決定</translation>
     </message>
     <message>
-        <location filename="../TranslatorAdd.qml" line="143"/>
+        <location filename="../TranslatorAdd.qml" line="153"/>
         <source>Thank you for your submission</source>
         <translation>登録申請ありがとうございます</translation>
     </message>
     <message>
-        <location filename="../TranslatorAdd.qml" line="144"/>
+        <location filename="../TranslatorAdd.qml" line="154"/>
         <source>Your phrase and translation has been submitted. It will appear in the phrasebook after it has been approved.</source>
         <translation>フレーズと翻訳は登録申請されました。承認が下り次第、フレーズブックに表示されます。</translation>
     </message>

@@ -85,6 +85,13 @@ FJClient::FlushQueue()
     _StartTimer(DefaultFlushInterval);
 }
 
+bool
+FJClient::IsNetworkAccessible() const
+{
+    return _accessManager->networkAccessible() ==
+        QNetworkAccessManager::Accessible;
+}
+
 void
 FJClient::_StartTimer(int timerInterval)
 {

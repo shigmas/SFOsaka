@@ -11,5 +11,12 @@ typedef QPair<QString, QString> QStringPair;
 typedef QMap<QString, QStringPair> QPairMap;
 typedef QList<QStringPair> QPairList;
 
+enum SFOInputLanguage {
+    SFOJapaneseInput,
+    SFOEnglishInput,
+    SFOInvalidInput,
+};
+
+SFOInputLanguage SFOGetInputLanguage(const QString& input);
 
 #endif // SFOTYPES_H

@@ -15,7 +15,8 @@ public:
     virtual void AddValidator(const QVariant& identifier,
                               SFOValidator *validator) = 0;
 
-    virtual QValidator::State Validate( QString & input, int & pos );
+    virtual QValidator::State Validate( const QVariant& identifier,
+                                        QString & input, int & pos );
 };
 
 #endif // SFOVALIDATORRECEIVER_H

@@ -39,6 +39,8 @@ public:
     // Runs the queue until it's empty or a new ping interval is set
     void FlushQueue();
 
+    bool IsNetworkAccessible() const;
+
     static const int DefaultPingInterval;
     static const int DefaultFlushInterval;
 

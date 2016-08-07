@@ -35,6 +35,7 @@ SOURCES += main.cpp \
 
 lupdate_only{
 SOURCES = FeatureRect.qml  \
+    SFOSubmitWordModel.cpp \
     SFOTranslateController.cpp \
     FestivalPage.qml       \
     ListItem.qml           \

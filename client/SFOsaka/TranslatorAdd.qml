@@ -8,10 +8,11 @@ import SFOsaka 1.0
 Item {
     id: root
     anchors.fill: parent
+    width: parent.width
     signal buttonActivated()
 
     ColumnLayout {
-        width: parent.width
+        anchors.fill: parent
 
         AppBar {
             id: toolbar
@@ -32,108 +33,118 @@ Item {
             height: fontMetrics.height * 3
             font.pixelSize: 12
             readOnly: true
-            text: qsTr("Enter a new phrase in either English or Japanese. For Japanese phrases, include Romaji. Under translation(s), add the translation of the phrase in the destination language, including alternate translations if necessary. Translations will appear when they are approved.")
+            text: qsTr("Enter a new phrase in Hiragana and Romanji. Under translation(s), add the translation of the phrase into English, including alternate translations if necessary. Translations will appear when they are approved.")
         }
 
-        RowLayout {
-            id: newPhraseLayout
-            Text {
-                id: searchPhraseText
-                text: qsTr("New Phrase")
-            }
-        }
+        ScrollView {
+            anchors.right: parent.right
+            anchors.left: parent.left
+            anchors.top: instructionText.bottom
+            anchors.bottom: parent.bottom
 
-        Row {
-            id: column1
-            anchors.top: newPhraseLayout.bottom
+            ColumnLayout {
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                width: toolbar.width
 
-            TextField {
-                id: textInput
-                inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
-                text: submitModel.word
-                placeholderText: qsTr("Japanese/English")
-                //font.pixelSize: 12
-                validator: SFOValidator {
-                    identifier: "word"
-                    receiver: submitModel
+                RowLayout {
+                    id: newPhraseLayout
+                    Text {
+                        id: searchPhraseText
+                        text: qsTr("New Phrase")
+                    }
                 }
-            }
-            TextField {
-                id: textPhonetic
-                inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
-                text: submitModel.phonetic
-                placeholderText: qsTr("romaji")
-                //font.pixelSize: 12 
-                validator: SFOValidator {
-                    identifier: "phonetic"
-                    receiver: submitModel
-                }
-            }
-        }
-        Row {
-            Text {
-                text: qsTr("Translation(s):")
-            }
-        }
 
-        ListView {
-            id: listView1
-//        x: 200
-//        y: 62
-            width: 110
-            height: 160
-            delegate: Row {
-                TextField {
-                    id: rowText
-                    inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
-                    placeholderText: qsTr("English/Japanese")
-                    text: translation
-                    width: 120
-                    height: 40
-                    validator: SFOValidator {
-                        identifier: [index, "translation"]
-                        receiver: submitModel
+                Row {
+                    id: column1
+
+                    TextField {
+                        id: textInput
+                        inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
+                        text: submitModel.word
+                        placeholderText: "ひらがな"
+                        //font.pixelSize: 12
+                        validator: SFOValidator {
+                            identifier: "word"
+                            receiver: submitModel
+                        }
+                    }
+                    TextField {
+                        id: textPhonetic
+                        inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
+                        text: submitModel.phonetic
+                        placeholderText: qsTr("romaji")
+                        //font.pixelSize: 12 
+                        validator: SFOValidator {
+                            identifier: "phonetic"
+                            receiver: submitModel
+                        }
                     }
                 }
-                TextField {
-                    id: rowPhonetic
-                    inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
-                    placeholderText: qsTr("romaji")
-                    text: phonetic
-                    width: 120
-                    height: 40
-                    validator: SFOValidator {
-                        identifier: [index, "phonetic"]
-                        receiver: submitModel
+                Row {
+                    Text {
+                        text: qsTr("Translation(s):")
                     }
                 }
-                ToolButton {
-                    visible: addVisible
-                    width: 32
-                    text: qsTr("+")
-                    id: addButton
-                    onClicked: {
-                        submitModel.AddTranslation(rowText.text,
-                                                   rowPhonetic.text)
+
+                ListView {
+                    id: listView1
+                    //        x: 200
+                    //        y: 62
+                    width: 110
+                    height: 160
+                    delegate: Row {
+                        TextField {
+                            id: rowText
+                            inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
+                            placeholderText: qsTr("English")
+                            text: translation
+                            width: 120
+                            height: 40
+                            validator: SFOValidator {
+                                identifier: index
+                                receiver: submitModel
+                            }
+                        }
+                        Rectangle {
+                            width: 5
+                        }
+                        ToolButton {
+                            visible: addVisible
+                            width: 32
+                            text: qsTr("+")
+                            id: addButton
+                            onClicked: {
+                                submitModel.AddTranslation(rowText.text)
+                            }
+                        }
+                        ToolButton {
+                            visible: removeVisible
+                            width: 32
+                            text: qsTr("-")
+                            id: removeButton
+                            onClicked: {
+                                // index is set from the model
+                                submitModel.RemoveTranslation(index)
+                            }
+                        }
+                    }
+                    model: submitModel
+                }
+                Row {
+                    Text {
+                        id: submitEnabledText
+                        font.pointSize: 12
+                        text: submitModel.submitEnabledText
                     }
                 }
-                ToolButton {
-                    visible: removeVisible
-                    width: 32
-                    text: qsTr("-")
-                    id: removeButton
-                    onClicked: {
-                        // index is set from the model
-                        submitModel.RemoveTranslation(index)
+                Row {
+                    Button {
+                        id: submitButton
+                        enabled: submitModel.submitEnabled
+                        text: qsTr("Submit")
                     }
                 }
-            }
-            model: submitModel
-        }
-        Row {
-            Button {
-                id: submitButton
-                text: qsTr("Submit")
             }
         }
 

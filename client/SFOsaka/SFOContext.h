@@ -46,6 +46,8 @@ public:
     void LoadFromDisk();
     void FlushToDisk();
 
+    bool IsNetworkAccessible() const;
+
 signals:
     void PartnersUpdated();
     void PerformersUpdated();

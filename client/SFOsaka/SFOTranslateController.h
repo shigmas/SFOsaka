@@ -21,12 +21,6 @@ class SFOTranslateController : public QObject,
 
     Q_PROPERTY(QString resultsText READ GetResultsText NOTIFY ResultsTextChanged)
     
-    enum InputLanguage {
-        JapaneseInput,
-        EnglishInput,
-        InvalidInput,
-    };
-
 public:
     static const QString ControllerIdentifier;
     static const QString ModelIdentifier;
@@ -40,7 +34,8 @@ public:
     virtual void AddValidator(const QVariant& identifier,
                               SFOValidator *validator);
 
-    virtual QValidator::State Validate( QString & input, int & pos );
+    virtual QValidator::State Validate( const QVariant& identifier,
+                                        QString & input, int & pos );
 
     QString GetResultsText() const;
     
@@ -56,8 +51,6 @@ protected slots:
 
 protected:
     void _ProcessInput(const QString& text);
-
-    InputLanguage _GetInputLanguage(const QString& input) const;
 
     // Returns the entries of \p dict that match the string \p str
     QPairMap _GetMatch(const QString& str, const QPairMap& dict) const;

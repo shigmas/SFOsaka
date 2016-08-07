@@ -261,6 +261,12 @@ SFOContext::FlushToDisk()
     }
 }
 
+bool
+SFOContext::IsNetworkAccessible() const
+{
+    return _client->IsNetworkAccessible();
+}
+
 void
 SFOContext::_OnQueueCompleted()
 {

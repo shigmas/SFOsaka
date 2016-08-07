@@ -10,11 +10,14 @@
 
 SFOSubmitWordModel::SFOSubmitWordModel(QQmlContext *context, QObject *parent) :
     QAbstractListModel(parent),
-    _context(context)
+    _context(context),
+    _hasValidWord(false),
+    _hasValidPhonetic(false),
+    _hasValidTranslation(false),
+    _submitEnabled(false)
 {
     _roleNames[IndexRole] = "index";
     _roleNames[TranslationRole] = "translation";
-    _roleNames[PhoneticRole] = "phonetic";
     _roleNames[AddVisibleRole] = "addVisible";
     _roleNames[RemoveVisibleRole] = "removeVisible";
 }
@@ -54,34 +57,76 @@ SFOSubmitWordModel::SetPhonetic(const QString& phonetic)
     }
 }
 
-SFOValidatorId _ConvertValueToId(const QJSValue& identifier)
+bool
+SFOSubmitWordModel::GetSubmitEnabled() const
 {
-    if (identifier.isArray()) {
-        QList<QVariant> vList = identifier.toVariant().toList();
-        if (vList.size() == 2) {
-            return qMakePair(vList[0],vList[1]);
-        }
-    } else {
-        qDebug() << "Error: identifier cannot be converted to pair type";
+    return _submitEnabled;
+}
+
+void
+SFOSubmitWordModel::SetSubmitEnabled(bool submitEnabled)
+{
+    qDebug() << "submit enabled: " << _submitEnabled;
+    if (_submitEnabled != submitEnabled) {
+        _submitEnabled = submitEnabled;
+        emit SubmitEnabledChanged();
+        emit SubmitEnabledTextChanged();
     }
-    return qMakePair(QVariant(), QVariant());
+}
+
+QString
+SFOSubmitWordModel::GetSubmitEnabledText() const
+{
+    if (!SFOContext::GetInstance()->IsNetworkAccessible()) {
+        return tr("Submit disabled until network is accessible");
+    } else {
+        if (!_submitEnabled) {
+            return tr("One or more fields are invalid");
+        }
+    }
+    return "";
 }
 
 void
 SFOSubmitWordModel::AddValidator(const QVariant& identifier,
                                  SFOValidator *validator)
 {
-    SFOValidatorId valId = identifier.canConvert<QJSValue>()
-        ? _ConvertValueToId(identifier.value<QJSValue>())
-        : qMakePair(identifier, QVariant());
-    _validators[valId] = validator;
+    _validators[identifier] = validator;
 }
 
 
+QValidator::State
+SFOSubmitWordModel::Validate( const QVariant& identifier, QString &input ,
+                              int &  )
+{
+    if (identifier.toString() == QString("word")) {
+        _hasValidWord = SFOGetInputLanguage(input) == SFOJapaneseInput;
+    } else if (identifier.toString() == QString("phonetic")) {
+        _hasValidPhonetic = SFOGetInputLanguage(input) == SFOEnglishInput;
+    } else {
+        // This is a translation, so we need to see if any validator has
+        // valid input. Fetching the pair from the identifier is tricky
+        // anyway.
+        _hasValidTranslation = true;
+        for (SFOValidatorMap::key_iterator it = _validators.keyBegin() ;
+             it != _validators.keyEnd() ; ++it) {
+            if ((it->type() == QVariant::Int) and
+                (SFOGetInputLanguage(_validators[*it]->GetValidated()) !=
+                 SFOEnglishInput)) {
+                _hasValidTranslation = false;
+                break;
+            }
+        }
+    }
+    SetSubmitEnabled(_hasValidWord and _hasValidPhonetic and
+                     _hasValidTranslation);
+
+    return QValidator::Acceptable;
+}
+
 void
 SFOSubmitWordModel::UpdateElement(const QString& element,
-                                  const QVariant& identifier,
-                                  const QVariant& secondaryId)
+                                  const QVariant& identifier)
 {
     if (identifier.toString() == QString("word")) {
         _word = element;
@@ -90,35 +135,21 @@ SFOSubmitWordModel::UpdateElement(const QString& element,
     } else if (identifier.canConvert<int>()) {
         int index = identifier.toInt();
         // Is it a translation or phonetic?
-        QString secondId = secondaryId.toString();
-        if (secondId == QString("translation")) {
-            if (index < _translations.size()) {
-                _translations.replace(index, element);
-            } else {
-                _translations.append(element);
-            }
-        } else if (secondId == QString("phonetic")) {
-            if (index < _phonetics.size()) {
-                _phonetics.replace(index, element);
-            } else {
-                _phonetics.append(element);
-            }
+        if (index < _translations.size()) {
+            _translations.replace(index, element);
+        } else {
+            _translations.append(element);
         }
     }
 }
 
 void
-SFOSubmitWordModel::AddTranslation(const QString& translation,
-                                   const QString& phonetic)
+SFOSubmitWordModel::AddTranslation(const QString& translation)
 {
     qDebug() << "Adding " << translation;
     _translations.append(translation);
-    _phonetics.append(phonetic);
     _SyncFromValidators();
-    qDebug() << "Setting model property again";
-    // Kludgy, but we clear it, then set it again so we pull the data again.
-    _context->setContextProperty("submitModel", NULL);
-    _context->setContextProperty("submitModel", this);
+    _ResetModel();
 }
 
 void
@@ -126,11 +157,9 @@ SFOSubmitWordModel::RemoveTranslation(int row)
 {
     qDebug() << "removing " << row;
     _translations.removeAt(row);
-    _phonetics.removeAt(row);
     qDebug() << "Setting model property again";
     // Kludgy, but we clear it, then set it again so we pull the data again.
-    _context->setContextProperty("submitModel", NULL);
-    _context->setContextProperty("submitModel", this);
+    _ResetModel();
 }
 
 void
@@ -139,18 +168,14 @@ SFOSubmitWordModel::CommitModel()
     _SyncFromValidators();
 
     qDebug() << "Submitting " << _word << " (" << _phonetic << ") with "
-             << _translations.size() << " translations. "
-             << _phonetics.size() << " phonetics";
+             << _translations.size() << " translations.";
     
     QVariantMap transPhonetic;
     for (int i = 0 ; i < _translations.size() ; ++i) {
-        if (i < _phonetics.size()) {
-            transPhonetic[_translations[i]] = _phonetics[i];
-        }
+        transPhonetic[_translations[i]] = "";
     }
 
     if (!_word.isEmpty() && (transPhonetic.size() > 0)) {
-        qDebug() << "Submitting data";
         // XXX build up the translations/phonetics
         SFOContext::GetInstance()->AddWordTranslation(_word, _phonetic,
                                                       transPhonetic);
@@ -166,16 +191,11 @@ SFOSubmitWordModel::data(const QModelIndex &index,
         QString translation =
            index.row() == _translations.count()
                 ? "" : _translations.at(index.row());
-        QString phonetic =
-            index.row() == _phonetics.count()
-                ? "" : _phonetics.at(index.row());
         switch(role) {
         case IndexRole:
             return QVariant(index.row());
         case TranslationRole:
             return QVariant(translation);
-        case PhoneticRole:
-            return QVariant(phonetic);
         case AddVisibleRole:
             return QVariant(index.row() == _translations.count());
         case RemoveVisibleRole:
@@ -207,8 +227,16 @@ SFOSubmitWordModel::_SyncFromValidators()
     for (SFOValidatorMap::key_iterator it = _validators.keyBegin() ;
          it != _validators.keyEnd() ; ++it) {
         SFOValidator *validator = _validators[*it];
-        UpdateElement(validator->GetValidated(), it->first, it->second);
+        UpdateElement(validator->GetValidated(), *it);
     }
+}
+
+void
+SFOSubmitWordModel::_ResetModel()
+{
+    _validators.clear();
+    _context->setContextProperty("submitModel", NULL);
+    _context->setContextProperty("submitModel", this);
 }
 
 void
@@ -217,7 +245,5 @@ SFOSubmitWordModel::_ClearModel()
     _word = "";
     _phonetic = "";
     _translations.clear();
-    _phonetics.clear();
-    _context->setContextProperty("submitModel", NULL);
-    _context->setContextProperty("submitModel", this);
+    _ResetModel();
 }

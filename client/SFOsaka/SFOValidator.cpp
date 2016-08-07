@@ -22,7 +22,7 @@ SFOValidator::validate ( QString & input, int & pos ) const
     _validated = input;
     SFOValidatorReceiver *receiver = _GetReceiverFromVariant(_receiver);
     if (receiver) {
-        return receiver->Validate(input, pos);
+        return receiver->Validate(_identifier, input, pos);
     }
     return QValidator::Acceptable;
 }

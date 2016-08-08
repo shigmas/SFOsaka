@@ -16,6 +16,7 @@ Item {
 
         AppBar {
             id: toolbar
+            anchors.top: parent.top
             width: parent.width
             onButtonActivated: root.buttonActivated()
         }
@@ -30,7 +31,7 @@ Item {
             anchors.top: toolbar.bottom
             anchors.left: parent.left
             anchors.right: parent.right
-            height: fontMetrics.height * 3
+            implicitHeight: fontMetrics.height * 6
             font.pixelSize: 12
             readOnly: true
             text: qsTr("Enter a new phrase in Hiragana and Romanji. Under translation(s), add the translation of the phrase into English, including alternate translations if necessary. Translations will appear when they are approved.")

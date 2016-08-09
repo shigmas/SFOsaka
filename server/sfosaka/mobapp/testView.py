@@ -88,8 +88,8 @@ class PerformerViewTests(TestCase):
     fixtures = ['mobdata.json', 'performers.json']
     PerformerDate = '2016-07-23T21:23:05.370000+00:00'
     PerformerUrl = 'https://s3-us-west-1.amazonaws.com/sfosaka/images/IMG_4892.jpg'
-    StartTime = '2016-08-27T14:00:00Z'
-    EndTime = '2016-08-27T14:20:00Z'
+    StartTime = '2016-07-23T21:23:22.432Z'
+    EndTime = '2016-07-23T21:23:28.918Z'
     def _GetMeta(self, asOfDate=None, expectUpdate=True):
         url = '/mobapp/performer_meta/'
 
@@ -253,3 +253,25 @@ class TranslatorViewTests(TestCase):
         self._verifySubmitWord(self.word, self.wordPhonetic)
         for tran in self.transDict:
             self._verifySubmitWord(tran, self.transDict[tran])
+
+    def testSubmitEngDupe(self):
+        url = '/mobapp/dict_submit/'
+        jWord = 'おおきに'
+        pWord = 'ookini'
+        eWord = 'Thanks'
+
+        print('submitting')
+        contents = {}
+        contents['submit_word'] = jWord
+        contents['submit_word_phonetic'] = pWord
+        contents['submit_trans'] = {eWord:''}
+
+        response = self.client.post(url, json.dumps(contents),
+                                    content_type='application/json')
+        contents = json.loads(str(response.content, encoding='utf-8'))
+        self.assertEquals(contents['result'], True)
+
+        # Make sure we don't have two thanks
+        entries = models.DictionaryWord.objects.filter(word__iexact=eWord)
+        self.assertEquals(len(entries),1,
+                          'thanks and Thanks should have been equal')

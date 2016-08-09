@@ -338,7 +338,7 @@ class TranslatorView(BaseView):
     # finds or creates a dictionary entry, initializing it to inactive
     def _FindOrCreateEntry(self, word, lang, status, phonetic):
         try:
-            entry = DictionaryWord.objects.get(word=word)
+            entry = DictionaryWord.objects.get(word__iexact=word)
         except:
             # No entry, so create
             now = timezone.now()
@@ -371,19 +371,19 @@ class TranslatorView(BaseView):
         mainEntry = self._FindOrCreateEntry(clean, lang, inactive, wordPhonetic)
         mainEntry.save()
 
-        entryTrans = []
+        transEntry = None
         for translation in transDict.keys():
             cleaned, lang = self._CleanAndGetLang(translation)
             phonetic = transDict[translation]
             transEntry = self._FindOrCreateEntry(cleaned, lang, 
                                                  inactive, phonetic)
             if transEntry:
-                entryTrans.append(transEntry)
                 transEntry.save()
                 transEntry.translations.add(mainEntry) 
                 transEntry.save()
-        mainEntry.translations = entryTrans
-        mainEntry.save()
+        if transEntry is not None:
+            mainEntry.translations.add(transEntry)
+            mainEntry.save()
 
         print('saved one word with %d translations' % len(transList))
         return {}, True

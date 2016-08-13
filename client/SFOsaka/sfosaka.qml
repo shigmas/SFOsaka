@@ -17,7 +17,7 @@ ApplicationWindow {
         signal mapActivated()
         signal translatorActivated()
         signal translatorAddActivated()
-        signal infoActivated()
+        signal partnersActivated()
         signal backActivated()
         signal itemSelected(string title)
 
@@ -27,7 +27,7 @@ ApplicationWindow {
             onFestivalActivated: stackView.festivalActivated()
             onMapActivated: stackView.mapActivated()
             onTranslatorActivated: stackView.translatorActivated()
-            onInfoActivated: stackView.infoActivated()
+            onPartnersActivated: stackView.partnersActivated()
         }
 
         MapPage {
@@ -35,6 +35,12 @@ ApplicationWindow {
             visible: false
             onButtonActivated: stackView.backActivated()
             onItemSelected: stackView.itemSelected(title)
+        }
+
+        PartnerList {
+            id: partnerListPage
+            visible: false
+            onButtonActivated: stackView.backActivated()
         }
 
         PartnerDetail {
@@ -48,6 +54,7 @@ ApplicationWindow {
             visible: false
             onButtonActivated: stackView.backActivated()
         }
+
         TranslatorPage {
             id: translatorPage
             visible: false
@@ -61,8 +68,8 @@ ApplicationWindow {
             onButtonActivated: stackView.backActivated()
         }
 
-        SisterPage {
-            id: infoPage
+        WebView {
+            id: webView
             visible: false
             onButtonActivated: stackView.backActivated()
         }
@@ -93,9 +100,9 @@ ApplicationWindow {
             stackView.push(translatorAdd)
         }
 
-        onInfoActivated: {
+        onPartnersActivated: {
             console.log("info activated")
-            stackView.push(infoPage)
+            stackView.push(partnerListPage)
         }
 
         onBackActivated: {

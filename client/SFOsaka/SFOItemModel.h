@@ -19,11 +19,16 @@ class SFOItemModel : public QAbstractListModel
     Q_PROPERTY(QGeoCoordinate position READ GetPosition WRITE SetPosition NOTIFY PositionChanged )
 
 public:
-    static const QString ModelIdentifier;
     static const QString PartnerModelIdentifier;
 
-    explicit SFOItemModel(QQmlContext *context, QObject *parent = Q_NULLPTR);
+    explicit SFOItemModel(QQmlContext *context, const SFOPartnerList& partners,
+                          QObject *parent = Q_NULLPTR);
     virtual ~SFOItemModel();
+
+    SFOPartnerList GetPartners() const;
+    void SetPartners(const SFOPartnerList& partners);
+
+    // QAbstractListModel overrides
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
     virtual QVariant data(const QModelIndex &index,
                           int role = Qt::DisplayRole) const;
@@ -40,21 +45,38 @@ Q_SIGNALS:
     void PositionChanged();
 
 public slots:
-    // This is just a debug test to see how to connect w/ signals in QML. But
-    // we'll likely need this for a manual refresh.
-    void HandleRefresh();
-    void HandleItemSelected(const QString& title);
+    void HandleItemSelected(const int& selectedIndex);
 
-protected slots:
-    void _HandlePartnerUpdate();
+protected:
+    void _ResetModel();
+    
+protected:
+    static const QByteArray IndexRole;
+    static const QByteArray TitleRole;
+    static const QByteArray CoordRole;
+    static const QByteArray StreetRole;
+    static const QByteArray CityRole;
+    static const QByteArray PhoneRole;
+    static const QByteArray URLRole;
+    static const QByteArray MapMarkerImageRole;
+    static const QByteArray ImageSourceRole;
+    static const QByteArray DescriptionRole;
+    static const QByteArray ShortDescriptionRole;
+
+    static const QHash<int, QByteArray> Roles;
+
+    static const QString _SelectedMarker;
+    static const QString _UnselectedMarker;
 
 private:
     QQmlContext *_context;
     QGeoCoordinate _position;
-    QHash<int, QByteArray> _roleNames;
     SFOPartner _emptyPartner;
     // mutable because creating an index requires a non-const pointer.
     mutable QPlace _root;
+
+    SFOPartnerList _partners;
+    int _selectedIndex;
 };
 
 #endif // SFOITEMMODEL_H

@@ -13,7 +13,9 @@ ColumnLayout {
 
     id: root
     Layout.fillWidth: true
-    //anchors.fill: parent
+    anchors.fill: parent
+
+    property variant locationSF: QtPositioning.coordinate( 37.785124,-122.431322)
 
     signal buttonActivated()
     signal itemSelected(string title)
@@ -21,7 +23,10 @@ ColumnLayout {
     AppBar {
         id: toolbar
         anchors.top: parent.top
-        onButtonActivated: root.buttonActivated()
+        onButtonActivated: {
+            placeModel.HandleItemSelected(-1)
+            root.buttonActivated()
+        }
     }
 
     //! [Initialize Plugin]
@@ -51,6 +56,7 @@ ColumnLayout {
         active: true
         updateInterval: 120000 // 2 mins
         onPositionChanged:  {
+            console.log("Position Changed")
             var currentPosition = positionSource.position.coordinate
             map.center = currentPosition
             var distance = currentPosition.distanceTo(lastSearchPosition)
@@ -64,10 +70,6 @@ ColumnLayout {
     }
     //! [Current Location]
 
-    // add 0.01 to latitude to move east a little bit
-    property variant locationSF: QtPositioning.coordinate( 37.785614,-122.42501)
-//    property variant locationSF: QtPositioning.coordinate( 59.93, 10.75)
-
     //! [Places MapItemView]
     Map {
         id: map
@@ -75,50 +77,82 @@ ColumnLayout {
         anchors.top: toolbar.bottom
         anchors.bottom: parent.bottom
         width: parent.width
-        plugin: myPlugin;
+        plugin: myPlugin
         center: locationSF
-        zoomLevel: 15
+        zoomLevel: 17
 
         MapItemView {
             model: placeModel
             delegate: MapQuickItem {
+                id: mapItem
                 coordinate: coord
-
                 anchorPoint.x: image.width * 0.5
                 anchorPoint.y: image.height
 
                 sourceItem: Column {
+                    Rectangle {
+                        property string title
+                        id: descriptionRect
+                        border.width: 4
+                        border.color: "black"
+                        visible: false
+                        y: -(image.height)
+                        Text {
+                            text: title
+                        }
+                    }
+
                     Image {
                         id: image
-                        source: "resources/marker.png"
+                        source: mapMarkerImage
                         MouseArea {
                             id: imageMouseArea
                             anchors.fill: parent
-                            //onPressed: itemSelected(title)
-                        }
-                    }
-                    Text {
-                        text: title
-                        font.bold: true
-                        MouseArea {
-                            id: textMouseArea
-                            anchors.fill: parent
-                            //onPressed: itemSelected(title)
-                        }
-                        Connections {
-                            target: imageMouseArea
                             onPressed: {
-                                console.log(title + " selected");
-                                placeModel.HandleItemSelected(title)
-                                itemSelected(title)
                             }
                         }
-                        
                     }
+
+                    Connections {
+                        target: imageMouseArea
+                        onPressed: {
+                            placeModel.HandleItemSelected(index)
+                            console.log("Popup: (" + mapItem.x + ", " + mapItem.y + image.height * 0.5 + ")")
+                            console.log("selected " + index)
+                            console.log("title " + title)
+                            console.log("desc " + shortDescription)
+                            console.log("offset: " + image.height * 0.5)
+                            popup.xPos = mapItem.x
+                            popup.yPos = mapItem.y + image.height * 0.5
+                            popup.title = title
+                            popup.shortDescription = shortDescription
+                            popup.visible = true
+                            console.log("title height: " + popup.titleFontHeight)
+                            console.log("title width: " + popup.titleFontWidth)
+                            console.log("w/h: (" + popup.width + ", " + popup.height + ")")
+                        }
+                    }
+
                 }
             }
         }
+        MouseArea {
+            id: mapMouseArea
+            anchors.fill: parent
+            onPressed: {
+                console.log("nothing pressed")
+                console.log("Current pop location: (" + popup.x + ", " + popup.y + ")")
+                console.log("title height: " + popup.titleFontHeight)
+                console.log("title width: " + popup.titleFontWidth)
+                console.log("w/h: (" + popup.width + ", " + popup.height + ")")
+                //placeModel.HandleItemSelected(-1)
+                //popup.visible = false
+            }
+
+        }
         //! [Places MapItemView]
     }
-
+    MapPopupDescriptor {
+        id: popup
+    }
 }

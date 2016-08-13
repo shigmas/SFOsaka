@@ -24,7 +24,11 @@ const QString SFOContext::LastPartnerDateKey   = "last_partner_date";
 const QString SFOContext::LastDictDateKey      = "last_dict_date";
 const QString SFOContext::LastPerformerDateKey = "last_performer_date";
 
+// Dev
 //const QStringPair SFOContext::ServerInfo = qMakePair(QString("localhost:8000"),QString("http"));
+// Beta
+//const QStringPair SFOContext::ServerInfo = qMakePair(QString("malttest.futomen.net:8143"),QString("https"));
+// Live
 const QStringPair SFOContext::ServerInfo = qMakePair(QString("sfosaka.futomen.net:8143"),QString("https"));
 
 SFOContext::SFOContext(QObject *parent) : 
@@ -136,9 +140,37 @@ SFOContext::AddWordTranslation(const QString& word, const QString& phonetic,
 }
 
 SFOPartnerList
-SFOContext::GetPartners() const
+SFOContext::GetPartnersByCategory(const SFOPartnerCategory& category) const
 {
-    return _partners;
+    if (category == SFOAllCategory) {
+        return _partners;
+    }
+
+    SFOPartnerList partners;
+    QString catString = SFOTypes::PartnerMap[category];
+    SFOPartner *p;
+    foreach (p, _partners) {
+        if (p->GetCategory() == catString) {
+            partners.append(p);
+        }
+    }
+
+    return partners;
+}
+
+SFOPartnerList
+SFOContext::GetNonFoodPartners() const
+{
+    SFOPartnerList partners;
+    QString catString = SFOTypes::PartnerMap[SFOFoodCategory];
+    SFOPartner *p;
+    foreach (p, _partners) {
+        if (p->GetCategory() != catString) {
+            partners.append(p);
+        }
+    }
+
+    return partners;
 }
 
 SFOPerformerList

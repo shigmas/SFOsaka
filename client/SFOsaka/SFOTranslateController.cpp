@@ -79,7 +79,7 @@ SFOTranslateController::_ProcessInput(const QString& text)
 {
     qDebug() << "Input: " << text;
     // Gets the first character to see if we're in Japanese or English.
-    SFOInputLanguage lang = SFOGetInputLanguage(text);
+    SFOInputLanguage lang = SFOTypes::GetInputLanguage(text);
     SFOTranslateModel *model = new SFOTranslateModel();
     _translationModel = SFOTranslateModelSharedPtr(model);
     QPairMap translations;

@@ -7,12 +7,15 @@ import QtQuick.Layouts 1.3
 // so just put layout as the root (in this component).
 ColumnLayout {
     id: root
+    property string url
 
     signal buttonActivated()
 
     AppBar {
         id: toolbar
-        onButtonActivated: root.buttonActivated()
+        onButtonActivated: {
+            stackView.pop()
+        }
     }
 
     WebView {
@@ -21,7 +24,7 @@ ColumnLayout {
         anchors.bottom: parent.bottom
         Layout.fillWidth: true
         Layout.fillHeight: true
-        url: initialUrl
+        url: root.url
     }
 
 }

@@ -5,22 +5,16 @@
 #include <QTranslator>
 #include <QDebug>
 
-#include "SFOContext.h"
-#include "SFOEventFilter.h"
-#include "SFOItemModel.h"
-#include "SFOScheduleModel.h"
-#include "SFOSubmitWordModel.h"
-#include "SFOTranslateController.h"
+// Our global controller
+#include "SFOController.h"
+// For registering the type with the type system
 #include "SFOValidator.h"
-
-const QString initialUrl = "http://www.sf-osaka.org/";
-//const QString initialUrl = "https://www.futomen.net/";
-//const QString initialUrl = "https://www.google.com/";
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
+    // Setup for localizations
     QTranslator qtTranslator;
     QString localeName = QLocale::system().name();
     if (!qtTranslator.load("sfosaka_" + localeName,
@@ -31,34 +25,13 @@ int main(int argc, char *argv[])
     }
     app.installTranslator(&qtTranslator);
 
-    //    SFOEventFilter filter;
-    //app.installEventFilter(&filter);
-
     QQmlApplicationEngine engine;
 
+    // Register the validator, to get text from the TextFields without having
+    // to wait for Enter
     qmlRegisterType<SFOValidator>("SFOsaka", 1, 0, "SFOValidator");
-    SFOTranslateController translateController(engine.rootContext());
-    SFOScheduleModel festivalScheduleModel(engine.rootContext());
 
-    // Hook up the controller and the event filter
-    /*
-    QObject::connect(&filter,&SFOEventFilter::TextChanged,
-                     &translateController,
-                     &SFOTranslateController::OnFilterAccepted);
-    */
-    SFOItemModel model(engine.rootContext());
-    engine.rootContext()->setContextProperty(SFOItemModel::ModelIdentifier,
-                                             &model);
-
-    SFOSubmitWordModel submitModel(engine.rootContext());
-    engine.rootContext()->setContextProperty("submitModel",
-                                             &submitModel);
-    QString server = SFOContext::GetInstance()->GetHost();
-    engine.rootContext()->setContextProperty("server",
-                                             QVariant(server));
-
-    engine.rootContext()->setContextProperty(QStringLiteral("initialUrl"),
-                                QUrl::fromUserInput(initialUrl));
+    SFOController controller(engine.rootContext());
 
     engine.load(QUrl(QStringLiteral("qrc:/sfosaka.qml")));
 

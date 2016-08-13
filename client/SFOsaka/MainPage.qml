@@ -10,7 +10,7 @@ Item {
     signal festivalActivated()
     signal mapActivated()
     signal translatorActivated()
-    signal infoActivated()
+    signal partnersActivated()
 
     TextMetrics {
         id: fontMetrics
@@ -66,8 +66,8 @@ Item {
         }
         FeatureRect {
             id: partnerApp
-            imageSource: "resources/partner_icon.png"
-            titleText: qsTr("Partners")
+            imageSource: "resources/taro_orange.png"
+            titleText: qsTr("Taste of Osaka")
             // Since the icon is mostly white/red, we override the white
             onClicked: root.mapActivated()
         }
@@ -78,10 +78,10 @@ Item {
             onClicked: root.translatorActivated() 
         }
         FeatureRect {
-            id: sisterCityApp
-            imageSource: "resources/sfosaka_logo.png"
-            titleText: qsTr("Sister City Info")
-            onClicked: root.infoActivated()
+            id: partnersApp
+            imageSource: "resources/partners_icon.png"
+            titleText: qsTr("Partners")
+            onClicked: root.partnersActivated()
         }
     }
     }

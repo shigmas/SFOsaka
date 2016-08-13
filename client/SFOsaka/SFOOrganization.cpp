@@ -21,6 +21,7 @@ const QString SFOOrganization::ModificationKey       = "modificationDate";
 
 const QString SFOOrganization::ContactInfoStreetKey  = "street_number";
 const QString SFOOrganization::ContactInfoCityKey    = "city";
+const QString SFOOrganization::ContactInfoPhoneKey   = "phone";
 
 SFOOrganization::SFOOrganization(QObject *parent) : QObject(parent)
 {
@@ -81,6 +82,17 @@ SFOOrganization::GetCategory_locale() const
 }
 
 QString
+SFOOrganization::GetShortDescription_locale() const
+{
+    QString localeName = QLocale::system().name();
+    if (localeName == "ja_JP") {
+        return GetShortDescriptionJp();
+    } else {
+        return GetShortDescription();
+    }
+}
+
+QString
 SFOOrganization::GetDescription_locale() const
 {
     QString localeName = QLocale::system().name();
@@ -103,6 +115,11 @@ SFOOrganization::GetContactInfoCity() const
     return _contactInfo[ContactInfoCityKey].toString();
 }
     
+QString
+SFOOrganization::GetContactInfoPhone() const
+{
+    return _contactInfo[ContactInfoPhoneKey].toString();
+}
 
 QString
 SFOOrganization::GetId() const

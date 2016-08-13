@@ -8,32 +8,70 @@
 #include <QtLocation/QGeoServiceProvider>
 #include <QtLocation/QGeoCodingManager>
 
-const QString SFOItemModel::ModelIdentifier = "placeModel";
 const QString SFOItemModel::PartnerModelIdentifier = "partnerDetail";
 
-SFOItemModel::SFOItemModel(QQmlContext *context, QObject *parent) :
+const QByteArray SFOItemModel::IndexRole            = "index";
+const QByteArray SFOItemModel::TitleRole            = "title";
+const QByteArray SFOItemModel::CoordRole            = "coord";
+const QByteArray SFOItemModel::StreetRole           = "street";
+const QByteArray SFOItemModel::CityRole             = "city";
+const QByteArray SFOItemModel::PhoneRole            = "phone";
+const QByteArray SFOItemModel::URLRole              = "url";
+const QByteArray SFOItemModel::MapMarkerImageRole   = "mapMarkerImage";
+const QByteArray SFOItemModel::ImageSourceRole      = "imageSource";
+const QByteArray SFOItemModel::DescriptionRole      = "description";
+const QByteArray SFOItemModel::ShortDescriptionRole = "shortDescription";
+
+const QString SFOItemModel::_SelectedMarker    = "resources/marker-sel.png";
+const QString SFOItemModel::_UnselectedMarker  = "resources/marker.png";
+
+const QHash<int, QByteArray> SFOItemModel::Roles = {
+    {0, IndexRole},
+    {1, TitleRole},
+    {2, CoordRole},
+    {3, StreetRole},
+    {4, CityRole},
+    {5, PhoneRole},
+    {6, URLRole},
+    {7, MapMarkerImageRole},
+    {8, ImageSourceRole},
+    {9, DescriptionRole},
+    {10, ShortDescriptionRole},
+};
+
+
+SFOItemModel::SFOItemModel(QQmlContext *context, const SFOPartnerList& partners,
+                           QObject *parent) :
     QAbstractListModel(parent),
-    _context(context)
+    _context(context),
+    _partners(partners),
+    _selectedIndex(-1)
 {
     QPlace place;
     place.setLocation(QGeoLocation());
     place.setName("Root");
     _root = place;
 
-    _roleNames[1] = "title";
-    _roleNames[2] = "coord";
-    _roleNames[3] = "coordinateX";
-    _roleNames[4] = "coordinateY";
-
-    SFOContext* ctx = SFOContext::GetInstance();
-    // Listen for the partners updated signal so we can updated ourselves
-    QObject::connect(ctx, &SFOContext::PartnersUpdated,
-                     this, &SFOItemModel::_HandlePartnerUpdate);
     _context->setContextProperty(SFOItemModel::PartnerModelIdentifier,
                                  &_emptyPartner);
 }
 
 SFOItemModel::~SFOItemModel() {}
+
+SFOPartnerList
+SFOItemModel::GetPartners() const
+{
+    return _partners;
+}
+
+void
+SFOItemModel::SetPartners(const SFOPartnerList& partners)
+{
+    if (_partners != partners) {
+        _partners = partners;
+        _ResetModel();
+    }
+}
 
 int
 SFOItemModel::columnCount(const QModelIndex&) const
@@ -46,21 +84,36 @@ SFOItemModel::data(const QModelIndex &index,
                    int role) const
 {
     QString localeName = QLocale::system().name();
-    SFOPartnerList partners = SFOContext::GetInstance()->GetPartners();
-    if (index.row() < partners.count()) {
-        const SFOPartner * partner = partners.at(index.row());
+    if (index.row() < _partners.size()) {
+        const SFOPartner * partner = _partners.at(index.row());
         QGeoLocation location = partner->GetLocation();
         switch(role) {
-        case 1:
+        case 0:                 // IndexRole
+            return QVariant(index.row());
+        case 1:                 // TitleRole
             return QVariant(partner->GetName_locale());
-        case 2:
+        case 2:           // CoordRole
             // Returns the QGeoCoordinate, which is what
             // QDeclarativeSearchResultModel returns in the place_map example.
             return QVariant::fromValue(location.coordinate());
-        case 3:
-            return QVariant(location.coordinate().longitude());
-        case 4:
-            return QVariant(location.coordinate().latitude());
+        case 3:                 // StreetRole
+            return QVariant(partner->GetContactInfoStreet());
+        case 4:                 // CityRole
+            return QVariant(partner->GetContactInfoCity());
+        case 5:                 // PhoneRole
+            return QVariant(partner->GetContactInfoPhone());
+        case 6:                 // URLRole
+            return QVariant(partner->GetURL());
+        case 7:                 // MapMarkerImageRole
+            return (index.row() == _selectedIndex)
+                ? _SelectedMarker
+                : _UnselectedMarker;
+        case 8:                 // ImageSourceRole
+            return QVariant(partner->GetImageURL());
+        case 9:                 // DescriptionRole
+            return QVariant(partner->GetDescription_locale());
+        case 10:
+            return QVariant(partner->GetShortDescription_locale());
         default:
             qDebug() << "Unknown role " << role;
             return QVariant();
@@ -81,14 +134,13 @@ SFOItemModel::parent(const QModelIndex &index) const
 int
 SFOItemModel::rowCount(const QModelIndex &) const
 {
-    int count = SFOContext::GetInstance()->GetPartners().size();
-    return count;
+    return _partners.size();
 }
 
 QHash<int, QByteArray>
 SFOItemModel::roleNames() const
 {
-    return _roleNames;
+    return Roles;
 }
 
 QGeoCoordinate
@@ -107,33 +159,22 @@ SFOItemModel::SetPosition(const QGeoCoordinate& pos)
 }
 
 void
-SFOItemModel::HandleRefresh()
+SFOItemModel::HandleItemSelected(const int& selectedIndex)
 {
-    SFOContext::GetInstance()->Refresh(true);
-}
+    _selectedIndex = selectedIndex;
 
-void
-SFOItemModel::HandleItemSelected(const QString& title)
-{
-    qDebug() << "Selected: " << title;
-    SFOPartnerList partners = SFOContext::GetInstance()->GetPartners();
-
-    SFOPartner *p = NULL;
-    foreach(p, partners) {
-        if (title == p->GetName_locale()) {
-            break;
-        }
+    if ((_selectedIndex >= 0) and (_selectedIndex < _partners.size())) {
+        SFOPartner *p = _partners[selectedIndex];
+        qDebug() << "Setting " << p->GetName() << " as "
+                 << SFOItemModel::PartnerModelIdentifier;
+        _context->setContextProperty(SFOItemModel::PartnerModelIdentifier, p);
     }
-
-    //    _context->setContextProperty(SFOItemModel::PartnerModelIdentifier, NULL);
-    
-    _context->setContextProperty(SFOItemModel::PartnerModelIdentifier, p);
+    _ResetModel();
 }
 
 void
-SFOItemModel::_HandlePartnerUpdate()
+SFOItemModel::_ResetModel()
 {
-    qDebug() << "updating partner context";
-    _context->setContextProperty(SFOItemModel::ModelIdentifier, NULL);
-    _context->setContextProperty(SFOItemModel::ModelIdentifier, this);
+    qDebug() << "emitting dataChanged";
+    emit dataChanged(index(0),index(_partners.size()-1));
 }

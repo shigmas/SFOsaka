@@ -6,16 +6,21 @@
         <file>ListItem.qml</file>
         <file>MainPage.qml</file>
         <file>MapPage.qml</file>
+        <file>MapPopupDescriptor.qml</file>
         <file>PartnerDetail.qml</file>
-        <file>SisterPage.qml</file>
+        <file>PartnerList.qml</file>
+        <file>PartnerItem.qml</file>
         <file>TranslatorAdd.qml</file>
         <file>TranslatorPage.qml</file>
+        <file>WebView.qml</file>
         <file>sfosaka.qml</file>
         <file>resources/marker.png</file>
+        <file>resources/marker-sel.png</file>
         <file>resources/dictionary_icon.png</file>
         <file>resources/sfosaka_logo.png</file>
-        <file>resources/partner_icon.png</file>
+        <file>resources/partners_icon.png</file>
         <file>resources/festival_icon.png</file>
         <file>resources/matsuri_banner.png</file>
+        <file>resources/taro_orange.png</file>
     </qresource>
 </RCC>

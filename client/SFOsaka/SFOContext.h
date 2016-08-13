@@ -31,7 +31,11 @@ public:
 
     QString GetHost() const;
 
-    SFOPartnerList GetPartners() const;
+    SFOPartnerList GetPartnersByCategory(const SFOPartnerCategory& category = SFOAllCategory) const;
+
+    // We really only care about food and not food partners, so we provide
+    // this helper function to filter a little more quickly
+    SFOPartnerList GetNonFoodPartners() const;
 
     SFOPerformerList GetPerformers() const;
 

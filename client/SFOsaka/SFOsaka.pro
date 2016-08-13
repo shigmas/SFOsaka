@@ -31,7 +31,8 @@ SOURCES += main.cpp \
     SFOOrganization.cpp \
     SFOPartner.cpp \
     SFOPerformer.cpp \
-    SFOScheduleModel.cpp
+    SFOScheduleModel.cpp \
+    SFOController.cpp
 
 lupdate_only{
 SOURCES = FeatureRect.qml  \
@@ -41,8 +42,11 @@ SOURCES = FeatureRect.qml  \
     ListItem.qml           \
     MainPage.qml           \
     MapPage.qml            \
+    MapPopupDescriptor.qml \
     PartnerDetail.qml      \
-    SisterPage.qml         \
+    PartnerItem.qml        \
+    PartnerList.qml        \
+    WebView.qml            \
     AppBar.qml             \
     TranslatorPage.qml     \
     TranslatorAdd.qml      \
@@ -71,7 +75,8 @@ HEADERS += \
     SFOPartner.h \
     SFOPerformer.h \
     SFOScheduleModel.h \
-    SFOValidatorReceiver.h
+    SFOValidatorReceiver.h \
+    SFOController.h
 
 DISTFILES += \
     ios/Icons/AppIcon60x60@3x.png \

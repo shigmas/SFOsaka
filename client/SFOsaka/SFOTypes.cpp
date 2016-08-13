@@ -2,10 +2,20 @@
 
 #include <QObject>
 
+
 Q_DECLARE_METATYPE(QStringPair)
 
+const QMap<SFOPartnerCategory, QString> SFOTypes::PartnerMap = {
+    { SFOAllCategory,           "all"},
+    { SFOFoodCategory,          "food"},
+    { SFOLocationCategory,      "location"},
+    { SFOCommunityCategory,     "community"},
+    { SFOFinancialCategory,     "financial"},
+    { SFOEntertainmentCategory, "entertainment"},
+};
+
 SFOInputLanguage
-SFOGetInputLanguage(const QString& input)
+SFOTypes::GetInputLanguage(const QString& input)
 {
     if (input.length() == 0)
         return SFOInvalidInput;

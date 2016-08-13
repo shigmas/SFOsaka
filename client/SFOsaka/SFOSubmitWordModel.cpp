@@ -100,9 +100,9 @@ SFOSubmitWordModel::Validate( const QVariant& identifier, QString &input ,
                               int &  )
 {
     if (identifier.toString() == QString("word")) {
-        _hasValidWord = SFOGetInputLanguage(input) == SFOJapaneseInput;
+        _hasValidWord = SFOTypes::GetInputLanguage(input) == SFOJapaneseInput;
     } else if (identifier.toString() == QString("phonetic")) {
-        _hasValidPhonetic = SFOGetInputLanguage(input) == SFOEnglishInput;
+        _hasValidPhonetic = SFOTypes::GetInputLanguage(input) == SFOEnglishInput;
     } else {
         // This is a translation, so we need to see if any validator has
         // valid input. Fetching the pair from the identifier is tricky
@@ -111,7 +111,7 @@ SFOSubmitWordModel::Validate( const QVariant& identifier, QString &input ,
         for (SFOValidatorMap::key_iterator it = _validators.keyBegin() ;
              it != _validators.keyEnd() ; ++it) {
             if ((it->type() == QVariant::Int) and
-                (SFOGetInputLanguage(_validators[*it]->GetValidated()) !=
+                (SFOTypes::GetInputLanguage(_validators[*it]->GetValidated()) !=
                  SFOEnglishInput)) {
                 _hasValidTranslation = false;
                 break;
@@ -235,8 +235,7 @@ void
 SFOSubmitWordModel::_ResetModel()
 {
     _validators.clear();
-    _context->setContextProperty("submitModel", NULL);
-    _context->setContextProperty("submitModel", this);
+    emit dataChanged(index(0), index(_translations.size()-1));
 }
 
 void

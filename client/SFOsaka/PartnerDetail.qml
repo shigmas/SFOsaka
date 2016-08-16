@@ -4,12 +4,14 @@ import QtQuick.Layouts 1.3
 
 Item {
     id: root
+    width: parent.width
 
     signal buttonActivated()
 
     ColumnLayout {
         id: row1
         anchors.fill: parent
+        width: parent.width
         
         AppBar {
             id: toolbar
@@ -22,6 +24,7 @@ Item {
             columns: 2
             flow: GridLayout.LeftToRight
             Layout.fillWidth: true
+            width: parent.width
             anchors.top: toolbar.bottom
             anchors.bottom: parent.bottom
 

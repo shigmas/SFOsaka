@@ -36,8 +36,8 @@ Item {
         // I think using the parent as anchors.fill is weird, since its
         // implicit height depends on us, so use the Layout fill
         Layout.fillHeight: true
-        //Layout.fillWidth: true
-        width: root.width
+        Layout.fillWidth: true
+        width: parent.width
         spacing: 5
 
         // This has a bar so that it divides each entry
@@ -45,7 +45,7 @@ Item {
             id: titleItem
             color: "lightgray"
             Layout.fillWidth: true
-            width: root.width
+            width: parent.width
             height: titleFont.height
             Text {
                 text: root.itemTitle
@@ -61,6 +61,7 @@ Item {
             columns: 2
             flow: GridLayout.LeftToRight
             Layout.fillWidth: true
+            width: parent.width
             anchors.top: titleItem.bottom
             anchors.bottom: parent.bottom
             ColumnLayout {

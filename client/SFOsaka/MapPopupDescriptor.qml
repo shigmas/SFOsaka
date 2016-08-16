@@ -1,4 +1,4 @@
-import QtQuick 2.4
+import QtQuick 2.6
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.3
 
@@ -27,8 +27,8 @@ Item {
     }
     // Some magic numbers here. Enough to make it spacious enough.
     // Width needs to be a minimum, but grow if necessary.
-    height: (titleFontMetrics.height + descFontMetrics.height) * 1.6
-    width: titleFontMetrics.width * 1.3 > 70 ? titleFontMetrics.width * 1.3 : 70
+    height: (titleFontMetrics.height + descFontMetrics.height) * 1.8
+    width: titleFontMetrics.width * 1.3 > 70 ? titleFontMetrics.width * 1.3 : 120
     // negative is closer to the top of the screen. So, take the marker position
     // and mov it up a little bit, and move it to the left (to center it a
     // little bit).
@@ -47,24 +47,21 @@ Item {
 
         ColumnLayout {
             Text {
-                anchors.leftMargin: 5
                 font.pointSize: 14
-                //horizontalAlignment: Text.AlignHCenter
-                //verticalAlignment: Text.AlignVCenter
                 font.bold: true
                 color: "steelblue"
+                leftPadding: 4.0
                 text: title
             }
             Text {
-                anchors.leftMargin: 5
-                //horizontalAlignment: Text.AlignHCenter
-                //verticalAlignment: Text.AlignVCenter
-                //anchors.bottom: parent.bottom
                 font.pointSize: 10
                 color: "black"
-                text: shortDescription
+                Layout.maximumWidth: parent.width
                 width: parent.width
-                wrapMode: Text.Wrap
+                horizontalAlignment: Text.AlignLeft
+                text: shortDescription
+                leftPadding: 4.0
+                wrapMode: Text.WrapAnywhere
             }
         }
         MouseArea {
@@ -73,7 +70,7 @@ Item {
             onPressed: {
                 console.log("item selected")
                 console.log("w/h: " + width + "/" + height, "pos: (" + x + "," + y + ")")
-                itemSelected(title)
+                itemSelected(index)
             }
         }
     }

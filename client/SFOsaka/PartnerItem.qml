@@ -73,25 +73,26 @@ Item {
                     id: street
                     text: root.itemStreet
                     font.family: "Arial"
-                    font.pointSize: 16
+                    font.pointSize: 14
                 }
                 Text {
                     id: city
                     text: root.itemCity
                     font.family: "Arial"
-                    font.pointSize: 16
+                    font.pointSize: 14
                 }
                 Text {
                     id: phone
                     text: root.itemPhone
                     font.family: "Arial"
-                    font.pointSize: 16
+                    font.pointSize: 14
                 }
                 Text {
                     id: url
                     text: root.itemURL
                     font.family: "Arial"
-                    font.pointSize: 16
+                    font.pointSize: 14
+                    color: "steel blue"
                     MouseArea {
                         id: urlMouseArea
                         anchors.fill: parent
@@ -116,13 +117,19 @@ Item {
                 }
             }
 
-            TextArea {
+            Text {
                 id: partnerDescription
-                anchors.top: infoColumn.bottom
+                // Handles if we don't have an image at all, to make sure the
+                // description doesn't scrunch up over the info.
+                anchors.top: infoColumn.height > imageRectItem.height ? infoColumn.bottom : imageRectItem.bottom
                 Layout.fillWidth: true
                 Layout.columnSpan: 2
+                // Colspan 2, so double, since I guess this value is adjusted
+                // for our place in the layout?
+                Layout.maximumWidth: parent.width * 2
+                width: parent.width
                 font.pointSize: 14
-                readOnly: true
+                wrapMode: Text.WrapAnywhere
                 text: root.itemDescription
             }
         }

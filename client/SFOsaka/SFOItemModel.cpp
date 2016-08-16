@@ -165,8 +165,6 @@ SFOItemModel::HandleItemSelected(const int& selectedIndex)
 
     if ((_selectedIndex >= 0) and (_selectedIndex < _partners.size())) {
         SFOPartner *p = _partners[selectedIndex];
-        qDebug() << "Setting " << p->GetName() << " as "
-                 << SFOItemModel::PartnerModelIdentifier;
         _context->setContextProperty(SFOItemModel::PartnerModelIdentifier, p);
     }
     _ResetModel();

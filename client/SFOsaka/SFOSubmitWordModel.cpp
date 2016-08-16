@@ -235,7 +235,8 @@ void
 SFOSubmitWordModel::_ResetModel()
 {
     _validators.clear();
-    emit dataChanged(index(0), index(_translations.size()-1));
+    _context->setContextProperty("submitModel", NULL);
+    _context->setContextProperty("submitModel", this);
 }
 
 void

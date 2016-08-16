@@ -136,8 +136,6 @@ protected:
     // empty. Otherwise, returns a genuine pair.
     QStringPair _CreatePairFromVariant(const QVariant& variant) const;
 
-    bool _IsJapanese(const QString& word) const;
-
     void _HandleStartResponse(const QJsonDocument& data);
     void _HandlePartnersResponse(const QJsonDocument& data);
     void _HandlePerformersResponse(const QJsonDocument& data);

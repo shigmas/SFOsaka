@@ -29,12 +29,13 @@ Item {
         fillMode: Image.Stretch
     }
 
-    TextArea {
+    Text {
         id: festivalDescription
         anchors.top: bannerImage.bottom
+        Layout.maximumWidth: parent.width
         width: parent.width
         height: fontMetrics.height*3.5
-        readOnly: true
+        wrapMode: Text.WrapAnywhere
         font.pointSize: 14
         font.family: "Avenir"
         text: qsTr("August 27, 2016 celebration of the 59th year of San Francisco and Osaka's sister city relationship by highlighting the food, culture, and the ties our community has with Osaka.")
@@ -90,6 +91,18 @@ Item {
         anchors.bottom: parent.bottom
         anchors.right: parent.right
 
+        Text {
+            font.pointSize: 8
+            text: "v 1.3"
+            anchors.left: parent.left
+            MouseArea {
+                id: versionMouseArea
+                anchors.fill: parent
+                onPressed: {
+                    globalController.HandleRefresh()
+                }
+            }
+        }
         Rectangle {
             width: 40
             height: 0

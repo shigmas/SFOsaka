@@ -19,7 +19,7 @@ ApplicationWindow {
         signal translatorAddActivated()
         signal partnersActivated()
         signal backActivated()
-        signal itemSelected(string title)
+        signal itemSelected(int index)
 
         initialItem:
         MainPage {
@@ -34,7 +34,7 @@ ApplicationWindow {
             id: mapPage
             visible: false
             onButtonActivated: stackView.backActivated()
-            onItemSelected: stackView.itemSelected(title)
+            onItemSelected: stackView.itemSelected(index)
         }
 
         PartnerList {
@@ -86,7 +86,7 @@ ApplicationWindow {
         }
 
         onItemSelected: {
-            console.log(title + " chosen")
+            console.log(index + " chosen")
             stackView.push(partnerDetailPage)
         }
             

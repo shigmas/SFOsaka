@@ -18,7 +18,7 @@ ColumnLayout {
     property variant locationSF: QtPositioning.coordinate( 37.785124,-122.431322)
 
     signal buttonActivated()
-    signal itemSelected(string title)
+    signal itemSelected(int index)
 
     AppBar {
         id: toolbar
@@ -81,6 +81,31 @@ ColumnLayout {
         center: locationSF
         zoomLevel: 17
 
+        property var selectedItem
+        property real popupYOffset
+
+        gesture.acceptedGestures: MapGestureArea.PanGesture | MapGestureArea.FlickGesture | MapGestureArea.PinchGesture
+        gesture.enabled: true
+
+        gesture.onPanFinished: {
+            if (popup.visible) {
+                popup.xPos = selectedItem.x
+                popup.yPos = selectedItem.y + popupYOffset
+            }
+        }
+        gesture.onPinchFinished: {
+            if (popup.visible) {
+                popup.xPos = selectedItem.x
+                popup.yPos = selectedItem.y + popupYOffset
+            }
+        }
+        gesture.onFlickFinished: {
+            if (popup.visible) {
+                popup.xPos = selectedItem.x
+                popup.yPos = selectedItem.y + popupYOffset
+            }
+        }
+
         MapItemView {
             model: placeModel
             delegate: MapQuickItem {
@@ -117,41 +142,33 @@ ColumnLayout {
                         target: imageMouseArea
                         onPressed: {
                             placeModel.HandleItemSelected(index)
-                            console.log("Popup: (" + mapItem.x + ", " + mapItem.y + image.height * 0.5 + ")")
-                            console.log("selected " + index)
-                            console.log("title " + title)
-                            console.log("desc " + shortDescription)
-                            console.log("offset: " + image.height * 0.5)
+                            map.selectedItem = mapItem
+                            map.popupYOffset = image.height * 0.5
                             popup.xPos = mapItem.x
                             popup.yPos = mapItem.y + image.height * 0.5
                             popup.title = title
                             popup.shortDescription = shortDescription
                             popup.visible = true
-                            console.log("title height: " + popup.titleFontHeight)
-                            console.log("title width: " + popup.titleFontWidth)
-                            console.log("w/h: (" + popup.width + ", " + popup.height + ")")
                         }
                     }
 
                 }
             }
         }
+
         MouseArea {
             id: mapMouseArea
             anchors.fill: parent
             onPressed: {
-                console.log("nothing pressed")
-                console.log("Current pop location: (" + popup.x + ", " + popup.y + ")")
-                console.log("title height: " + popup.titleFontHeight)
-                console.log("title width: " + popup.titleFontWidth)
-                console.log("w/h: (" + popup.width + ", " + popup.height + ")")
+                // Unselection doesn't work - box gets drawn in all sorts of
+                // weird ways.
                 //placeModel.HandleItemSelected(-1)
                 //popup.visible = false
             }
-
         }
         //! [Places MapItemView]
     }
+
     MapPopupDescriptor {
         id: popup
     }

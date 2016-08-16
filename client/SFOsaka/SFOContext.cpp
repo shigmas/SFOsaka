@@ -238,7 +238,7 @@ SFOContext::LoadFromDisk()
         foreach(key, allDicts.keys()) {
             //qDebug() << "Word: " << key;
             // Look at the first character to see if it's japanese
-            if (_IsJapanese(key)) {
+            if (SFOTypes::GetInputLanguage(key) == SFOJapaneseInput) {
                 // means val is english, and we can ignore the pronunciation
                 // (if it even has one)
                 _jpToEnDict[key] = _CreatePairFromVariant(allDicts[key]);
@@ -393,26 +393,6 @@ SFOContext::_CreatePairFromVariant(const QVariant& variant) const
     }
 }
         
-bool
-SFOContext::_IsJapanese(const QString& word) const
-{
-    if (word.length() == 0)
-        return false;
-
-    QChar inputChar = word.at(0);
-    switch (inputChar.script()) {
-    case QChar::Script_Latin:
-        return false;
-    case QChar::Script_Hiragana:
-    case QChar::Script_Katakana:
-    case QChar::Script_Han:
-        return true;
-    default:
-        return false;
-    }
-
-}
-
 void
 SFOContext::_HandleStartResponse(const QJsonDocument& data)
 {

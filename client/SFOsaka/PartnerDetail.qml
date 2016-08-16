@@ -72,16 +72,18 @@ Item {
                 }
             }
 
-            TextArea {
+            Text {
                 id: partnerDescription
                 anchors.top: imageRectItem.bottom
                 Layout.fillWidth: true
                 Layout.columnSpan: 2
+                Layout.maximumWidth: parent.width * 2
+                width: parent.width
                 font.pointSize: 14
-                readOnly: true
+                wrapMode: Text.WrapAnywhere
                 text: partnerDetail.description
             }
-            Item {}
+
         }
     }
 }

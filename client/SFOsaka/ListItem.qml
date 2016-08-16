@@ -69,11 +69,14 @@ Item {
             }
         }
 
-        TextArea {
+        Text {
             id: descriptionItem
             Layout.fillWidth: true
+            Layout.columnSpan: 2
+            Layout.maximumWidth: parent.width
+            width: parent.width
             anchors.topMargin: 6.0
-            readOnly: true
+            wrapMode: Text.WrapAnywhere
             font.family: "Arial"
             font.pointSize: 16
             text: root.itemDescription

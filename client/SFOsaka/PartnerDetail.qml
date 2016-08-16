@@ -1,4 +1,4 @@
-import QtQuick 2.4
+import QtQuick 2.6
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.3
 
@@ -74,13 +74,14 @@ Item {
 
             Text {
                 id: partnerDescription
+                topPadding: 3.0
                 anchors.top: imageRectItem.bottom
                 Layout.fillWidth: true
                 Layout.columnSpan: 2
                 Layout.maximumWidth: parent.width * 2
-                width: parent.width
+                width: parent.width * 2
                 font.pointSize: 14
-                wrapMode: Text.WrapAnywhere
+                wrapMode: Text.Wrap
                 text: partnerDetail.description
             }
 

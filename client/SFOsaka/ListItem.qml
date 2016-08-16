@@ -1,4 +1,4 @@
-import QtQuick 2.4
+import QtQuick 2.6
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.3
 
@@ -71,12 +71,13 @@ Item {
 
         Text {
             id: descriptionItem
+            topPadding: 3.0
             Layout.fillWidth: true
             Layout.columnSpan: 2
             Layout.maximumWidth: parent.width
             width: parent.width
             anchors.topMargin: 6.0
-            wrapMode: Text.WrapAnywhere
+            wrapMode: Text.Wrap
             font.family: "Arial"
             font.pointSize: 16
             text: root.itemDescription

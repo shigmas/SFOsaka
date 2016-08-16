@@ -69,7 +69,9 @@ SFOItemModel::SetPartners(const SFOPartnerList& partners)
 {
     if (_partners != partners) {
         _partners = partners;
-        _ResetModel();
+        // Don't reset the model. The number of partners may have changed,
+        // and that could cause a crash. Setting and resetting the model (which
+        // we should do, but is done in the controller right now) is sufficient.
     }
 }
 

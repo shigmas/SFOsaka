@@ -1,4 +1,4 @@
-import QtQuick 2.4
+import QtQuick 2.6
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.3
 
@@ -90,6 +90,8 @@ Item {
                 Text {
                     id: url
                     text: root.itemURL
+                    clip: true
+                    Layout.maximumWidth: parent.width
                     font.family: "Arial"
                     font.pointSize: 14
                     color: "steel blue"
@@ -121,6 +123,7 @@ Item {
                 id: partnerDescription
                 // Handles if we don't have an image at all, to make sure the
                 // description doesn't scrunch up over the info.
+                topPadding: 3.0
                 anchors.top: infoColumn.height > imageRectItem.height ? infoColumn.bottom : imageRectItem.bottom
                 Layout.fillWidth: true
                 Layout.columnSpan: 2
@@ -129,7 +132,7 @@ Item {
                 Layout.maximumWidth: parent.width * 2
                 width: parent.width
                 font.pointSize: 14
-                wrapMode: Text.WrapAnywhere
+                wrapMode: Text.Wrap
                 text: root.itemDescription
             }
         }

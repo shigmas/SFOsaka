@@ -61,7 +61,7 @@ Item {
                 horizontalAlignment: Text.AlignLeft
                 text: shortDescription
                 leftPadding: 4.0
-                wrapMode: Text.WrapAnywhere
+                wrapMode: Text.Wrap
             }
         }
         MouseArea {

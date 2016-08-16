@@ -35,7 +35,7 @@ Item {
         Layout.maximumWidth: parent.width
         width: parent.width
         height: fontMetrics.height*3.5
-        wrapMode: Text.WrapAnywhere
+        wrapMode: Text.Wrap
         font.pointSize: 14
         font.family: "Avenir"
         text: qsTr("August 27, 2016 celebration of the 59th year of San Francisco and Osaka's sister city relationship by highlighting the food, culture, and the ties our community has with Osaka.")

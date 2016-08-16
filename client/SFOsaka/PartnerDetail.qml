@@ -32,6 +32,7 @@ Item {
                 id: infoColumn
                 anchors.leftMargin: 4.0
                 anchors.rightMargin: 4.0
+                Layout.maximumWidth: parent.width
 
                 Text {
                     id: partnerName

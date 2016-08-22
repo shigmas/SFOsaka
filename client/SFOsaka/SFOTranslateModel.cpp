@@ -28,7 +28,33 @@ SFOTranslateModel::SetTranslations(const QPairMap& translations)
             break;
         }
     }
+    // XXX - Iterate again. very inefficient, but at this point, let's not mess
+    // with what works, when it's not that big of a list anyway.
+    QString key;
+    int maxChars = 0;
+    foreach(key, _words) {
+        int count = key.size();
+        QStringPair trans = translations[key];
+        count = key.size() + trans.first.size();
+        if (!trans.second.isEmpty()) {
+            count += trans.second.size();
+        }
+        if (count > maxChars) {
+            maxChars = count;
+        }
+    }
     _translations = translations;
+
+    if (maxChars != _maxCharacters) {
+        _maxCharacters = maxChars;
+        emit MaxCharactersChanged();
+    }
+}
+
+int
+SFOTranslateModel::GetMaxCharacters() const
+{
+    return _maxCharacters;
 }
 
 int

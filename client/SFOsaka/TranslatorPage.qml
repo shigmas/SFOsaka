@@ -15,7 +15,7 @@ Item {
         id: fontMetrics
         font.family: "Arial"
         font.pointSize: 20
-        text: "placeholder text"
+        text: "p"
     }
 
     ColumnLayout {
@@ -25,6 +25,7 @@ Item {
 
         AppBar {
             id: toolbar
+            anchors.top: parent.top
             onButtonActivated: root.buttonActivated()
         }
 
@@ -45,10 +46,10 @@ Item {
         RowLayout {
             id: searchBoxLayout
             anchors.top: searchPhraseLayout.bottom
+            width: parent.width
 
             TextField {
                 id: textInput
-                //Layout.fillWidth: true
                 width: fontMetrics.width * 2
                 height: fontMetrics.height
                 placeholderText: qsTr("English/Japanese")
@@ -85,19 +86,28 @@ Item {
             }
         }
 
-        ListView {
-            id: translationView
-            model: translationModel
+        ScrollView {
+            id: scrollView
             anchors.top: resultsExplanationLayout.bottom
             anchors.bottom: parent.bottom
-            
-            delegate: Rectangle {
-                width: fontMetrics.width*3
-                height: fontMetrics.height
-                Row {
-                    Text { text: word + ": " }
-                    Text { text: translation }
-                    Text { text: pronunciation }
+            anchors.left: parent.left
+            anchors.right: parent.right
+
+            ListView {
+                id: translationView
+                model: translationModel
+                //Layout.maximumWidth: fontMetrics.width*3
+                contentWidth: translationModel.maxCharacters * fontMetrics.width + 4
+                flickableDirection: Flickable.HorizontalAndVerticalFlick
+                delegate: Rectangle {
+                    id: itemRect
+                    height: fontMetrics.height
+                    width: translationModel.maxCharacters * fontMetrics.width
+                    Row {
+                        Text { id: textLabel; text: word + ": " }
+                        Text { id: transLabel; text: translation }
+                        Text { id: pronLabel; text: pronunciation }
+                    }
                 }
             }
         }

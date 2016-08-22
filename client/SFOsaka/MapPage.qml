@@ -15,7 +15,7 @@ ColumnLayout {
     Layout.fillWidth: true
     anchors.fill: parent
 
-    property variant locationSF: QtPositioning.coordinate( 37.785124,-122.431322)
+    property variant locationSF: QtPositioning.coordinate(37.78534,-122.430232)
 
     signal buttonActivated()
     signal itemSelected(int index)
@@ -81,52 +81,23 @@ ColumnLayout {
         center: locationSF
         zoomLevel: 17
 
-        property var selectedItem
-        property real popupYOffset
-
-        gesture.acceptedGestures: MapGestureArea.PanGesture | MapGestureArea.FlickGesture | MapGestureArea.PinchGesture
-        gesture.enabled: true
-
-        gesture.onPanFinished: {
-            if (popup.visible) {
-                popup.xPos = selectedItem.x
-                popup.yPos = selectedItem.y + popupYOffset
-            }
-        }
-        gesture.onPinchFinished: {
-            if (popup.visible) {
-                popup.xPos = selectedItem.x
-                popup.yPos = selectedItem.y + popupYOffset
-            }
-        }
-        gesture.onFlickFinished: {
-            if (popup.visible) {
-                popup.xPos = selectedItem.x
-                popup.yPos = selectedItem.y + popupYOffset
-            }
-        }
-
         MapItemView {
             model: placeModel
             delegate: MapQuickItem {
                 id: mapItem
                 coordinate: coord
                 anchorPoint.x: image.width * 0.5
-                anchorPoint.y: image.height
+                anchorPoint.y: contentColumn.height
 
                 sourceItem: Column {
-                    Rectangle {
-                        property string title
-                        id: descriptionRect
-                        border.width: 4
-                        border.color: "black"
-                        visible: false
-                        y: -(image.height)
-                        Text {
-                            text: title
-                        }
+                    id: contentColumn
+                    spacing: 4.0
+                    MapPopupDescriptor {
+                        id: popup
+                        popupTitle: title
+                        popupSubTitle: shortDescription
+                        visible: isSelected
                     }
-
                     Image {
                         id: image
                         source: mapMarkerImage
@@ -134,42 +105,14 @@ ColumnLayout {
                             id: imageMouseArea
                             anchors.fill: parent
                             onPressed: {
+                                placeModel.ToggleItemSelected(index)
                             }
                         }
                     }
-
-                    Connections {
-                        target: imageMouseArea
-                        onPressed: {
-                            placeModel.HandleItemSelected(index)
-                            map.selectedItem = mapItem
-                            map.popupYOffset = image.height * 0.5
-                            popup.xPos = mapItem.x
-                            popup.yPos = mapItem.y + image.height * 0.5
-                            popup.title = title
-                            popup.shortDescription = shortDescription
-                            popup.visible = true
-                        }
-                    }
-
                 }
             }
         }
 
-        MouseArea {
-            id: mapMouseArea
-            anchors.fill: parent
-            onPressed: {
-                // Unselection doesn't work - box gets drawn in all sorts of
-                // weird ways.
-                //placeModel.HandleItemSelected(-1)
-                //popup.visible = false
-            }
-        }
         //! [Places MapItemView]
-    }
-
-    MapPopupDescriptor {
-        id: popup
     }
 }

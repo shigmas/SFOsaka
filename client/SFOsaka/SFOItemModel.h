@@ -46,8 +46,10 @@ Q_SIGNALS:
 
 public slots:
     void HandleItemSelected(const int& selectedIndex);
+    void ToggleItemSelected(const int& selectedIndex);
 
 protected:
+    void _SetItemAsSelected(const int& selectedIndex);
     void _ResetModel();
     
 protected:
@@ -62,6 +64,7 @@ protected:
     static const QByteArray ImageSourceRole;
     static const QByteArray DescriptionRole;
     static const QByteArray ShortDescriptionRole;
+    static const QByteArray IsSelectedRole;
 
     static const QHash<int, QByteArray> Roles;
 

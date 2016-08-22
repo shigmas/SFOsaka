@@ -93,7 +93,7 @@ Item {
 
         Text {
             font.pointSize: 8
-            text: "v 1.3"
+            text: "v 1.4"
             anchors.left: parent.left
             MouseArea {
                 id: versionMouseArea

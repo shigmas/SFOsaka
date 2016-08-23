@@ -65,6 +65,8 @@ protected:
     static const QByteArray DescriptionRole;
     static const QByteArray ShortDescriptionRole;
     static const QByteArray IsSelectedRole;
+    // XXX - Last minute hack to get the release out today
+    static const QByteArray BarColorRole;
 
     static const QHash<int, QByteArray> Roles;
 

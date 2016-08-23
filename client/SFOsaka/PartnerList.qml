@@ -45,6 +45,7 @@ Item {
                     itemURL: url
                     itemImageURL: imageSource
                     itemDescription: description
+                    itemBarColor: barColor
                 }
                 model: partnersModel
             }

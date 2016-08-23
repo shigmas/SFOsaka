@@ -22,6 +22,7 @@ const QByteArray SFOItemModel::ImageSourceRole      = "imageSource";
 const QByteArray SFOItemModel::DescriptionRole      = "description";
 const QByteArray SFOItemModel::ShortDescriptionRole = "shortDescription";
 const QByteArray SFOItemModel::IsSelectedRole       = "isSelected";
+const QByteArray SFOItemModel::BarColorRole         = "barColor";
 
 const QString SFOItemModel::_SelectedMarker    = "resources/marker-sel.png";
 const QString SFOItemModel::_UnselectedMarker  = "resources/marker.png";
@@ -39,6 +40,7 @@ const QHash<int, QByteArray> SFOItemModel::Roles = {
     {9, DescriptionRole},
     {10, ShortDescriptionRole},
     {11, IsSelectedRole},
+    {12, BarColorRole},
 };
 
 
@@ -123,6 +125,10 @@ SFOItemModel::data(const QModelIndex &index,
             return (index.row() == _selectedIndex)
                 ? QVariant(true)
                 : QVariant(false);
+        case 12:                // ItemBarColorRole
+            return partner->GetCategory() == "financial"
+                ? QVariant("steelblue")
+                : QVariant("lightgray");
         default:
             qDebug() << "Unknown role " << role;
             return QVariant();
@@ -191,7 +197,7 @@ SFOItemModel::_SetItemAsSelected(const int& selectedIndex)
 {
     if ((selectedIndex >= 0) and (selectedIndex < _partners.size())) {
         SFOPartner *p = NULL;
-        if (selectedIndex != _partners.size() - 1) {
+        if (selectedIndex != 0) {
             // Move the selected index to the end
             p = _partners.takeAt(selectedIndex);
             _partners.prepend(p);

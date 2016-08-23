@@ -11,6 +11,7 @@ Item {
     property string itemURL
     property string itemImageURL
     property string itemDescription
+    property string itemBarColor
 
     width: parent.width
     //height: parent.width
@@ -43,7 +44,7 @@ Item {
         // This has a bar so that it divides each entry
         Rectangle {
             id: titleItem
-            color: "lightgray"
+            color: itemBarColor
             Layout.fillWidth: true
             width: parent.width
             height: titleFont.height

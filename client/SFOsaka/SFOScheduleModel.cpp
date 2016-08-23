@@ -92,11 +92,7 @@ SFOScheduleModel::_HandlePerformerUpdate()
 // Sorts based on start date, as long as the performer is active.
 static bool _isLessThan(const SFOPerformer* first, const SFOPerformer* second)
 {
-    if (first->IsActive() and second->IsActive()) {
-        return first->GetStartTime() < second->GetStartTime();
-    }
-
-    return false;
+    return first->GetStartTime() < second->GetStartTime();
 }
 
 void
@@ -108,8 +104,7 @@ SFOScheduleModel::_SortPerformers()
         SFOContext::GetInstance()->GetPerformers().toStdList();
     performerList.sort(_isLessThan);
 
-    SFOPerformer *performer;
-    foreach(performer, performerList) {
+    for(SFOPerformer *performer : performerList) {
         if (performer->IsActive()) {
             _orderedPerfomers.append(performer);
         }

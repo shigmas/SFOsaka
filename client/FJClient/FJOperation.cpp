@@ -249,7 +249,10 @@ FJOperation::_GetJsonFromContent(const QByteArray& content)
     }
 
     QByteArray cleanedContent = content;
-    unsigned int desiredSize = cleanedContent.size() -1;
+    if (cleanedContent.size() == 0) {
+        return QJsonDocument();
+    }
+    int desiredSize = cleanedContent.size() - 1;
     //qDebug() << "Raw: <<" << _buffer.data() << ">>";
     while ((cleanedContent.at(desiredSize) != '}') &&
            (cleanedContent.at(desiredSize) != ']')) {

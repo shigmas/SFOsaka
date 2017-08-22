@@ -1,19 +1,19 @@
 <RCC>
     <qresource prefix="/">
-        <file>AppBar.qml</file>
-        <file>FeatureRect.qml</file>
-        <file>FestivalPage.qml</file>
-        <file>ListItem.qml</file>
-        <file>MainPage.qml</file>
-        <file>MapPage.qml</file>
-        <file>MapPopupDescriptor.qml</file>
-        <file>PartnerDetail.qml</file>
-        <file>PartnerList.qml</file>
-        <file>PartnerItem.qml</file>
-        <file>TranslatorAdd.qml</file>
-        <file>TranslatorPage.qml</file>
-        <file>WebView.qml</file>
-        <file>sfosaka.qml</file>
+        <file>qml/AppBar.qml</file>
+        <file>qml/FeatureRect.qml</file>
+        <file>qml/FestivalPage.qml</file>
+        <file>qml/ListItem.qml</file>
+        <file>qml/MainPage.qml</file>
+        <file>qml/MapPage.qml</file>
+        <file>qml/MapPopupDescriptor.qml</file>
+        <file>qml/PartnerDetail.qml</file>
+        <file>qml/PartnerList.qml</file>
+        <file>qml/PartnerItem.qml</file>
+        <file>qml/TranslatorAdd.qml</file>
+        <file>qml/TranslatorPage.qml</file>
+        <file>qml/WebView.qml</file>
+        <file>qml/sfosaka.qml</file>
         <file>resources/marker.png</file>
         <file>resources/marker-sel.png</file>
         <file>resources/dictionary_icon.png</file>
@@ -22,5 +22,6 @@
         <file>resources/festival_icon.png</file>
         <file>resources/matsuri_banner.png</file>
         <file>resources/taro_orange.png</file>
+        <file>qtquickcontrols2.conf</file>
     </qresource>
 </RCC>

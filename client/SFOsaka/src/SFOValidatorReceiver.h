@@ -2,7 +2,7 @@
 #define SFOVALIDATORRECEIVER_H
 
 #include <QObject>
-#include <QValidator.h>
+#include <QValidator>
 #include <QVariant>
 
 class SFOValidator;

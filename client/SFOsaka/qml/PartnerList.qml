@@ -23,7 +23,6 @@ Item {
         }
 
         ScrollView {
-            //anchors.fill: parent
             Layout.fillHeight: true
             Layout.fillWidth: true
 

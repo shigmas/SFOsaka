@@ -10,6 +10,7 @@
 #include <QQmlContext>
 #include <QDebug>
 
+
 SFOController::SFOController(QQmlContext *context, QObject *parent) :
     QObject(parent),
     _context(context)

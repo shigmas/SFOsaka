@@ -39,7 +39,8 @@ ColumnLayout {
             // Tried importing the variable as javascript, and as a QML singleton
             // with no success. (The variable exists, but it's not a useful
             // string. So, you just have to enter this value by hand
-            name: "mapbox.access_token"; value: MapboxVars.Token
+            //name: "mapbox.access_token"; value: MapboxVars.Token
+            name: "mapbox.access_token"; value: "pk.blahblah"
         }
         PluginParameter {
             name: "mapbox.map_id"; value: "mapbox.streets"
@@ -56,7 +57,7 @@ ColumnLayout {
         active: true
         updateInterval: 120000 // 2 mins
         onPositionChanged:  {
-            console.log("Position Changed")
+            //console.log("Position Changed")
             var currentPosition = positionSource.position.coordinate
             map.center = currentPosition
             var distance = currentPosition.distanceTo(lastSearchPosition)

@@ -42,6 +42,10 @@
         <string>19.0</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We don't really need it (in use)</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We don't really need it (always)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NOTE</key>
@@ -62,7 +66,7 @@
 		</dict>
 	</dict>
 	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
+	<string>InitialScreen</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

@@ -12,6 +12,9 @@ ios {
 
     ios_icon.files = $$files($$PWD/ios/Icons/AppIcon*.png)
     QMAKE_BUNDLE_DATA += ios_icon
+
+    launch_images.files = $$files($PWD/ios/LaunchScreen.xib) $$files($$PWD/resources/bmatsuri_banner.png)
+    QMAKE_BUNDLE_DATA += launch_images
 }
 
 CONFIG += c++11
@@ -101,41 +104,36 @@ DISTFILES += \
 
 TRANSLATIONS = translations/sfosaka_ja_JP.ts
 
-iphonesimulator {
-LIBS += -L$$PWD/../build-FJClient-iphonesimulator_clang_Qt_5_9_0_for_iOS-Debug/ -lFJClient
-}
-iphoneos{
-LIBS += -L$$PWD/../build-FJClient-iphoneos_clang_Qt_5_9_0_for_iOS-Debug/ -lFJClient
-#LIBS += -L$$PWD/../build-FJClient-iphoneos_clang_Qt_5_9_0_for_iOS-Release/ -lFJClient
-}
-android{
-LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Debug/ -lFJClient
-#LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Release/ -lFJClient
-#Debug:LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0-Debug/ -lFJClient
-#Release:LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0-Release/ -lFJClient
-}
-osx{
-LIBS += -L$$PWD/../build-FJClient-Desktop_Qt_5_9_0_clang_64bit-Debug/ -lFJClient
-}
-
 
 INCLUDEPATH += $$PWD/../FJClient
 DEPENDPATH += $$PWD/../FJClient
 
-iphonesimulator {
-PRE_TARGETDEPS += $$PWD/../build-FJClient-iphonesimulator_clang_Qt_5_9_0_for_iOS-Debug/libFJClient.a
+iphoneimulator {
+    LIBS += -L$$PWD/../build-FJClient-iphonesimulator_clang_Qt_5_9_0_for_iOS-Debug/ -lFJClient
+    PRE_TARGETDEPS += $$PWD/../build-FJClient-iphonesimulator_clang_Qt_5_9_0_for_iOS-Debug/libFJClient.a
 }
-iphoneos{
-Debug:PRE_TARGETDEPS += $$PWD/../build-FJClient-iphoneos_clang_Qt_5_9_0_for_iOS-Debug/libFJClient.a
-Release:PRE_TARGETDEPS += $$PWD/../build-FJClient-iphoneos_clang_Qt_5_9_0_for_iOS-Release/libFJClient.a
+
+iphoneos {
+    CONFIG(debug) {
+        PRE_TARGETDEPS += $$PWD/../build-FJClient-iphoneos_clang_Qt_5_9_0_for_iOS-Debug/libFJClient.a
+        LIBS += -L$$PWD/../build-FJClient-iphoneos_clang_Qt_5_9_0_for_iOS-Debug/ -lFJClient
+    } else {
+        PRE_TARGETDEPS += $$PWD/../build-FJClient-iphoneos_clang_Qt_5_9_0_for_iOS-Release/libFJClient.a
+        LIBS += -L$$PWD/../build-FJClient-iphoneos_clang_Qt_5_9_0_for_iOS-Release/ -lFJClient
+    }
 }
-android{
-Debug:PRE_TARGETDEPS += $$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0-Debug/libFJClient.a
-Release:PRE_TARGETDEPS += $$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0-Release/libFJClient.a
-}
-osx {
-PRE_TARGETDEPS += $$PWD/../build-FJClient-Desktop_Qt_5_9_0_clang_64bit-Debug/libFJClient.a
-}
+android {
+    CONFIG(debug) {
+        PRE_TARGETDEPS += $$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Debug/libFJClient.a
+        LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Debug/ -lFJClient
+    } else {
+        PRE_TARGETDEPS += $$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Release/libFJClient.a
+        LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Release/ -lFJClient
+#        PRE_TARGETDEPS += $$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Release/libFJClient.a
+#        LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Release/ -lFJClient
+    }
+}        
+
 contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
     ANDROID_EXTRA_LIBS = \
         /Users/wyan/src/github/SFOsaka/client/SFOsaka/libcrypto.so \

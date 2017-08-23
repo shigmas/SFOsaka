@@ -49,9 +49,10 @@ We're using nginx. The configuration isn't covered here, but in addition to the 
 ### Client:
 Prerequites: Qt 5.x
  1. Build FJClient. This is the Futomen JSON client. Just some basic HTTP/JSON marshalling
- 2. Build SFOSaka
+ 2. If you have added any translations, run lupdate to add them to the specific languages .tm file, and then run Qt Linguist to add the translation
+ 3. Build SFOSaka
 This should be repeated for every client. SFOContext.cpp has the servername in it.
- 3. mapbox requires an API key which is not checked in. Until I figure out how to put it in a separate file, you have to edit the MapPage.qml file
+ 4. mapbox requires an API key which is not checked in. Until I figure out how to put it in a separate file, you have to edit the MapPage.qml file
 
 Android notes:
 OpenSSL needs to be built. See the Qt specific [note](http://doc.qt.io/qt-5/opensslsupport.html), but I found that the OpenSSL [setup](https://wiki.openssl.org/index.php/Android) more useful to configure.

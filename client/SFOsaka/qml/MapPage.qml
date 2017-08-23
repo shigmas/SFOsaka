@@ -54,7 +54,11 @@ ColumnLayout {
     PositionSource {
         id: positionSource
         property variant lastSearchPosition: locationSF
-        active: true
+        // A lot of stuff changes when this is true. We need to ask permission
+        // to use the location, which means NSLocationWhenInUseUsageDescription
+        // and NSLocationAlwaysUsageDescription string keys need to be set.
+        //active: true
+        active: false
         updateInterval: 120000 // 2 mins
         onPositionChanged:  {
             //console.log("Position Changed")

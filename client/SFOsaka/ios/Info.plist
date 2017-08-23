@@ -35,17 +35,13 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.4</string>
+	<string>1.5</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-        <string>19.0</string>
+        <string>20.0</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We don't really need it (in use)</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>We don't really need it (always)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NOTE</key>
@@ -66,7 +62,7 @@
 		</dict>
 	</dict>
 	<key>UILaunchStoryboardName</key>
-	<string>InitialScreen</string>
+	<string>LaunchScreen</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

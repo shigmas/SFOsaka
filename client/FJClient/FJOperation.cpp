@@ -15,6 +15,7 @@
 
 #include <functional>
 
+
 using namespace std::placeholders;
 
 const QByteArray FJOperation::CSRFCookieName = "csrftoken";
@@ -211,7 +212,11 @@ FJOperation::_OnFinished(QNetworkAccessManagerSharedPtr accessManager,
         }
     } else {
         _NetworkErrorPrintError(_reply->error());
-        qDebug() << "Invalid or empty JSON in response";
+        if (rest.size() == 0) {
+            qDebug() << "Empty JSON in response";
+        } else {
+            qDebug() << "Invalid JSON in response: [" << rest << "]";
+        }
     }
     _status = FJCompletedStatus;
 }

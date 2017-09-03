@@ -10,6 +10,7 @@
 #include <QStandardPaths>
 #include <QThread>
 
+#include <sstream>
 // Declare the pointers for us, so we can pass ourselves as a weakptr
 FJ_DECLARE_PTRS(SFOContext)
 
@@ -25,11 +26,14 @@ const QString SFOContext::LastDictDateKey      = "last_dict_date";
 const QString SFOContext::LastPerformerDateKey = "last_performer_date";
 
 // Dev
-//const QStringPair SFOContext::ServerInfo = qMakePair(QString("localhost:8000"),QString("http"));
+#ifdef QT_DEBUG
+const QStringPair SFOContext::ServerInfo = qMakePair(QString("localhost:8000"),QString("http"));
+#else
 // Beta
 //const QStringPair SFOContext::ServerInfo = qMakePair(QString("malttest.futomen.net:8143"),QString("https"));
 // Live
 const QStringPair SFOContext::ServerInfo = qMakePair(QString("sfosaka.futomen.net:8143"),QString("https"));
+#endif
 
 SFOContext::SFOContext(QObject *parent) : 
     FJCaller(parent)
@@ -57,7 +61,14 @@ SFOContext::~SFOContext()
 QString
 SFOContext::GetHost() const
 {
+#ifdef QT_DEBUG
+    std::stringstream host;
+    host << ServerInfo.second.toStdString() << "://"
+         << ServerInfo.first.toStdString() << "/mobapp/";
+    return host.str().c_str();
+#else
     return ServerInfo.second;
+#endif
 }
 
 SFOContext*

@@ -16,6 +16,6 @@ void
 SFOIgnoreNetworkAccessManager::ignoreSSLErrors(QNetworkReply* reply,
                                                const QList<QSslError>& errors)
 {
-    qDebug() << "Ignoring errors";
+    qDebug() << "----sslErrors handler: Ignoring errors----";
     reply->ignoreSslErrors(errors);
 }

@@ -108,29 +108,35 @@ TRANSLATIONS = translations/sfosaka_ja_JP.ts
 INCLUDEPATH += $$PWD/../FJClient
 DEPENDPATH += $$PWD/../FJClient
 
-iphoneimulator {
-    LIBS += -L$$PWD/../build-FJClient-iphonesimulator_clang_Qt_5_9_0_for_iOS-Debug/ -lFJClient
-    PRE_TARGETDEPS += $$PWD/../build-FJClient-iphonesimulator_clang_Qt_5_9_0_for_iOS-Debug/libFJClient.a
+iphonesimulator {
+    CONFIG(debug, debug|release) {
+        LIBS += -L$$PWD/../build-FJClient-iphonesimulator_clang_Qt_5_9_0_for_iOS-Debug/ -lFJClient
+        PRE_TARGETDEPS += $$PWD/../build-FJClient-iphonesimulator_clang_Qt_5_9_0_for_iOS-Debug/libFJClient.a
+    } else {
+        LIBS += -L$$PWD/../build-FJClient-iphonesimulator_clang_Qt_5_9_0_for_iOS-Debug/ -lFJClient
+        PRE_TARGETDEPS += $$PWD/../build-FJClient-iphonesimulator_clang_Qt_5_9_0_for_iOS-Debug/libFJClient.a
+    }
 }
 
 iphoneos {
-    CONFIG(debug) {
+    CONFIG(debug, debug|release) {
         PRE_TARGETDEPS += $$PWD/../build-FJClient-iphoneos_clang_Qt_5_9_0_for_iOS-Debug/libFJClient.a
         LIBS += -L$$PWD/../build-FJClient-iphoneos_clang_Qt_5_9_0_for_iOS-Debug/ -lFJClient
-    } else {
+    } else { # CONFIG(release, debug|release)
         PRE_TARGETDEPS += $$PWD/../build-FJClient-iphoneos_clang_Qt_5_9_0_for_iOS-Release/libFJClient.a
         LIBS += -L$$PWD/../build-FJClient-iphoneos_clang_Qt_5_9_0_for_iOS-Release/ -lFJClient
     }
 }
+
 android {
-    CONFIG(debug) {
+    CONFIG(debug, debug|release) {
+        message(DEBUG)
         PRE_TARGETDEPS += $$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Debug/libFJClient.a
         LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Debug/ -lFJClient
     } else {
+        message(RELEASE)
         PRE_TARGETDEPS += $$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Release/libFJClient.a
         LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Release/ -lFJClient
-#        PRE_TARGETDEPS += $$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Release/libFJClient.a
-#        LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Release/ -lFJClient
     }
 }        
 

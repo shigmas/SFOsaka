@@ -1,7 +1,6 @@
 #include "SFOItemModel.h"
 
 #include "SFOContext.h"
-#include "SFOPartner.h"
 
 #include <QQmlContext>
 #include <QDebug>
@@ -23,57 +22,62 @@ const QByteArray SFOItemModel::DescriptionRole      = "description";
 const QByteArray SFOItemModel::ShortDescriptionRole = "shortDescription";
 const QByteArray SFOItemModel::IsSelectedRole       = "isSelected";
 const QByteArray SFOItemModel::BarColorRole         = "barColor";
+const QByteArray SFOItemModel::DetailRole           = "detail";
 
 const QString SFOItemModel::_SelectedMarker    = "resources/marker-sel.png";
 const QString SFOItemModel::_UnselectedMarker  = "resources/marker.png";
 
 const QHash<int, QByteArray> SFOItemModel::Roles = {
-    {0, IndexRole},
-    {1, TitleRole},
-    {2, CoordRole},
-    {3, StreetRole},
-    {4, CityRole},
-    {5, PhoneRole},
-    {6, URLRole},
-    {7, MapMarkerImageRole},
-    {8, ImageSourceRole},
-    {9, DescriptionRole},
-    {10, ShortDescriptionRole},
-    {11, IsSelectedRole},
-    {12, BarColorRole},
+    {Qt::UserRole + 1, IndexRole},
+    {Qt::UserRole + 2, TitleRole},
+    {Qt::UserRole + 3, CoordRole},
+    {Qt::UserRole + 4, StreetRole},
+    {Qt::UserRole + 5, CityRole},
+    {Qt::UserRole + 6, PhoneRole},
+    {Qt::UserRole + 7, URLRole},
+    {Qt::UserRole + 8, MapMarkerImageRole},
+    {Qt::UserRole + 9, ImageSourceRole},
+    {Qt::UserRole + 10, DescriptionRole},
+    {Qt::UserRole + 11, ShortDescriptionRole},
+    {Qt::UserRole + 12, IsSelectedRole},
+    {Qt::UserRole + 13, BarColorRole},
+    {Qt::UserRole + 14, DetailRole},
 };
 
 
-SFOItemModel::SFOItemModel(QQmlContext *context, const SFOPartnerList& partners,
+SFOItemModel::SFOItemModel(QQmlContext *context,
+                           const SFOOrganizationList& organizations,
+                           const QString& contextIdentifier,
                            QObject *parent) :
     QAbstractListModel(parent),
     _context(context),
-    _partners(partners),
-    _selectedIndex(-1)
+    _organizations(organizations),
+    _selectedIndex(-1),
+    _contextIdentifier(contextIdentifier)
 {
     QPlace place;
     place.setLocation(QGeoLocation());
     place.setName("Root");
     _root = place;
 
-    _context->setContextProperty(SFOItemModel::PartnerModelIdentifier,
-                                 &_emptyPartner);
+    _context->setContextProperty(_contextIdentifier, &_emptyPartner);
+
 }
 
 SFOItemModel::~SFOItemModel() {}
 
-SFOPartnerList
-SFOItemModel::GetPartners() const
+SFOOrganizationList
+SFOItemModel::GetOrganizations() const
 {
-    return _partners;
+    return _organizations;
 }
 
 void
-SFOItemModel::SetPartners(const SFOPartnerList& partners)
+SFOItemModel::SetOrganizations(const SFOOrganizationList& organizations)
 {
-    if (_partners != partners) {
-        _partners = partners;
-        // Don't reset the model. The number of partners may have changed,
+    if (_organizations != organizations) {
+        _organizations = organizations;
+        // Don't reset the model. The number of organizations may have changed,
         // and that could cause a crash. Setting and resetting the model (which
         // we should do, but is done in the controller right now) is sufficient.
     }
@@ -90,45 +94,44 @@ SFOItemModel::data(const QModelIndex &index,
                    int role) const
 {
     QString localeName = QLocale::system().name();
-    if (index.row() < _partners.size()) {
-        const SFOPartner * partner = _partners.at(index.row());
-        QGeoLocation location = partner->GetLocation();
+    if (index.row() < _organizations.size()) {
+        const SFOOrganization * organization = _organizations.at(index.row());
         QString selStr = index.row() == _selectedIndex ? "true": "false";
         switch(role) {
-        case 0:                 // IndexRole
+        case Qt::UserRole + 1:                 // IndexRole
             return QVariant(index.row());
-        case 1:                 // TitleRole
-            return QVariant(partner->GetName_locale());
-        case 2:           // CoordRole
-            // Returns the QGeoCoordinate, which is what
-            // QDeclarativeSearchResultModel returns in the place_map example.
-            return QVariant::fromValue(location.coordinate());
-        case 3:                 // StreetRole
-            return QVariant(partner->GetContactInfoStreet());
-        case 4:                 // CityRole
-            return QVariant(partner->GetContactInfoCity());
-        case 5:                 // PhoneRole
-            return QVariant(partner->GetContactInfoPhone());
-        case 6:                 // URLRole
-            return QVariant(partner->GetURL());
-        case 7:                 // MapMarkerImageRole
+        case Qt::UserRole + 2:                 // TitleRole
+            return QVariant(organization->GetName_locale());
+        case Qt::UserRole + 3:           // CoordRole
+            return _GetLocation(organization);
+        case Qt::UserRole + 4:                 // StreetRole
+            return QVariant(organization->GetContactInfoStreet());
+        case Qt::UserRole + 5:                 // CityRole
+            return QVariant(organization->GetContactInfoCity());
+        case Qt::UserRole + 6:                 // PhoneRole
+            return QVariant(organization->GetContactInfoPhone());
+        case Qt::UserRole + 7:                 // URLRole
+            return QVariant(organization->GetURL());
+        case Qt::UserRole + 8:                 // MapMarkerImageRole
             return (index.row() == _selectedIndex)
                 ? _SelectedMarker
                 : _UnselectedMarker;
-        case 8:                 // ImageSourceRole
-            return QVariant(partner->GetImageURL());
-        case 9:                 // DescriptionRole
-            return QVariant(partner->GetDescription_locale());
-        case 10:                // ShortDescriptionRole
-            return QVariant(partner->GetShortDescription_locale());
-        case 11:                // IsSelected
+        case Qt::UserRole + 9:                 // ImageSourceRole
+            return QVariant(organization->GetImageURL());
+        case Qt::UserRole + 10:                 // DescriptionRole
+            return QVariant(organization->GetDescription_locale());
+        case Qt::UserRole + 11:                // ShortDescriptionRole
+            return QVariant(organization->GetShortDescription_locale());
+        case Qt::UserRole + 12:                // IsSelected
             return (index.row() == _selectedIndex)
                 ? QVariant(true)
                 : QVariant(false);
-        case 12:                // ItemBarColorRole
-            return partner->GetCategory() == "financial"
+        case Qt::UserRole + 13:                // ItemBarColorRole
+            return organization->GetCategory() == "financial"
                 ? QVariant("steelblue")
                 : QVariant("lightgray");
+        case Qt::UserRole + 14:                 // DetailRole
+            //return QVariant(organization->GetDetail_locale());
         default:
             qDebug() << "Unknown role " << role;
             return QVariant();
@@ -149,7 +152,7 @@ SFOItemModel::parent(const QModelIndex &index) const
 int
 SFOItemModel::rowCount(const QModelIndex &) const
 {
-    return _partners.size();
+    return _organizations.size();
 }
 
 QHash<int, QByteArray>
@@ -195,23 +198,51 @@ SFOItemModel::ToggleItemSelected(const int& selectedIndex)
 void
 SFOItemModel::_SetItemAsSelected(const int& selectedIndex)
 {
-    if ((selectedIndex >= 0) and (selectedIndex < _partners.size())) {
-        SFOPartner *p = NULL;
+    if ((selectedIndex >= 0) and (selectedIndex < _organizations.size())) {
+        SFOOrganization *p = NULL;
         if (selectedIndex != 0) {
             // Move the selected index to the end
-            p = _partners.takeAt(selectedIndex);
-            _partners.prepend(p);
+            p = _organizations.takeAt(selectedIndex);
+            _organizations.prepend(p);
             _selectedIndex = 0;
             
         } else {
-            p = _partners[selectedIndex];
+            p = _organizations[selectedIndex];
         }
-        _context->setContextProperty(SFOItemModel::PartnerModelIdentifier, p);
+        _context->setContextProperty(_contextIdentifier, p);
     }
 }    
 
 void
 SFOItemModel::_ResetModel()
 {
-    emit dataChanged(index(0),index(_partners.size()-1));
+    emit dataChanged(index(0),index(_organizations.size()-1));
+}
+
+QVariant
+SFOItemModel::_GetLocation(const SFOOrganization *organization) const
+{
+    // Returns the QGeoCoordinate, which is what
+    // QDeclarativeSearchResultModel returns in the place_map example.
+    const SFOPartner *partner = dynamic_cast<const SFOPartner *>(organization);
+    if (partner) {
+        QGeoLocation location = partner->GetLocation();
+        return QVariant::fromValue(location.coordinate());
+    } else {
+        return QVariant();
+    }
+}
+
+QVariant
+SFOItemModel::_GetDetail(const SFOOrganization *organization) const
+{
+    // Returns the QGeoCoordinate, which is what
+    // QDeclarativeSearchResultModel returns in the place_map example.
+    const SFOAppHighlight *appHighlight =
+        dynamic_cast<const SFOAppHighlight *>(organization);
+    if (appHighlight) {
+        return QVariant(appHighlight->GetDetail_locale());
+    } else {
+        return QVariant();
+    }
 }

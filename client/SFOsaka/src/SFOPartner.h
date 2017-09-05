@@ -31,9 +31,6 @@ private:
     QGeoLocation _location;
 };
 
-// We're not really trying to be polymorphic here, just making use of common
-// code. So, SFOOrganization is really a hidden class, and we use the subclasses
-// directly.
 typedef QList<SFOPartner *> SFOPartnerList;
 
 #endif // SFOPARTNER_H

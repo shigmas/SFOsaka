@@ -48,6 +48,7 @@ private:
     SFOSubmitWordModel *_submitWordModel;
     SFOItemModel *_foodPartnersModel;
     SFOItemModel *_otherPartnersModel;
+    SFOItemModel *_appHighlightsModel;
 };
 
 #endif // SFOCONTROLLER_H

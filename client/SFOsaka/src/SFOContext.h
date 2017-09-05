@@ -5,6 +5,7 @@
 
 #include "SFOPartner.h"
 #include "SFOPerformer.h"
+#include "SFOAppHighlight.h"
 #include "SFOTypes.h"
 
 #include <FJOperation.h>
@@ -31,13 +32,15 @@ public:
 
     QString GetHost() const;
 
-    SFOPartnerList GetPartnersByCategory(const SFOPartnerCategory& category = SFOAllCategory) const;
+    SFOOrganizationList GetPartnersByCategory(const SFOPartnerCategory& category = SFOAllCategory) const;
 
     // We really only care about food and not food partners, so we provide
     // this helper function to filter a little more quickly
-    SFOPartnerList GetNonFoodPartners() const;
+    SFOOrganizationList GetNonFoodPartners() const;
 
-    SFOPerformerList GetPerformers() const;
+    SFOOrganizationList GetPerformers() const;
+
+    SFOOrganizationList GetAppHighlights() const;
 
     void Refresh(bool immediately=false);
 
@@ -53,6 +56,7 @@ public:
     bool IsNetworkAccessible() const;
 
 signals:
+    // This signal covers most organizations
     void PartnersUpdated();
     void PerformersUpdated();
     void DictionariesUpdated();
@@ -80,10 +84,10 @@ protected:
     }
 
     template <typename T>
-    QList<T *> _LoadOrganization(const QString& fileName) const {
+    SFOOrganizationList _LoadOrganization(const QString& fileName) const {
         QJsonDocument doc = _LoadCacheFile(fileName);
         QVariantMap orgMap = _GetMapFromJson(doc);
-        QList<T *> orgList;
+        SFOOrganizationList orgList;
         QString key;
         foreach(key, orgMap.keys()) {
             orgList.append(new T(orgMap[key].toMap()));
@@ -94,10 +98,10 @@ protected:
 
     template <typename T>
     void _WriteOrganization(const QString& fileName,
-                            const QList<T *>& orgList) const {
+                            const SFOOrganizationList& orgList) const {
         if (orgList.size()) {
             QVariantMap orgMap;
-            T* org;
+            SFOOrganization* org;
             foreach (org, orgList) {
                 orgMap[org->GetId()] = org->ToJson();
             }
@@ -109,10 +113,10 @@ protected:
     }
 
     template <typename T>
-    QPair<QDateTime, QList< T *> > _ParseOrgResponse(const QVariantMap& data) const {
+    QPair<QDateTime, SFOOrganizationList> _ParseOrgResponse(const QVariantMap& data) const {
         QVariant orgData;
         QDateTime latest;
-        QList< T *> orgList;
+        SFOOrganizationList orgList;
 
         foreach(orgData, data.values()) {
             T *o = new T(orgData.toMap());
@@ -139,6 +143,7 @@ protected:
     void _HandleStartResponse(const QJsonDocument& data);
     void _HandlePartnersResponse(const QJsonDocument& data);
     void _HandlePerformersResponse(const QJsonDocument& data);
+    void _HandleAppHighlightsResponse(const QJsonDocument& data);
     void _HandleDictResponse(const QJsonDocument& data);
     void _HandleSubmitResponse(const QJsonDocument& data);
 
@@ -148,12 +153,14 @@ protected:
 protected:
     static const QString DateTimeStampFileName;
     static const QString PartnerCacheFileName;
+    static const QString AppHighlightCacheFileName;
     static const QString DictionaryCacheFileName;
     static const QString PerformerCacheFileName;
 
     static const QString LastPartnerDateKey;
     static const QString LastDictDateKey;
     static const QString LastPerformerDateKey;
+    static const QString LastAppHighlightDateKey;
 
     static const QStringPair ServerInfo;
 private:
@@ -161,10 +168,12 @@ private:
 
     FJClientSharedPtr _client;
 
+    SFOOrganizationList _partners;
+    SFOOrganizationList _performers;
+    SFOOrganizationList _appHighlights;
     QDateTime _lastPartnerDate;
-    SFOPartnerList _partners;
-    SFOPerformerList _performers;
     QDateTime _lastPerformerDate;
+    QDateTime _lastAppHighlightDate;
     QDateTime _lastDictDate;
     QPairMap _enToJpDict;
     QPairMap _jpToEnDict;

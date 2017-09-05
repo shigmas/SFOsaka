@@ -18,6 +18,7 @@ ApplicationWindow {
         signal translatorActivated()
         signal translatorAddActivated()
         signal partnersActivated()
+        signal highlightActivated()
         signal backActivated()
         signal itemSelected(int index)
 
@@ -28,6 +29,7 @@ ApplicationWindow {
             onMapActivated: stackView.mapActivated()
             onTranslatorActivated: stackView.translatorActivated()
             onPartnersActivated: stackView.partnersActivated()
+            onHighlightActivated: stackView.highlightActivated()
         }
 
         MapPage {
@@ -45,6 +47,12 @@ ApplicationWindow {
 
         PartnerDetail {
             id: partnerDetailPage
+            visible: false
+            onButtonActivated: stackView.backActivated()
+        }
+
+        HighlightList {
+            id: highlightPage
             visible: false
             onButtonActivated: stackView.backActivated()
         }
@@ -103,6 +111,11 @@ ApplicationWindow {
         onPartnersActivated: {
             console.log("info activated")
             stackView.push(partnerListPage)
+        }
+
+        onHighlightActivated: {
+            console.log("highlight activated")
+            stackView.push(highlightPage)
         }
 
         onBackActivated: {

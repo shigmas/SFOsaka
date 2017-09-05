@@ -90,9 +90,13 @@ SFOScheduleModel::_HandlePerformerUpdate()
 }
 
 // Sorts based on start date, as long as the performer is active.
-static bool _isLessThan(const SFOPerformer* first, const SFOPerformer* second)
+static bool _isLessThan(const SFOOrganization* first,
+                        const SFOOrganization* second)
 {
-    return first->GetStartTime() < second->GetStartTime();
+    const SFOPerformer* pFirst = dynamic_cast<const SFOPerformer *>(first); 
+    const SFOPerformer* pSecond = dynamic_cast<const SFOPerformer *>(second);
+   
+    return pFirst->GetStartTime() < pSecond->GetStartTime();
 }
 
 void
@@ -100,11 +104,12 @@ SFOScheduleModel::_SortPerformers()
 {
     _orderedPerfomers.clear();
     // Boo! No sort on QLists
-    list<SFOPerformer *> performerList =
+    std::list<SFOOrganization *> performerList =
         SFOContext::GetInstance()->GetPerformers().toStdList();
     performerList.sort(_isLessThan);
 
-    for(SFOPerformer *performer : performerList) {
+    for(SFOOrganization *organizer : performerList) {
+        SFOPerformer* performer = dynamic_cast<SFOPerformer *>(organizer);
         if (performer->IsActive()) {
             _orderedPerfomers.append(performer);
         }

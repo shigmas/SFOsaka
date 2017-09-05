@@ -23,15 +23,20 @@ SFOController::SFOController(QQmlContext *context, QObject *parent) :
 
     _context->setContextProperty("submitModel", _submitWordModel);
 
-    SFOPartnerList restaurants =
+    SFOOrganizationList restaurants =
         SFOContext::GetInstance()->GetPartnersByCategory(SFOFoodCategory);
     _foodPartnersModel = new SFOItemModel(_context, restaurants);
     _context->setContextProperty("placeModel", _foodPartnersModel);
 
-    SFOPartnerList otherPartners =
+    SFOOrganizationList otherPartners =
         SFOContext::GetInstance()->GetNonFoodPartners();
     _otherPartnersModel = new SFOItemModel(_context, otherPartners);
     _context->setContextProperty("partnersModel", _otherPartnersModel);
+
+    SFOOrganizationList appHighlights =
+        SFOContext::GetInstance()->GetAppHighlights();
+    _appHighlightsModel = new SFOItemModel(_context, appHighlights);
+    _context->setContextProperty("appHighlightsModel", _appHighlightsModel);
 
     QString server = SFOContext::GetInstance()->GetHost();
     _context->setContextProperty("server", QVariant(server));
@@ -50,6 +55,7 @@ SFOController::~SFOController()
     delete _submitWordModel;
     delete _foodPartnersModel;
     delete _otherPartnersModel;
+    delete _appHighlightsModel;
 }
 
 
@@ -64,16 +70,18 @@ void
 SFOController::_OnPartnersUpdated()
 {
     qDebug() << "Handling partners updated.";
-    SFOPartnerList restaurants =
+    SFOOrganizationList restaurants =
         SFOContext::GetInstance()->GetPartnersByCategory(SFOFoodCategory);
-    _foodPartnersModel->SetPartners(restaurants);
+    _foodPartnersModel->SetOrganizations(restaurants);
     // In this case, we have to force a model reload, because the size has
     // changed
     _context->setContextProperty("placeModel", NULL);
     _context->setContextProperty("placeModel", _foodPartnersModel);
-    SFOPartnerList otherPartners =
+    SFOOrganizationList otherPartners =
         SFOContext::GetInstance()->GetNonFoodPartners();
-    _otherPartnersModel->SetPartners(otherPartners);
+    _otherPartnersModel->SetOrganizations(otherPartners);
     _context->setContextProperty("partnersModel", NULL);
     _context->setContextProperty("partnersModel", _otherPartnersModel);
+    _context->setContextProperty("appHighlightsModel", NULL);
+    _context->setContextProperty("appHighlightsModel", _appHighlightsModel);
 }

@@ -10,6 +10,8 @@
         <file>qml/PartnerDetail.qml</file>
         <file>qml/PartnerList.qml</file>
         <file>qml/PartnerItem.qml</file>
+        <file>qml/HighlightList.qml</file>
+        <file>qml/HighlightItem.qml</file>
         <file>qml/TranslatorAdd.qml</file>
         <file>qml/TranslatorPage.qml</file>
         <file>qml/WebView.qml</file>

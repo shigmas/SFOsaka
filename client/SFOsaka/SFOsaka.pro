@@ -32,6 +32,7 @@ SOURCES += src/main.cpp \
     src/SFOTranslateModel.cpp \
     src/SFOTypes.cpp \
     src/SFOOrganization.cpp \
+    src/SFOAppHighlight.cpp \
     src/SFOPartner.cpp \
     src/SFOPerformer.cpp \
     src/SFOScheduleModel.cpp \
@@ -77,6 +78,7 @@ HEADERS += \
     src/SFOTranslateModel.h \
     src/SFOTypes.h \
     src/SFOOrganization.h \
+    src/SFOAppHighlight.h \
     src/SFOPartner.h \
     src/SFOPerformer.h \
     src/SFOScheduleModel.h \

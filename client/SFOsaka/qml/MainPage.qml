@@ -9,6 +9,7 @@ Item {
     signal mapActivated()
     signal translatorActivated()
     signal partnersActivated()
+    signal highlightActivated()
 
     anchors.margins: 1.0
     TextMetrics {
@@ -34,7 +35,7 @@ Item {
         }
         ListElement {
             iconSrc: "../resources/taro_orange.png"
-            title: "Photo Contest"
+            title: "SOYNET"
         }
     }
 
@@ -131,6 +132,8 @@ Item {
                                     partnersActivated()
                                 } else if (index == 2) {
                                     translatorActivated()
+                                } else if (index == 3) {
+                                    highlightActivated()
                                 }
                             }
                         }

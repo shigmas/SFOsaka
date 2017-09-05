@@ -14,23 +14,27 @@
 // Declare the pointers for us, so we can pass ourselves as a weakptr
 FJ_DECLARE_PTRS(SFOContext)
 
+FJ_DECLARE_PTRS(SFOOrganization)
+
 SFOContext* SFOContext::_instance = NULL;
 
-const QString SFOContext::DateTimeStampFileName   = "datestamps.json";
-const QString SFOContext::PartnerCacheFileName    = "partners.json";
-const QString SFOContext::DictionaryCacheFileName = "dictionary.json";
-const QString SFOContext::PerformerCacheFileName  = "performers.json";
+const QString SFOContext::DateTimeStampFileName     = "datestamps.json";
+const QString SFOContext::PartnerCacheFileName      = "partners.json";
+const QString SFOContext::DictionaryCacheFileName   = "dictionary.json";
+const QString SFOContext::PerformerCacheFileName    = "performers.json";
+const QString SFOContext::AppHighlightCacheFileName = "apphighlights.json";
 
-const QString SFOContext::LastPartnerDateKey   = "last_partner_date";
-const QString SFOContext::LastDictDateKey      = "last_dict_date";
-const QString SFOContext::LastPerformerDateKey = "last_performer_date";
+const QString SFOContext::LastPartnerDateKey      = "last_partner_date";
+const QString SFOContext::LastDictDateKey         = "last_dict_date";
+const QString SFOContext::LastPerformerDateKey    = "last_performer_date";
+const QString SFOContext::LastAppHighlightDateKey = "last_apphighlight_date";
 
 // Dev
 #ifdef QT_DEBUG
 const QStringPair SFOContext::ServerInfo = qMakePair(QString("localhost:8000"),QString("http"));
-#else
 // Beta
 //const QStringPair SFOContext::ServerInfo = qMakePair(QString("malttest.futomen.net:8143"),QString("https"));
+#else
 // Live
 const QStringPair SFOContext::ServerInfo = qMakePair(QString("sfosaka.futomen.net:8143"),QString("https"));
 #endif
@@ -115,6 +119,15 @@ SFOContext::Refresh(bool immediately)
     }
     _pendingOperations.append(performer);
 
+    FJOperationSharedPtr appHighlight(new FJOperation("apphighlights",
+                                                   "/apphighlight_meta/",
+                                                   "/apphighlight_data/", this));
+    content = _CreateJsonContent(_lastAppHighlightDate);
+    if (!content.isNull()) {
+       appHighlight->SetCheckFetchContent(content);
+    }
+    _pendingOperations.append(appHighlight);
+
     FJOperationSharedPtr dict(new FJOperation("dict","/dict_meta/","/dict_data/",
                                               this));
     content = _CreateJsonContent(_lastDictDate);
@@ -150,31 +163,31 @@ SFOContext::AddWordTranslation(const QString& word, const QString& phonetic,
     _client->FlushQueue();
 }
 
-SFOPartnerList
+SFOOrganizationList
 SFOContext::GetPartnersByCategory(const SFOPartnerCategory& category) const
 {
     if (category == SFOAllCategory) {
         return _partners;
     }
 
-    SFOPartnerList partners;
+    SFOOrganizationList orgs;
     QString catString = SFOTypes::PartnerMap[category];
-    SFOPartner *p;
+    SFOOrganization *p;
     foreach (p, _partners) {
         if (p->GetCategory() == catString) {
-            partners.append(p);
+            orgs.append(p);
         }
     }
 
-    return partners;
+    return orgs;
 }
 
-SFOPartnerList
+SFOOrganizationList
 SFOContext::GetNonFoodPartners() const
 {
-    SFOPartnerList partners;
+    SFOOrganizationList partners;
     QString catString = SFOTypes::PartnerMap[SFOFoodCategory];
-    SFOPartner *p;
+    SFOOrganization *p;
     foreach (p, _partners) {
         if (p->GetCategory() != catString) {
             partners.append(p);
@@ -184,10 +197,16 @@ SFOContext::GetNonFoodPartners() const
     return partners;
 }
 
-SFOPerformerList
+SFOOrganizationList
 SFOContext::GetPerformers() const
 {
     return _performers;
+}
+
+SFOOrganizationList
+SFOContext::GetAppHighlights() const
+{
+    return _appHighlights;
 }
 
 QPairMap
@@ -218,6 +237,11 @@ SFOContext::LoadFromDisk()
         if (!dateString.isEmpty()) {
             _lastPerformerDate = QDateTime::fromString(dateString, Qt::ISODate);
         }
+        dateString = dateMap[LastAppHighlightDateKey].toString();
+        if (!dateString.isEmpty()) {
+            _lastAppHighlightDate = QDateTime::fromString(dateString,
+                                                          Qt::ISODate);
+        }
         dateString = dateMap[LastDictDateKey].toString();
         if (!dateString.isEmpty()) {
             _lastDictDate = QDateTime::fromString(dateString, Qt::ISODate);
@@ -231,12 +255,21 @@ SFOContext::LoadFromDisk()
     if (_partners.size() == 0) {
         qDebug() << PartnerCacheFileName << " was empty";
     }
+
     if (_performers.size() == 0) {
         _eraseList(_performers);
     }
     _performers = _LoadOrganization<SFOPerformer>(PerformerCacheFileName);
     if (_performers.size() == 0) {
         qDebug() << PerformerCacheFileName << " was empty";
+    }
+
+    if (_appHighlights.size() == 0) {
+        _eraseList(_appHighlights);
+    }
+    _appHighlights = _LoadOrganization<SFOAppHighlight>(AppHighlightCacheFileName);
+    if (_appHighlights.size() == 0) {
+        qDebug() << AppHighlightCacheFileName << " was empty";
     }
 
     //qDebug() << "Dict cache: " << DictionaryCacheFileName;
@@ -273,6 +306,8 @@ SFOContext::FlushToDisk()
                    _lastPartnerDate.addSecs(1).toString(Qt::ISODate));
         obj.insert(LastPerformerDateKey,
                    _lastPerformerDate.addSecs(1).toString(Qt::ISODate));
+        obj.insert(LastAppHighlightDateKey,
+                   _lastAppHighlightDate.addSecs(1).toString(Qt::ISODate));
         obj.insert(LastDictDateKey,
                    _lastDictDate.addSecs(1).toString(Qt::ISODate));
         QJsonDocument doc;
@@ -288,6 +323,11 @@ SFOContext::FlushToDisk()
         qDebug() << "Saving " << _performers.size() << " performers";
     }
     _WriteOrganization<SFOPerformer>(PerformerCacheFileName, _performers);
+    if (_appHighlights.size()) {
+        qDebug() << "Saving " << _appHighlights.size() << " apphighlights";
+    }
+    _WriteOrganization<SFOAppHighlight>(AppHighlightCacheFileName,
+                                        _appHighlights);
 
     QJsonDocument doc;
     QVariantMap allDicts;
@@ -443,7 +483,7 @@ SFOContext::_HandlePartnersResponse(const QJsonDocument& data)
         //qDebug() << "Partners Data: " << results;
         _eraseList(_partners);
         QVariantMap partnerMap = results["partners_list"].toMap();
-        QPair<QDateTime, SFOPartnerList> resp =
+        QPair<QDateTime, SFOOrganizationList> resp =
             _ParseOrgResponse<SFOPartner>(partnerMap);
         QDateTime latest = resp.first;
         _partners = resp.second;
@@ -475,7 +515,7 @@ SFOContext::_HandlePerformersResponse(const QJsonDocument& data)
         //qDebug() << "Performers Data: " << results;
         _eraseList(_performers);
         QVariantMap performerMap = results["performers_list"].toMap();
-        QPair<QDateTime, SFOPerformerList> resp =
+        QPair<QDateTime, SFOOrganizationList> resp =
             _ParseOrgResponse<SFOPerformer>(performerMap);
         QDateTime latest = resp.first;
         _performers = resp.second;
@@ -488,6 +528,38 @@ SFOContext::_HandlePerformersResponse(const QJsonDocument& data)
         }
     } else {
         qDebug() << "Partner fetch failed";
+    }
+}
+
+void
+SFOContext::_HandleAppHighlightsResponse(const QJsonDocument& data)
+{
+    QVariantMap results = _GetMapFromJson(data);
+    if (results.isEmpty()) {
+        qDebug() << "apphighlight response is empty!";
+        return;
+    }
+    bool success = false;
+    if (results["result"].canConvert<bool>()) {
+        success = results["result"].toBool();
+    }
+    if (success) {
+        qDebug() << "AppHighlights Data: " << results;
+        _eraseList(_appHighlights);
+        QVariantMap appHighlightMap = results["apphighlight_list"].toMap();
+        QPair<QDateTime, SFOOrganizationList> resp =
+            _ParseOrgResponse<SFOAppHighlight>(appHighlightMap);
+        QDateTime latest = resp.first;
+        _appHighlights = resp.second;
+        if (!latest.isNull()) {
+            _lastAppHighlightDate = latest;
+            FlushToDisk();
+            emit PartnersUpdated();
+        } else {
+            qDebug() << "No apphighlights in apphighlight data";
+        }
+    } else {
+        qDebug() << "AppHighlight fetch failed";
     }
 }
 
@@ -574,6 +646,8 @@ SFOContext::HandleResponse(const QJsonDocument& document, FJError error,
         _HandlePartnersResponse(document);
     } else if (operation && (operation->GetName() == "performers")) {
         _HandlePerformersResponse(document);
+    } else if (operation && (operation->GetName() == "apphighlights")) {
+        _HandleAppHighlightsResponse(document);
     } else if (operation && (operation->GetName() == "dict")) {
         _HandleDictResponse(document);
     } else if (operation && (operation->GetName() == "submit")) {

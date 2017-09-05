@@ -104,4 +104,6 @@ private:
     QString _imageUrl;
 };
 
+typedef QList<SFOOrganization *> SFOOrganizationList;
+
 #endif // SFOORGANIZATION_H

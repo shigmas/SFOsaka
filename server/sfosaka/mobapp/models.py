@@ -66,6 +66,11 @@ class Performer(Organization):
     startTime = models.DateTimeField()
     endTime = models.DateTimeField()
 
+class AppHighlight(Organization):
+    order = models.PositiveSmallIntegerField()
+    detail = models.TextField(max_length=4096, null=True)
+    detail_jp = models.TextField(max_length=4096, null=True)
+
 class DictionaryWord(models.Model):
     word = models.CharField(max_length=128)
     phonetic = models.CharField(max_length=128, null=True)

@@ -207,7 +207,7 @@ class PerformerView(OrganizationView):
     kGetMetaCommand = 'fetch_performer_meta'
     kGetDataCommand = 'fetch_performer_data'
 
-    kPerfomersListKey = 'performers_list'
+    kPerformersListKey = 'performers_list'
 
     def _GetOrganizationSubclass(self):
         return Performer
@@ -225,7 +225,32 @@ class PerformerView(OrganizationView):
         return self.kNeedsUpdateKey
 
     def _GetListKey(self):
-        return self.kPerfomersListKey
+        return self.kPerformersListKey
+
+class AppHighlightView(OrganizationView):
+        # commands
+    kGetMetaCommand = 'fetch_apphighlight_meta'
+    kGetDataCommand = 'fetch_apphighlight_data'
+
+    kAppHighlightListKey = 'apphighlight_list'
+
+    def _GetOrganizationSubclass(self):
+        return AppHighlight
+
+    def _GetMetaDataCommand(self):
+        return self.kGetMetaCommand
+
+    def _GetDataCommand(self):
+        return self.kGetDataCommand
+
+    def _GetUpdateFromDateKey(self):
+        return self.kUpdateFromDateKey
+
+    def _GetNeedsUpdateKey(self):
+        return self.kNeedsUpdateKey
+
+    def _GetListKey(self):
+        return self.kAppHighlightListKey
 
 class TranslatorView(BaseView):
         # commands

@@ -544,7 +544,7 @@ SFOContext::_HandleAppHighlightsResponse(const QJsonDocument& data)
         success = results["result"].toBool();
     }
     if (success) {
-        qDebug() << "AppHighlights Data: " << results;
+        // qDebug() << "AppHighlights Data: " << results;
         _eraseList(_appHighlights);
         QVariantMap appHighlightMap = results["apphighlight_list"].toMap();
         QPair<QDateTime, SFOOrganizationList> resp =
@@ -554,7 +554,7 @@ SFOContext::_HandleAppHighlightsResponse(const QJsonDocument& data)
         if (!latest.isNull()) {
             _lastAppHighlightDate = latest;
             FlushToDisk();
-            emit PartnersUpdated();
+            emit AppHighlightsUpdated();
         } else {
             qDebug() << "No apphighlights in apphighlight data";
         }

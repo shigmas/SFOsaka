@@ -45,6 +45,8 @@ SFOController::SFOController(QQmlContext *context, QObject *parent) :
     SFOContext *sfoContext = SFOContext::GetInstance();
     QObject::connect(sfoContext,&SFOContext::PartnersUpdated,
                      this, &SFOController::_OnPartnersUpdated);
+    QObject::connect(sfoContext,&SFOContext::AppHighlightsUpdated,
+                     this, &SFOController::_OnAppHighlightsUpdated);
 
 }
 
@@ -82,6 +84,15 @@ SFOController::_OnPartnersUpdated()
     _otherPartnersModel->SetOrganizations(otherPartners);
     _context->setContextProperty("partnersModel", NULL);
     _context->setContextProperty("partnersModel", _otherPartnersModel);
+}
+
+void
+SFOController::_OnAppHighlightsUpdated()
+{
+    qDebug() << "Handling apphighlights updated.";
+    SFOOrganizationList appHighlights =
+        SFOContext::GetInstance()->GetAppHighlights();
+    _appHighlightsModel->SetOrganizations(appHighlights);
     _context->setContextProperty("appHighlightsModel", NULL);
     _context->setContextProperty("appHighlightsModel", _appHighlightsModel);
 }

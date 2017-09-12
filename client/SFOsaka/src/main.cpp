@@ -39,7 +39,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
-    qInstallMessageHandler(myMessageOutput);
+    //qInstallMessageHandler(myMessageOutput);
 
     // Setup for localizations
     QTranslator qtTranslator;

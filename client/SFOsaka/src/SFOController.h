@@ -39,6 +39,7 @@ public slots:
 
 protected slots:
     void _OnPartnersUpdated();
+    void _OnAppHighlightsUpdated();
 
 private:
     QQmlContext *_context;

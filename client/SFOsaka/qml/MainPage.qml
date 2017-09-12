@@ -145,7 +145,7 @@ Item {
         RowLayout {
             Text {
                 font.pointSize: 8
-                text: "v 1.4"
+                text: "v 1.7"
                 anchors.left: parent.left
                 MouseArea {
                     id: versionMouseArea

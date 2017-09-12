@@ -60,6 +60,7 @@ signals:
     void PartnersUpdated();
     void PerformersUpdated();
     void DictionariesUpdated();
+    void AppHighlightsUpdated();
 
 public slots:
     virtual void HandleResponse(const QJsonDocument& document, FJError error,

@@ -23,6 +23,7 @@
         <file>resources/partners_icon.png</file>
         <file>resources/festival_icon.png</file>
         <file>resources/matsuri_banner.png</file>
+        <file>resources/soynet_icon.png</file>
         <file>resources/taro_orange.png</file>
         <file>qtquickcontrols2.conf</file>
     </qresource>

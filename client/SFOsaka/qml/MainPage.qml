@@ -34,7 +34,7 @@ Item {
             title: "KansaiBen Phrases"
         }
         ListElement {
-            iconSrc: "../resources/taro_orange.png"
+            iconSrc: "../resources/soynet_icon.png"
             title: "SOYNET"
         }
     }
@@ -145,7 +145,7 @@ Item {
         RowLayout {
             Text {
                 font.pointSize: 8
-                text: "v 1.7"
+                text: "v 1.8"
                 anchors.left: parent.left
                 MouseArea {
                     id: versionMouseArea

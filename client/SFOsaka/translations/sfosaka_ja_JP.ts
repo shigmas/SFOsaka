@@ -32,8 +32,19 @@
         <translation type="vanished">大阪の味</translation>
     </message>
     <message>
+        <location filename="../qml/MainPage.qml" line="26"/>
+        <source>Festival Schedule</source>
+        <translation>祭予定</translation>
+    </message>
+    <message>
+        <location filename="../qml/MainPage.qml" line="30"/>
         <source>Partners</source>
-        <translation type="vanished">パートナー</translation>
+        <translation>パートナー</translation>
+    </message>
+    <message>
+        <location filename="../qml/MainPage.qml" line="34"/>
+        <source>KansaiBen Phrases</source>
+        <translation>関西弁</translation>
     </message>
     <message>
         <source>Kansai Ben Phrases</source>
@@ -44,9 +55,17 @@
         <translation type="vanished">姉妹都市情報</translation>
     </message>
     <message>
-        <location filename="../qml/MainPage.qml" line="76"/>
         <source>This year&apos;s Osaka Matsuri will be held Sept 23, 2017. Osaka and San Francisco have enjoyed a 60 year relationship as sister cities. We will be celebrating by highlighting Osaka and Japanese culture.</source>
-        <translation>今年の大阪祭りは9月の23日です。大阪とサンフランシスコは６０年間の姉妹都市関係があります。大阪の文化･食事をハイライトでお祝いします。</translation>
+        <translation type="vanished">今年の大阪祭りは9月の23日です。大阪とサンフランシスコは６０年間の姉妹都市関係があります。大阪の文化･食事をハイライトでお祝いします。</translation>
+    </message>
+    <message>
+        <source>Japantown Chounaikai and San Francisco Osaka Sister Sister Association are proud to host the third annual Osaka Matsuri on Sept 29, 2018. Come watch music and dance performances, eat Osaka food, and join us as we finish with the Bon Dance.</source>
+        <translation type="vanished">日本町町内会とサンフランシスコ大阪姉妹都市会は9月29日に三番目の大阪祭提供します。音楽と踊りパフォーマンスとか大阪料理があります。盆踊り一緒にやりましょう。</translation>
+    </message>
+    <message>
+        <location filename="../qml/MainPage.qml" line="73"/>
+        <source>Japantown Chounaikai and San Francisco Osaka Sister City Association are proud to host the third annual Osaka Matsuri on Sept 29, 2018. Come watch music and dance performances, eat Osaka food, and join us as we finish with the Bon Dance.</source>
+        <translation>日本町町内会とサンフランシスコ大阪姉妹都市会は9月29日に三番目の大阪祭を提供します。音楽と踊りパフォーマンスを見たりとか大阪料理を食べたり、最後、盆踊り一緒にやりましょう。</translation>
     </message>
 </context>
 <context>

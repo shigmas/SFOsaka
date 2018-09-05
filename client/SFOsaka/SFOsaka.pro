@@ -110,40 +110,16 @@ TRANSLATIONS = translations/sfosaka_ja_JP.ts
 INCLUDEPATH += $$PWD/../FJClient
 DEPENDPATH += $$PWD/../FJClient
 
-iphonesimulator {
-    CONFIG(debug, debug|release) {
-        LIBS += -L$$PWD/../build-FJClient-Qt_5_9_0_for_iOS_Simulator-Debug/ -lFJClient
-        PRE_TARGETDEPS += $$PWD/../build-FJClient-Qt_5_9_0_for_iOS_Simulator-Debug/libFJClient.a
-    } else {
-        LIBS += -L$$PWD/../build-FJClient-Qt_5_9_0_for_iOS_Simulator-Release/ -lFJClient
-        PRE_TARGETDEPS += $$PWD/../build-FJClient-Qt_5_9_0_for_iOS_Simulator-Release/libFJClient.a
-    }
-}
+# New build uses standardized directories, so just expect that it's in the
+# next directory from the out dir.
+LIBS += -L$$OUT_PWD/../FJClient -lFJClient
+#PRE_TARGETDEPS += $$OUT_PWD/../FJClient/libFJClient.a
 
-iphoneos {
-    CONFIG(debug, debug|release) {
-        PRE_TARGETDEPS += $$PWD/../build-FJClient-Qt_5_9_0_for_iOS-Debug/libFJClient.as
-        LIBS += -L$$PWD/../build-FJClient-Qt_5_9_0_for_iOS-Debug/ -lFJClient
-    } else { # CONFIG(release, debug|release)
-        PRE_TARGETDEPS += $$PWD/../build-FJClient-Qt_5_9_0_for_iOS-Release/libFJClient.a
-        LIBS += -L$$PWD/../build-FJClient-Qt_5_9_0_for_iOS-Release/ -lFJClient
-    }
-}
-
-android {
-    CONFIG(debug, debug|release) {
-        PRE_TARGETDEPS += $$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Debug/libFJClient.a
-        LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Debug/ -lFJClient
-    } else {
-        PRE_TARGETDEPS += $$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Release/libFJClient.a
-        LIBS += -L$$PWD/../build-FJClient-Android_for_armeabi_v7a_GCC_4_9_Qt_5_9_0_for_Android_armv7-Release/ -lFJClient
-    }
-}        
-
+# Move these here by hand
 contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
     ANDROID_EXTRA_LIBS = \
-        /Users/wyan/src/github/SFOsaka/client/SFOsaka/libcrypto.so \
-        /Users/wyan/src/github/SFOsaka/client/SFOsaka/libssl.so
+        $$OUT_PWD/../libs/libcrypto.so \
+        $$OUT_PWD/../libs/libssl.so
 }
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android

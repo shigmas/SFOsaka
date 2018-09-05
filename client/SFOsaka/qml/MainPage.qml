@@ -23,19 +23,15 @@ Item {
         id: appSelections
         ListElement {
             iconSrc: "../resources/festival_icon.png"
-            title: "Festival Schedule"
+            title: qsTr("Festival Schedule")
         }
         ListElement {
             iconSrc: "../resources/partners_icon.png"
-            title: "Partners"
+            title: qsTr("Partners")
         }
         ListElement {
             iconSrc: "../resources/dictionary_icon.png"
-            title: "KansaiBen Phrases"
-        }
-        ListElement {
-            iconSrc: "../resources/soynet_icon.png"
-            title: "SOYNET"
+            title: qsTr("KansaiBen Phrases")
         }
     }
 
@@ -74,7 +70,7 @@ Item {
                     wrapMode: Text.Wrap
                     font.pointSize: 14
                     font.family: "Avenir"
-                    text: qsTr("This year's Osaka Matsuri will be held Sept 23, 2017. Osaka and San Francisco have enjoyed a 60 year relationship as sister cities. We will be celebrating by highlighting Osaka and Japanese culture.")
+                    text: qsTr("Japantown Chounaikai and San Francisco Osaka Sister City Association are proud to host the third annual Osaka Matsuri on Sept 29, 2018. Come watch music and dance performances, eat Osaka food, and join us as we finish with the Bon Dance.")
                     MouseArea {
                         anchors.fill: parent
                         onPressed: {
@@ -171,7 +167,7 @@ Item {
             }
             Text {
                 font.pointSize: 8
-                text: "2016 Futomen Networks"
+                text: "2018 Futomen Networks"
             }
         }
     }

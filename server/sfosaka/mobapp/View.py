@@ -252,6 +252,31 @@ class AppHighlightView(OrganizationView):
     def _GetListKey(self):
         return self.kAppHighlightListKey
 
+class TransportationView(OrganizationView):
+        # commands
+    kGetMetaCommand = 'fetch_transportation_meta'
+    kGetDataCommand = 'fetch_transportation_data'
+
+    kTransportationListKey = 'transportation_list'
+
+    def _GetOrganizationSubclass(self):
+        return Transportation
+
+    def _GetMetaDataCommand(self):
+        return self.kGetMetaCommand
+
+    def _GetDataCommand(self):
+        return self.kGetDataCommand
+
+    def _GetUpdateFromDateKey(self):
+        return self.kUpdateFromDateKey
+
+    def _GetNeedsUpdateKey(self):
+        return self.kNeedsUpdateKey
+
+    def _GetListKey(self):
+        return self.kTransportationListKey
+
 class TranslatorView(BaseView):
         # commands
     kGetMetaCommand = 'fetch_words_meta'

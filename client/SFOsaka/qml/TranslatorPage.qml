@@ -25,13 +25,13 @@ Item {
 
         AppBar {
             id: toolbar
-            anchors.top: parent.top
+            Layout.alignment: Qt.AlignTop
             onButtonActivated: root.buttonActivated()
         }
 
         RowLayout {
             id: searchPhraseLayout
-            anchors.top: toolbar.bottom
+            Layout.alignment: Qt.AlignTop
             Rectangle {
                 width: 1
                 height: 0
@@ -45,7 +45,7 @@ Item {
 
         RowLayout {
             id: searchBoxLayout
-            anchors.top: searchPhraseLayout.bottom
+            Layout.alignment: Qt.AlignTop
             width: parent.width
 
             TextField {
@@ -73,7 +73,7 @@ Item {
 
         RowLayout {
             id: resultsExplanationLayout
-            anchors.top: searchBoxLayout.bottom
+            Layout.alignment: Qt.AlignTop
             Rectangle {
                 width: 1
                 height: 0
@@ -88,10 +88,7 @@ Item {
 
         ScrollView {
             id: scrollView
-            anchors.top: resultsExplanationLayout.bottom
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
+            Layout.alignment: Qt.AlignTop | Qt.AlignVCenter
 
             ListView {
                 id: translationView

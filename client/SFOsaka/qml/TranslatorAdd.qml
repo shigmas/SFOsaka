@@ -16,7 +16,7 @@ Item {
 
         AppBar {
             id: toolbar
-            anchors.top: parent.top
+            Layout.alignment: Qt.AlignTop
             width: parent.width
             onButtonActivated: root.buttonActivated()
         }
@@ -28,9 +28,7 @@ Item {
         }
         TextArea {
             id: instructionText
-            anchors.top: toolbar.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
+            Layout.alignment: Qt.AlignTop | Qt.AlignVCenter
             implicitHeight: fontMetrics.height * 6
             font.pixelSize: 12
             readOnly: true
@@ -38,10 +36,7 @@ Item {
         }
 
         ScrollView {
-            anchors.right: parent.right
-            anchors.left: parent.left
-            anchors.top: instructionText.bottom
-            anchors.bottom: parent.bottom
+            Layout.alignment: Qt.AlignTop | Qt.AlignVCenter
 
             ColumnLayout {
                 anchors.top: parent.top

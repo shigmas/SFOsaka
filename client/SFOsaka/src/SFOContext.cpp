@@ -23,17 +23,19 @@ const QString SFOContext::PartnerCacheFileName      = "partners.json";
 const QString SFOContext::DictionaryCacheFileName   = "dictionary.json";
 const QString SFOContext::PerformerCacheFileName    = "performers.json";
 const QString SFOContext::AppHighlightCacheFileName = "apphighlights.json";
+const QString SFOContext::TransportationCacheFileName = "transportations.json";
 
 const QString SFOContext::LastPartnerDateKey      = "last_partner_date";
 const QString SFOContext::LastDictDateKey         = "last_dict_date";
 const QString SFOContext::LastPerformerDateKey    = "last_performer_date";
 const QString SFOContext::LastAppHighlightDateKey = "last_apphighlight_date";
+const QString SFOContext::LastTransportationDateKey = "last_transportation_date";
 
 // Dev
 #ifdef QT_DEBUG
 const QStringPair SFOContext::ServerInfo = qMakePair(QString("localhost:8000"),QString("http"));
 // Beta
-//const QStringPair SFOContext::ServerInfo = qMakePair(QString("malttest.futomen.net:8143"),QString("https"));
+//const QStringPair SFOContext::ServerInfo = qMakePair(QString("sfosaka.futomen.net:8143"),QString("https"));
 #else
 // Live
 const QStringPair SFOContext::ServerInfo = qMakePair(QString("sfosaka.futomen.net:8143"),QString("https"));
@@ -128,6 +130,15 @@ SFOContext::Refresh(bool immediately)
     }
     _pendingOperations.append(appHighlight);
 
+    FJOperationSharedPtr transportation(new FJOperation("transportations",
+                                                   "/transportation_meta/",
+                                                   "/transportation_data/", this));
+    content = _CreateJsonContent(_lastTransportationDate);
+    if (!content.isNull()) {
+       transportation->SetCheckFetchContent(content);
+    }
+    _pendingOperations.append(transportation);
+
     FJOperationSharedPtr dict(new FJOperation("dict","/dict_meta/","/dict_data/",
                                               this));
     content = _CreateJsonContent(_lastDictDate);
@@ -209,6 +220,12 @@ SFOContext::GetAppHighlights() const
     return _appHighlights;
 }
 
+SFOOrganizationList
+SFOContext::GetTransportations() const
+{
+    return _transportations;
+}
+
 QPairMap
 SFOContext::GetEnToJpDict() const
 {
@@ -242,6 +259,11 @@ SFOContext::LoadFromDisk()
             _lastAppHighlightDate = QDateTime::fromString(dateString,
                                                           Qt::ISODate);
         }
+        dateString = dateMap[LastTransportationDateKey].toString();
+        if (!dateString.isEmpty()) {
+            _lastTransportationDate = QDateTime::fromString(dateString,
+                                                          Qt::ISODate);
+        }
         dateString = dateMap[LastDictDateKey].toString();
         if (!dateString.isEmpty()) {
             _lastDictDate = QDateTime::fromString(dateString, Qt::ISODate);
@@ -270,6 +292,14 @@ SFOContext::LoadFromDisk()
     _appHighlights = _LoadOrganization<SFOAppHighlight>(AppHighlightCacheFileName);
     if (_appHighlights.size() == 0) {
         qDebug() << AppHighlightCacheFileName << " was empty";
+    }
+
+    if (_transportations.size() == 0) {
+        _eraseList(_transportations);
+    }
+    _transportations = _LoadOrganization<SFOTransportation>(TransportationCacheFileName);
+    if (_transportations.size() == 0) {
+        qDebug() << TransportationCacheFileName << " was empty";
     }
 
     //qDebug() << "Dict cache: " << DictionaryCacheFileName;
@@ -308,6 +338,8 @@ SFOContext::FlushToDisk()
                    _lastPerformerDate.addSecs(1).toString(Qt::ISODate));
         obj.insert(LastAppHighlightDateKey,
                    _lastAppHighlightDate.addSecs(1).toString(Qt::ISODate));
+        obj.insert(LastTransportationDateKey,
+                   _lastTransportationDate.addSecs(1).toString(Qt::ISODate));
         obj.insert(LastDictDateKey,
                    _lastDictDate.addSecs(1).toString(Qt::ISODate));
         QJsonDocument doc;
@@ -328,6 +360,11 @@ SFOContext::FlushToDisk()
     }
     _WriteOrganization<SFOAppHighlight>(AppHighlightCacheFileName,
                                         _appHighlights);
+    if (_transportations.size()) {
+        qDebug() << "Saving " << _transportations.size() << " transportations";
+    }
+    _WriteOrganization<SFOTransportation>(TransportationCacheFileName,
+                                        _transportations);
 
     QJsonDocument doc;
     QVariantMap allDicts;
@@ -564,6 +601,38 @@ SFOContext::_HandleAppHighlightsResponse(const QJsonDocument& data)
 }
 
 void
+SFOContext::_HandleTransportationsResponse(const QJsonDocument& data)
+{
+    QVariantMap results = _GetMapFromJson(data);
+    if (results.isEmpty()) {
+        qDebug() << "transportation response is empty!";
+        return;
+    }
+    bool success = false;
+    if (results["result"].canConvert<bool>()) {
+        success = results["result"].toBool();
+    }
+    if (success) {
+        // qDebug() << "Transportations Data: " << results;
+        _eraseList(_transportations);
+        QVariantMap transportationMap = results["transportation_list"].toMap();
+        QPair<QDateTime, SFOOrganizationList> resp =
+            _ParseOrgResponse<SFOTransportation>(transportationMap);
+        QDateTime latest = resp.first;
+        _transportations = resp.second;
+        if (!latest.isNull()) {
+            _lastTransportationDate = latest;
+            FlushToDisk();
+            emit TransportationsUpdated();
+        } else {
+            qDebug() << "No transportations in transportation data";
+        }
+    } else {
+        qDebug() << "Transportation fetch failed";
+    }
+}
+
+void
 SFOContext::_HandleDictResponse(const QJsonDocument& data)
 {
     QVariantMap results = _GetMapFromJson(data);
@@ -648,6 +717,8 @@ SFOContext::HandleResponse(const QJsonDocument& document, FJError error,
         _HandlePerformersResponse(document);
     } else if (operation && (operation->GetName() == "apphighlights")) {
         _HandleAppHighlightsResponse(document);
+    } else if (operation && (operation->GetName() == "transportations")) {
+        _HandleTransportationsResponse(document);
     } else if (operation && (operation->GetName() == "dict")) {
         _HandleDictResponse(document);
     } else if (operation && (operation->GetName() == "submit")) {

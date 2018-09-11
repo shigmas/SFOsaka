@@ -66,7 +66,7 @@ SFOSubmitWordModel::GetSubmitEnabled() const
 void
 SFOSubmitWordModel::SetSubmitEnabled(bool submitEnabled)
 {
-    qDebug() << "submit enabled: " << _submitEnabled;
+    //qDebug() << "submit enabled: " << _submitEnabled;
     if (_submitEnabled != submitEnabled) {
         _submitEnabled = submitEnabled;
         emit SubmitEnabledChanged();

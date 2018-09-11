@@ -6,6 +6,7 @@
 #include "SFOPartner.h"
 #include "SFOPerformer.h"
 #include "SFOAppHighlight.h"
+#include "SFOTransportation.h"
 #include "SFOTypes.h"
 
 #include <FJOperation.h>
@@ -42,6 +43,8 @@ public:
 
     SFOOrganizationList GetAppHighlights() const;
 
+    SFOOrganizationList GetTransportations() const;
+
     void Refresh(bool immediately=false);
 
     void AddWordTranslation(const QString& word, const QString& phonetic,
@@ -61,6 +64,7 @@ signals:
     void PerformersUpdated();
     void DictionariesUpdated();
     void AppHighlightsUpdated();
+    void TransportationsUpdated();
 
 public slots:
     virtual void HandleResponse(const QJsonDocument& document, FJError error,
@@ -145,6 +149,7 @@ protected:
     void _HandlePartnersResponse(const QJsonDocument& data);
     void _HandlePerformersResponse(const QJsonDocument& data);
     void _HandleAppHighlightsResponse(const QJsonDocument& data);
+    void _HandleTransportationsResponse(const QJsonDocument& data);
     void _HandleDictResponse(const QJsonDocument& data);
     void _HandleSubmitResponse(const QJsonDocument& data);
 
@@ -155,6 +160,7 @@ protected:
     static const QString DateTimeStampFileName;
     static const QString PartnerCacheFileName;
     static const QString AppHighlightCacheFileName;
+    static const QString TransportationCacheFileName;
     static const QString DictionaryCacheFileName;
     static const QString PerformerCacheFileName;
 
@@ -162,6 +168,7 @@ protected:
     static const QString LastDictDateKey;
     static const QString LastPerformerDateKey;
     static const QString LastAppHighlightDateKey;
+    static const QString LastTransportationDateKey;
 
     static const QStringPair ServerInfo;
 private:
@@ -172,9 +179,11 @@ private:
     SFOOrganizationList _partners;
     SFOOrganizationList _performers;
     SFOOrganizationList _appHighlights;
+    SFOOrganizationList _transportations;
     QDateTime _lastPartnerDate;
     QDateTime _lastPerformerDate;
     QDateTime _lastAppHighlightDate;
+    QDateTime _lastTransportationDate;
     QDateTime _lastDictDate;
     QPairMap _enToJpDict;
     QPairMap _jpToEnDict;

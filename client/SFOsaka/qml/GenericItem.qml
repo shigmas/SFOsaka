@@ -59,11 +59,10 @@ Item {
             flow: GridLayout.LeftToRight
             Layout.fillWidth: true
             width: parent.width
-            anchors.top: titleItem.bottom
-            anchors.bottom: parent.bottom
+            Layout.alignment: Qt.AlignTop
             ColumnLayout {
                 id: infoColumn
-                anchors.left: parent.left
+                Layout.alignment: Qt.AlignLeft
                 anchors.leftMargin: 4.0
                 anchors.rightMargin: 4.0
 
@@ -79,7 +78,7 @@ Item {
                 id: imageRectItem
                 width: parent.width - infoColumn.width
                 height: parent.width - infoColumn.width
-                anchors.right: parent.right
+                Layout.alignment: Qt.AlignRight
                 anchors.bottomMargin: 6.0
                 Image {
                     fillMode: Image.PreserveAspectFit

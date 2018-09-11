@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += qml quick widgets network positioning location
+QT += qml quick widgets network positioning location webview
 
 !osx:qtHaveModule(webengine) {
         QT += webengine
@@ -15,6 +15,9 @@ ios {
 
     launch_images.files = $$files($PWD/ios/LaunchScreen.xib) $$files($$PWD/resources/bmatsuri_banner.png)
     QMAKE_BUNDLE_DATA += launch_images
+
+	QMAKE_ASSET_CATALOGS = $$PWD/ios/Images.xcassets
+	QMAKE_ASSET_CATALOGS_APP_ICON = "AppIcon"
 }
 
 CONFIG += c++11
@@ -33,6 +36,7 @@ SOURCES += src/main.cpp \
     src/SFOTypes.cpp \
     src/SFOOrganization.cpp \
     src/SFOAppHighlight.cpp \
+    src/SFOTransportation.cpp \
     src/SFOPartner.cpp \
     src/SFOPerformer.cpp \
     src/SFOScheduleModel.cpp \
@@ -50,6 +54,9 @@ SOURCES = qml/FeatureRect.qml  \
     qml/PartnerDetail.qml      \
     qml/PartnerItem.qml        \
     qml/PartnerList.qml        \
+    qml/HighlightList.qml      \
+    qml/GenericItem.qml        \
+    qml/TransportationList.qml \
     qml/WebView.qml            \
     qml/AppBar.qml             \
     qml/TranslatorPage.qml     \
@@ -80,22 +87,13 @@ HEADERS += \
     src/SFOOrganization.h \
     src/SFOAppHighlight.h \
     src/SFOPartner.h \
+    src/SFOTransportation.h \
     src/SFOPerformer.h \
     src/SFOScheduleModel.h \
     src/SFOValidatorReceiver.h \
     src/SFOController.h
 
 DISTFILES += \
-    ios/Icons/AppIcon60x60@3x.png \
-    ios/Icons/AppIcon40x40@3x.png \
-    ios/Icons/AppIcon40x40@2x.png \
-    ios/Icons/AppIcon29x29@2x.png \
-    ios/Icons/AppIcon76x76@1x.png \
-    ios/Icons/AppIcon76x76@2x.png \
-    ios/Icons/AppIcon57x57@1x.png \
-    ios/Icons/AppIcon72x72@1x.png \
-    ios/Icons/AppIcon83.5x83.5@2x.png \
-    ios/Icons/AppIcon120x120@1x.png \
     android/AndroidManifest.xml \
     android/gradle/wrapper/gradle-wrapper.jar \
     android/gradlew \

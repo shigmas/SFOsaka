@@ -38,6 +38,11 @@ SFOController::SFOController(QQmlContext *context, QObject *parent) :
     _appHighlightsModel = new SFOItemModel(_context, appHighlights);
     _context->setContextProperty("appHighlightsModel", _appHighlightsModel);
 
+    SFOOrganizationList transportations =
+        SFOContext::GetInstance()->GetTransportations();
+    _transportationsModel = new SFOItemModel(_context, transportations);
+    _context->setContextProperty("transportationsModel", _transportationsModel);
+
     QString server = SFOContext::GetInstance()->GetHost();
     _context->setContextProperty("server", QVariant(server));
 
@@ -47,6 +52,8 @@ SFOController::SFOController(QQmlContext *context, QObject *parent) :
                      this, &SFOController::_OnPartnersUpdated);
     QObject::connect(sfoContext,&SFOContext::AppHighlightsUpdated,
                      this, &SFOController::_OnAppHighlightsUpdated);
+    QObject::connect(sfoContext,&SFOContext::TransportationsUpdated,
+                     this, &SFOController::_OnTransportationsUpdated);
 
 }
 
@@ -58,6 +65,7 @@ SFOController::~SFOController()
     delete _foodPartnersModel;
     delete _otherPartnersModel;
     delete _appHighlightsModel;
+    delete _transportationsModel;
 }
 
 
@@ -95,4 +103,15 @@ SFOController::_OnAppHighlightsUpdated()
     _appHighlightsModel->SetOrganizations(appHighlights);
     _context->setContextProperty("appHighlightsModel", NULL);
     _context->setContextProperty("appHighlightsModel", _appHighlightsModel);
+}
+
+void
+SFOController::_OnTransportationsUpdated()
+{
+    qDebug() << "Handling transportations updated.";
+    SFOOrganizationList transportations =
+        SFOContext::GetInstance()->GetTransportations();
+    _transportationsModel->SetOrganizations(transportations);
+    _context->setContextProperty("transportationsModel", NULL);
+    _context->setContextProperty("transportationsModel", _transportationsModel);
 }

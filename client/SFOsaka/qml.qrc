@@ -11,7 +11,8 @@
         <file>qml/PartnerList.qml</file>
         <file>qml/PartnerItem.qml</file>
         <file>qml/HighlightList.qml</file>
-        <file>qml/HighlightItem.qml</file>
+        <file>qml/GenericItem.qml</file>
+        <file>qml/TransportationList.qml</file>
         <file>qml/TranslatorAdd.qml</file>
         <file>qml/TranslatorPage.qml</file>
         <file>qml/WebView.qml</file>
@@ -20,11 +21,13 @@
         <file>resources/marker-sel.png</file>
         <file>resources/dictionary_icon.png</file>
         <file>resources/sfosaka_logo.png</file>
+        <file>resources/partner_icon.png</file>
         <file>resources/partners_icon.png</file>
         <file>resources/festival_icon.png</file>
         <file>resources/matsuri_banner.png</file>
         <file>resources/soynet_icon.png</file>
         <file>resources/taro_orange.png</file>
+        <file>resources/scavenger_icon.png</file>
         <file>qtquickcontrols2.conf</file>
     </qresource>
 </RCC>

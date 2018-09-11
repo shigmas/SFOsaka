@@ -20,8 +20,7 @@ ColumnLayout {
 
     WebView {
         id: webView
-        anchors.top: toolbar.bottom
-        anchors.bottom: parent.bottom
+        Layout.alignment: Qt.AlignTop
         Layout.fillWidth: true
         Layout.fillHeight: true
         url: root.url

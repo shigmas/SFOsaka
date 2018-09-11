@@ -10,6 +10,7 @@ admin.site.register(models.Category)
 admin.site.register(models.Partner)
 admin.site.register(models.Performer)
 admin.site.register(models.AppHighlight)
+admin.site.register(models.Transportation)
 admin.site.register(models.Status)
 admin.site.register(models.Language)
 

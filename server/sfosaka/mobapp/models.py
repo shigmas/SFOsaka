@@ -45,7 +45,7 @@ class Organization(models.Model):
     description_jp = models.TextField(max_length=4096)
     shortDescription = models.CharField(max_length=1024)
     shortDescription_jp = models.CharField(max_length=1024)
-    modificationDate = models.DateTimeField()
+    modificationDate = models.DateTimeField(auto_now_add=True)
     imageUrl = models.CharField(max_length=512, null=True)
     url = models.CharField(max_length=512, null=True)
     contact = models.ForeignKey(ContactInfo, null=True)
@@ -67,6 +67,13 @@ class Performer(Organization):
     endTime = models.DateTimeField()
 
 class AppHighlight(Organization):
+    order = models.PositiveSmallIntegerField()
+    detail = models.TextField(max_length=4096, null=True)
+    detail_jp = models.TextField(max_length=4096, null=True)
+
+# In retrospect, base class for AppHighlight and Transportation would have
+# been good. But not worth it to refactor... yet.
+class Transportation(Organization):
     order = models.PositiveSmallIntegerField()
     detail = models.TextField(max_length=4096, null=True)
     detail_jp = models.TextField(max_length=4096, null=True)

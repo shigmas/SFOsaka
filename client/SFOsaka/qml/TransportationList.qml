@@ -42,7 +42,7 @@ Item {
                     itemDescription: description
                     itemDetail: detail
                 }
-                model: appHighlightsModel
+                model: transportationsModel
             }
         }
     }

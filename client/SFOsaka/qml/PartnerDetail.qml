@@ -15,7 +15,7 @@ Item {
         
         AppBar {
             id: toolbar
-            anchors.top: parent.top
+            Layout.alignment: Qt.AlignTop
             onButtonActivated: root.buttonActivated()
         }
 
@@ -25,8 +25,7 @@ Item {
             flow: GridLayout.LeftToRight
             Layout.fillWidth: true
             width: parent.width
-            anchors.top: toolbar.bottom
-            anchors.bottom: parent.bottom
+            Layout.alignment: Qt.AlignTop
 
             ColumnLayout {
                 id: infoColumn
@@ -38,7 +37,8 @@ Item {
                     id: partnerName
                     text: partnerDetail.name
                     anchors.leftMargin: 4.0
-                    anchors.top: parent.top
+                    Layout.alignment: Qt.AlignTop
+
                     font.family: "Arial"
                     font.bold: true
                     font.pointSize: 20
@@ -79,7 +79,7 @@ Item {
             Text {
                 id: partnerDescription
                 topPadding: 3.0
-                anchors.top: imageRectItem.bottom
+                Layout.alignment: Qt.AlignTop
                 Layout.fillWidth: true
                 Layout.columnSpan: 2
                 Layout.maximumWidth: parent.width * 2

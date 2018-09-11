@@ -40,6 +40,7 @@ public slots:
 protected slots:
     void _OnPartnersUpdated();
     void _OnAppHighlightsUpdated();
+    void _OnTransportationsUpdated();
 
 private:
     QQmlContext *_context;
@@ -50,6 +51,7 @@ private:
     SFOItemModel *_foodPartnersModel;
     SFOItemModel *_otherPartnersModel;
     SFOItemModel *_appHighlightsModel;
+    SFOItemModel *_transportationsModel;
 };
 
 #endif // SFOCONTROLLER_H

@@ -10,9 +10,8 @@ Item {
     property string itemDescription
 
     width: parent.width
-    //height: parent.width
     implicitHeight: contentItem.height
-    
+
     TextMetrics {
         id: timeFont
         font.family: "Arial"
@@ -20,15 +19,21 @@ Item {
         text: "text"
     }
 
+    TextMetrics {
+        id: titleFont
+        font.bold: true
+        font.family: "Arial"
+        font.pointSize: 22
+        text: "Text"
+    }
+
     // Use one item to contain the other items, so we can use its height in
     // the parent
     ColumnLayout {
         id: contentItem
-        // I think using the parent as anchors.fill is weird, since its
-        // implicit height depends on us, so use the Layout fill
         Layout.fillHeight: true
-        //Layout.fillWidth: true
-        width: root.width
+        Layout.fillWidth: true
+        width: parent.width
         spacing: 5
 
         // This has a bar so that it divides each entry
@@ -50,6 +55,7 @@ Item {
         Text {
             id: titleItem
             width: root.width
+            height: titleFont.height
             anchors.leftMargin: 8.0
             text: root.itemTitle
             font.bold: true
@@ -57,23 +63,21 @@ Item {
             font.pointSize: 22
         }
 
-        Rectangle {
-            id: imageRectItem
-            width: root.width 
-            height: root.width
-            Image {
-                id: imageItem
-                fillMode: Image.PreserveAspectFit
-                anchors.fill: parent
-                source: root.itemImageSource
-            }
+        Image {
+            id: imageItem
+            Layout.alignment: Qt.AlignTop
+            // Expand, but go no further than the width of the item.
+            Layout.maximumWidth: root.width
+            // Given the width of the item, limit our height to keep the aspect
+            // ratio of the image.
+            Layout.maximumHeight: root.width / sourceSize.width * sourceSize.height
+            fillMode: Image.PreserveAspectFit
+            source: root.itemImageSource
         }
 
         Text {
             id: descriptionItem
             topPadding: 3.0
-            Layout.fillWidth: true
-            Layout.columnSpan: 2
             Layout.maximumWidth: parent.width
             width: parent.width
             anchors.topMargin: 6.0

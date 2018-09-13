@@ -74,17 +74,14 @@ Item {
                 }
             }
 
-            Rectangle {
-                id: imageRectItem
-                width: parent.width - infoColumn.width
-                height: parent.width - infoColumn.width
+            Image {
+                id: imageItem
+                Layout.maximumWidth: root.width
+                Layout.maximumHeight: root.width / sourceSize.width * sourceSize.height
                 Layout.alignment: Qt.AlignRight
                 anchors.bottomMargin: 6.0
-                Image {
-                    fillMode: Image.PreserveAspectFit
-                    anchors.fill: parent
-                    source: root.itemImageURL
-                }
+                fillMode: Image.PreserveAspectFit
+                source: root.itemImageURL
             }
 
             Text {

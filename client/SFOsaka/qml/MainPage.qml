@@ -55,7 +55,7 @@ Item {
 
         Image {
             id: bannerImage
-            Layout.alignment: Qt.AlignTop
+            Layout.alignment: Qt.AlignTop | Qt.AlignVCenter
 
             // We want the image to expand to fill, but not be bigger than, the
             // width of the screen

@@ -45,7 +45,7 @@ class Organization(models.Model):
     description_jp = models.TextField(max_length=4096)
     shortDescription = models.CharField(max_length=1024)
     shortDescription_jp = models.CharField(max_length=1024)
-    modificationDate = models.DateTimeField(auto_now_add=True)
+    modificationDate = models.DateTimeField(auto_now=True)
     imageUrl = models.CharField(max_length=512, null=True)
     url = models.CharField(max_length=512, null=True)
     contact = models.ForeignKey(ContactInfo, null=True)

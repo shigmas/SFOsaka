@@ -3,6 +3,7 @@
 #include <QQmlContext>
 #include <QtQml>
 #include <QTranslator>
+#include <QtWebView>
 #include <QDebug>
 
 // Our global controller
@@ -39,14 +40,16 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
+    QtWebView::initialize();
     //qInstallMessageHandler(myMessageOutput);
 
     // Setup for localizations
     QTranslator qtTranslator;
-    QString localeName = QLocale::system().name();
-    if (!qtTranslator.load("sfosaka_" + localeName,
-                         ":/translations/")) {
-        qDebug() << "Unable to load translation for " << localeName
+    QLocale locale = QLocale::system();
+    if (!qtTranslator.load(locale, QLatin1String("sfosaka"),
+                           QLatin1String("_"),
+                           QLatin1String(":/translations"))) {
+        qDebug() << "Unable to load translation for " << locale.name()
                  << " in dir [" << QGuiApplication::applicationDirPath()
                  << "]";
     }

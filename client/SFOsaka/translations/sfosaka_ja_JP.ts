@@ -32,19 +32,29 @@
         <translation type="vanished">大阪の味</translation>
     </message>
     <message>
-        <location filename="../qml/MainPage.qml" line="26"/>
+        <location filename="../qml/MainPage.qml" line="30"/>
         <source>Festival Schedule</source>
         <translation>祭予定</translation>
     </message>
     <message>
-        <location filename="../qml/MainPage.qml" line="30"/>
+        <location filename="../qml/MainPage.qml" line="34"/>
         <source>Partners</source>
         <translation>パートナー</translation>
     </message>
     <message>
-        <location filename="../qml/MainPage.qml" line="34"/>
+        <location filename="../qml/MainPage.qml" line="38"/>
         <source>KansaiBen Phrases</source>
         <translation>関西弁</translation>
+    </message>
+    <message>
+        <location filename="../qml/MainPage.qml" line="42"/>
+        <source>Scavenger Hunt</source>
+        <translation>スカベンジャー・ハント</translation>
+    </message>
+    <message>
+        <location filename="../qml/MainPage.qml" line="46"/>
+        <source>How to get there</source>
+        <translation>行き方</translation>
     </message>
     <message>
         <source>Kansai Ben Phrases</source>
@@ -63,7 +73,7 @@
         <translation type="vanished">日本町町内会とサンフランシスコ大阪姉妹都市会は9月29日に三番目の大阪祭提供します。音楽と踊りパフォーマンスとか大阪料理があります。盆踊り一緒にやりましょう。</translation>
     </message>
     <message>
-        <location filename="../qml/MainPage.qml" line="73"/>
+        <location filename="../qml/MainPage.qml" line="89"/>
         <source>Japantown Chounaikai and San Francisco Osaka Sister City Association are proud to host the third annual Osaka Matsuri on Sept 29, 2018. Come watch music and dance performances, eat Osaka food, and join us as we finish with the Bon Dance.</source>
         <translation>日本町町内会とサンフランシスコ大阪姉妹都市会は9月29日に三番目の大阪祭を提供します。音楽と踊りパフォーマンスを見たりとか大阪料理を食べたり、最後、盆踊り一緒にやりましょう。</translation>
     </message>
@@ -149,7 +159,7 @@
         <translation type="vanished">『新しいフレーズ』には英語か日本語でフレーズを入力して下さい。『翻訳』には追加するフレーズの訳を入力し、『追加』で複数の訳を登録できます。日本語を入力の際は、ローマ字にて発音の入力が必要です。承認が下り次第、新しいフレーズは表示されます。</translation>
     </message>
     <message>
-        <location filename="../qml/TranslatorAdd.qml" line="55"/>
+        <location filename="../qml/TranslatorAdd.qml" line="50"/>
         <source>New Phrase</source>
         <translation>新しいフレーズ</translation>
     </message>
@@ -158,12 +168,12 @@
         <translation type="vanished">日本語/英語</translation>
     </message>
     <message>
-        <location filename="../qml/TranslatorAdd.qml" line="77"/>
+        <location filename="../qml/TranslatorAdd.qml" line="72"/>
         <source>romaji</source>
         <translation>ローマ字</translation>
     </message>
     <message>
-        <location filename="../qml/TranslatorAdd.qml" line="87"/>
+        <location filename="../qml/TranslatorAdd.qml" line="82"/>
         <source>Translation(s):</source>
         <translation>翻訳：</translation>
     </message>
@@ -172,37 +182,37 @@
         <translation type="vanished">英語/日本語</translation>
     </message>
     <message>
-        <location filename="../qml/TranslatorAdd.qml" line="37"/>
+        <location filename="../qml/TranslatorAdd.qml" line="35"/>
         <source>Enter a new phrase in Hiragana and Romanji. Under translation(s), add the translation of the phrase into English, including alternate translations if necessary. Translations will appear when they are approved.</source>
         <translation>新しいフレーズを平仮名とローマ字で入力してください。その下に英語の翻訳を入力してください。必要ならば複数入力することが可能です。翻訳は承認された後、表示されるようになります。</translation>
     </message>
     <message>
-        <location filename="../qml/TranslatorAdd.qml" line="101"/>
+        <location filename="../qml/TranslatorAdd.qml" line="96"/>
         <source>English</source>
         <translation>英語</translation>
     </message>
     <message>
-        <location filename="../qml/TranslatorAdd.qml" line="116"/>
+        <location filename="../qml/TranslatorAdd.qml" line="111"/>
         <source>+</source>
         <translation>追加</translation>
     </message>
     <message>
-        <location filename="../qml/TranslatorAdd.qml" line="125"/>
+        <location filename="../qml/TranslatorAdd.qml" line="120"/>
         <source>-</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="../qml/TranslatorAdd.qml" line="146"/>
+        <location filename="../qml/TranslatorAdd.qml" line="141"/>
         <source>Submit</source>
         <translation>決定</translation>
     </message>
     <message>
-        <location filename="../qml/TranslatorAdd.qml" line="154"/>
+        <location filename="../qml/TranslatorAdd.qml" line="149"/>
         <source>Thank you for your submission</source>
         <translation>登録申請ありがとうございます</translation>
     </message>
     <message>
-        <location filename="../qml/TranslatorAdd.qml" line="155"/>
+        <location filename="../qml/TranslatorAdd.qml" line="150"/>
         <source>Your phrase and translation has been submitted. It will appear in the phrasebook after it has been approved.</source>
         <translation>フレーズと翻訳は登録申請されました。承認が下り次第、フレーズブックに表示されます。</translation>
     </message>

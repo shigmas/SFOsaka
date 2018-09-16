@@ -176,7 +176,7 @@ Item {
 
             Text {
                 font.pointSize: 8
-                text: "v 1.11"
+                text: "v 1.12"
                 Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
                 MouseArea {
                     id: versionMouseArea

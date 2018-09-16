@@ -60,6 +60,7 @@ Item {
             // We want the image to expand to fill, but not be bigger than, the
             // width of the screen
             Layout.maximumWidth: parent.width
+            Layout.minimumWidth: parent.width
             // The height of this widget will expand to try and fill the space
             // that the ScrollView might default to. Meaning, we might have some
             // extra space at the top of the bottom, if we don't limit it to the
@@ -144,23 +145,23 @@ Item {
                             font.family: "Avenir SE"
                             font.pointSize: 14
                         }
-                        MouseArea {
-                            //Layout.alignment: Qt.AlignTop | Qt.AlignBottom | Qt.AlignLeft | Qt.AlignRight
-                            anchors.fill: parent
+                    }
+                    MouseArea {
+                        //Layout.alignment: Qt.AlignTop | Qt.AlignBottom | Qt.AlignLeft | Qt.AlignRight
+                        anchors.fill: parent
 
-                            onClicked: {
-                                console.log("Index: " + index)
-                                if (index == 0) {
-                                    festivalActivated()
-                                } else if (index == 1) {
-                                    partnersActivated()
-                                } else if (index == 2) {
-                                    translatorActivated()
-                                } else if (index == 3) {
-                                    highlightActivated()
-                                } else if (index == 4) {
-                                    transportationActivated()
-                                }
+                        onClicked: {
+                            console.log("Index: " + index)
+                            if (index == 0) {
+                                festivalActivated()
+                            } else if (index == 1) {
+                                partnersActivated()
+                            } else if (index == 2) {
+                                translatorActivated()
+                            } else if (index == 3) {
+                                highlightActivated()
+                            } else if (index == 4) {
+                                transportationActivated()
                             }
                         }
                     }

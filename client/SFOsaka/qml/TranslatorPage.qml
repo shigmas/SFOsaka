@@ -1,5 +1,5 @@
 import QtQuick 2.4
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 
 import SFOsaka 1.0
@@ -32,6 +32,7 @@ Item {
         RowLayout {
             id: searchPhraseLayout
             Layout.alignment: Qt.AlignTop
+            height: fontMetrics.height
             Rectangle {
                 width: 1
                 height: 0
@@ -47,11 +48,11 @@ Item {
             id: searchBoxLayout
             Layout.alignment: Qt.AlignTop
             width: parent.width
+            height: fontMetrics.height
 
             TextField {
                 id: textInput
                 width: fontMetrics.width * 2
-                height: fontMetrics.height
                 placeholderText: qsTr("English/Japanese")
                 validator: SFOValidator {
                     receiver: translateController
@@ -88,13 +89,18 @@ Item {
 
         ScrollView {
             id: scrollView
-            Layout.alignment: Qt.AlignTop | Qt.AlignVCenter
+            Layout.alignment: Qt.AlignTop | Qt.AlignBottom
+            Layout.fillHeight: true
+            width: root.width
+            height: root.height
+            contentWidth: root.width
+            contentHeight: root.height * 2
 
             ListView {
                 id: translationView
                 model: translationModel
                 //Layout.maximumWidth: fontMetrics.width*3
-                contentWidth: translationModel.maxCharacters * fontMetrics.width + 4
+                width: translationModel.maxCharacters * fontMetrics.width + 4
                 flickableDirection: Flickable.HorizontalAndVerticalFlick
                 delegate: Rectangle {
                     id: itemRect

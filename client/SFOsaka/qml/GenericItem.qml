@@ -53,33 +53,28 @@ Item {
             }
         }
 
-        GridLayout {
-            id: gridlayout
-            columns: 2
-            flow: GridLayout.LeftToRight
+        ColumnLayout {
+            id: itemLayout
             Layout.fillWidth: true
             width: parent.width
             Layout.alignment: Qt.AlignTop
-            ColumnLayout {
-                id: infoColumn
-                Layout.alignment: Qt.AlignLeft
-                anchors.leftMargin: 4.0
-                anchors.rightMargin: 4.0
+            // anchors.leftMargin: 4.0
+            // anchors.rightMargin: 4.0
 
-                Text {
-                    id: detail
-                    text: root.itemDetail
-                    font.family: "Arial"
-                    font.pointSize: 14
-                }
+            Text {
+                id: detail
+                text: root.itemDetail
+                font.family: "Arial"
+                font.pointSize: 14
             }
 
             Image {
                 id: imageItem
                 Layout.maximumWidth: root.width
+                Layout.minimumWidth: root.width
                 Layout.maximumHeight: root.width / sourceSize.width * sourceSize.height
-                Layout.alignment: Qt.AlignRight
-                anchors.bottomMargin: 6.0
+                Layout.alignment: Qt.AlignLeft
+                //anchors.bottomMargin: 6.0
                 fillMode: Image.PreserveAspectFit
                 source: root.itemImageURL
             }
@@ -89,13 +84,8 @@ Item {
                 // Handles if we don't have an image at all, to make sure the
                 // description doesn't scrunch up over the info.
                 topPadding: 3.0
-                anchors.top: infoColumn.height > imageRectItem.height ? infoColumn.bottom : imageRectItem.bottom
                 Layout.fillWidth: true
-                Layout.columnSpan: 2
-                // Colspan 2, so double, since I guess this value is adjusted
-                // for our place in the layout?
-                Layout.maximumWidth: parent.width * 2
-                width: parent.width
+                Layout.maximumWidth: parent.width
                 font.pointSize: 14
                 wrapMode: Text.Wrap
                 text: root.itemDescription

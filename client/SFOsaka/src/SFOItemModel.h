@@ -54,6 +54,7 @@ public slots:
 
 protected:
     void _SetItemAsSelected(const int& selectedIndex);
+    void _SortModel();
     void _ResetModel();
 
     // These apply to certain subclasses of SFOOrganization. If they're not

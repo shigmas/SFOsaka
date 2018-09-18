@@ -60,6 +60,8 @@ SFOItemModel::SFOItemModel(QQmlContext *context,
     place.setName("Root");
     _root = place;
 
+    _SortModel();
+
     _context->setContextProperty(_contextIdentifier, &_emptyPartner);
 
 }
@@ -77,6 +79,7 @@ SFOItemModel::SetOrganizations(const SFOOrganizationList& organizations)
 {
     if (_organizations != organizations) {
         _organizations = organizations;
+        _SortModel();
         // Don't reset the model. The number of organizations may have changed,
         // and that could cause a crash. Setting and resetting the model (which
         // we should do, but is done in the controller right now) is sufficient.
@@ -212,6 +215,28 @@ SFOItemModel::_SetItemAsSelected(const int& selectedIndex)
         _context->setContextProperty(_contextIdentifier, p);
     }
 }    
+
+// Sorts based on start date, as long as the performer is active.
+static bool _isLessThan(const SFOOrganization* first,
+                        const SFOOrganization* second)
+{
+    return first->GetSortOrder() < second->GetSortOrder();
+}
+
+void
+SFOItemModel::_SortModel()
+{
+    if ((_organizations.size() == 0) ||
+        // first test passed, so there's at least one element in the list
+        (!_organizations[0]->IsSorted())) {
+        return;
+    }
+
+    // Convert to std::list so we can sort
+    std::list<SFOOrganization *> orgList = _organizations.toStdList();
+    orgList.sort(_isLessThan);
+    _organizations = SFOOrganizationList::fromStdList(orgList);
+}
 
 void
 SFOItemModel::_ResetModel()

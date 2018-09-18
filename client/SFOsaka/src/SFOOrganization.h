@@ -31,6 +31,12 @@ public:
 
     virtual QJsonObject ToJson() const;
 
+    // By default, returns false. For items w/ a sort order, we return true.
+    // (Note that Peformers have their own sort key. This is for another sort
+    // key
+    virtual bool IsSorted() const;
+    virtual quint16 GetSortOrder() const;
+
     QString GetName_locale() const;
     // We need a string map from the server side values for category in Japanese
     QString GetCategory_locale() const;

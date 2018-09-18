@@ -62,6 +62,18 @@ SFOOrganization::ToJson() const
     return QJsonObject::fromVariantMap(_ToVariantMap());
 }
 
+bool
+SFOOrganization::IsSorted() const
+{
+    return false;
+}
+
+quint16
+SFOOrganization::GetSortOrder() const
+{
+    return 0;
+}
+
 QString
 SFOOrganization::GetName_locale() const
 {

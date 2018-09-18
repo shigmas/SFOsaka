@@ -17,6 +17,10 @@ public:
     SFOTransportation(const QVariantMap& dataMap);
     virtual ~SFOTransportation();
 
+    virtual bool IsSorted() const;
+    virtual quint16 GetSortOrder() const;
+
+    quint16 GetOrder() const;
     QString GetDetail_locale() const;
     QString GetDetail() const;
     QString GetDetailJp() const;
@@ -25,10 +29,12 @@ protected:
     virtual QVariantMap _ToVariantMap() const;
 
     // Server only
+    static const QString OrderKey;
     static const QString DetailKey;
     static const QString DetailJpKey;
 
 private:
+    quint16 _order;
     QString _detail;
     QString _detailJp;
 };
